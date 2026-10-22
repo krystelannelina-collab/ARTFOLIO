@@ -13,13 +13,13 @@
         * {
             box-sizing: border-box;
         }
-
-        body {
-            min-height: 100vh;
-            margin: 0;
-            background: #102B21;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+        
 
         .signup-wrapper {
             min-height: 100vh;
