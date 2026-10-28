@@ -369,7 +369,7 @@
                                 <h3 class="art-title">Color Theory</h3>
                                 <p class="art-category">Abstract Art</p>
                                 <p class="small text-secondary">
-                                    A colorful abstract piece for art lovers.
+                                   condense the core message into a single, memorable phrase
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="art-price">$9.00</span>
