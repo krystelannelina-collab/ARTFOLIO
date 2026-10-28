@@ -13,13 +13,21 @@
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            background: #fff;
-            color: #171717;
-            font-family: Arial, Helvetica, sans-serif;
-            overflow-x: hidden;
-        }
+        
+        :root {
+            --artfolio-cream: #F7F5EF;
+                --artfolio-charcoal: #303C32;
+                    --artfolio-sage: #758C71;
+                        --artfolio-text: #303C32;
+                        }
+
+                        body {
+                            margin: 0;
+                                background: var(--artfolio-cream);
+                                    color: var(--artfolio-text);
+                                        font-family: Arial, Helvetica, sans-serif;
+                                            overflow-x: hidden;
+                                            }
 
         .app-layout {
             display: flex;
