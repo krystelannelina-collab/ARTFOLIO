@@ -162,7 +162,7 @@
             align-items: center;
             gap: 2px;
             padding: 6px 13.5px;
-            border: 1px solid #E5E7EB;
+            border: 2px solid #E5E7EB;
             border-radius: 8px;
             background: #fff;
             color: #374151;
