@@ -79,7 +79,7 @@
 
         .form-header h1 {
             margin: 0;
-            color: #111827;
+            color: #000000;
             font-size: 26px;
             line-height: 32px;
             letter-spacing: -.65px;
