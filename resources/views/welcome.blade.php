@@ -36,7 +36,7 @@
             'category' => 'ABSTRACT',
             'rating' => '5.0',
             'image' => asset('images/artwork-fluid-geometric.png'),
-            'url' => url('/abstract'),
+            'url' => route('artworks.show', ['slug' => 'fluid-geometric']),
         ],
         [
             'title' => 'Stranger Things Poster',
@@ -44,7 +44,7 @@
             'category' => 'POSTER',
             'rating' => '5.0',
             'image' => asset('images/artwork-stranger-things.png'),
-            'url' => url('/artworks?category=Poster'),
+            'url' => route('artworks.show', ['slug' => 'stranger-things-poster']),
         ],
         [
             'title' => 'Minimalist Organic',
@@ -52,7 +52,7 @@
             'category' => 'ABSTRACT',
             'rating' => '5.0',
             'image' => asset('images/artwork-minimalist-organic.png'),
-            'url' => url('/abstract'),
+            'url' => route('artworks.show', ['slug' => 'minimalist-organic']),
         ],
     ];
 
@@ -152,12 +152,12 @@
             <div class="artworks-grid">
                 @foreach ($featuredArtworks as $art)
                     <article class="art-card">
-                        <div class="art-img-container">
+                        <a href="{{ $art['url'] }}" class="art-img-container" aria-label="View {{ $art['title'] }} details">
                             <img src="{{ $art['image'] }}" alt="{{ $art['title'] }}" class="art-img" loading="lazy">
-                        </div>
+                        </a>
                         <div class="art-content">
                             <span class="art-tag-label">{{ $art['category'] }}</span>
-                            <h3 class="art-title-text">{{ $art['title'] }}</h3>
+                            <h3 class="art-title-text"><a href="{{ $art['url'] }}">{{ $art['title'] }}</a></h3>
                             <span class="art-author-text">by {{ $art['author'] }}</span>
 
                             <div class="art-footer-actions">

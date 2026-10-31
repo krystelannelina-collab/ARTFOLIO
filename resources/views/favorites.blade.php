@@ -32,6 +32,7 @@
     $favorites = [
         [
             'id' => 1,
+            'slug' => 'fluid-geometric',
             'title' => 'Fluid Geometric',
             'category' => 'Abstract',
             'author' => 'Cristine Joy Montes',
@@ -41,6 +42,7 @@
         ],
         [
             'id' => 2,
+            'slug' => 'stranger-things-poster',
             'title' => 'Stranger Things Poster',
             'category' => 'Poster',
             'author' => 'Gian Gomez',
@@ -50,6 +52,7 @@
         ],
         [
             'id' => 3,
+            'slug' => 'minimalist-organic',
             'title' => 'Minimalist Organic',
             'category' => 'Abstract',
             'author' => 'Gian Gomez',
@@ -59,6 +62,7 @@
         ],
         [
             'id' => 4,
+            'slug' => 'geometric-contrast',
             'title' => 'Geometric Contrast',
             'category' => 'Abstract',
             'author' => 'Kalvin Dave Ramos',
@@ -68,6 +72,7 @@
         ],
         [
             'id' => 5,
+            'slug' => 'colorful-abstract',
             'title' => 'Colorful Abstract',
             'category' => 'Abstract',
             'author' => 'Kalvin Dave Ramos',
@@ -77,6 +82,7 @@
         ],
         [
             'id' => 6,
+            'slug' => 'geometric-abstract',
             'title' => 'Geometric Abstract',
             'category' => 'Abstract',
             'author' => 'Krystel Anne Lina',
@@ -185,7 +191,9 @@
                          data-author="{{ $item['author'] }}"
                          data-price="{{ $item['price'] }}">
                     <div class="favorite-img-box">
-                        <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="favorite-img" loading="lazy">
+                        <a href="{{ route('artworks.show', ['slug' => $item['slug']]) }}" class="favorite-img-link" aria-label="View {{ $item['title'] }} details">
+                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="favorite-img" loading="lazy">
+                        </a>
                         <!-- Floating Heart Button -->
                         <button type="button"
                                 class="btn-fav-heart"
@@ -200,7 +208,7 @@
 
                     <div class="favorite-content">
                         <span class="favorite-tag">{{ $item['category'] }}</span>
-                        <h2 class="favorite-title">{{ $item['title'] }}</h2>
+                        <h2 class="favorite-title"><a href="{{ route('artworks.show', ['slug' => $item['slug']]) }}">{{ $item['title'] }}</a></h2>
                         <p class="favorite-author">by {{ $item['author'] }}</p>
 
                         <div class="favorite-footer-row">
@@ -208,7 +216,7 @@
                                 <span class="favorite-star">★</span>
                                 <span>{{ $item['rating'] }}</span>
                             </div>
-                            <a href="{{ url('/artworks?search=' . urlencode($item['title'])) }}" class="btn-view-details">
+                            <a href="{{ route('artworks.show', ['slug' => $item['slug']]) }}" class="btn-view-details">
                                 <span>View details</span>
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="7" y1="17" x2="17" y2="7"></line>

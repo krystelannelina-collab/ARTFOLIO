@@ -59,53 +59,116 @@
         </header>
 
         <section class="about-hero" aria-labelledby="about-title">
+            <img src="{{ asset('images/hero-banner.png') }}" alt="" class="about-hero-image">
+            <div class="about-hero-overlay"></div>
             <div class="about-hero-copy">
-                <span class="about-eyebrow">ART LIVES HERE</span>
-                <h1 id="about-title">A space for art.<br>A place for you.</h1>
-                <p>ARTFOLIO brings digital art and creative voices together. Discover pieces you connect with and support the people who make them.</p>
+                <span class="about-eyebrow">ART LIVES HERE <span aria-hidden="true">·</span> MADE TO BE DISCOVERED</span>
+                <h1 id="about-title">Find art that<br>feels like <em>you.</em></h1>
+                <p>Meet original digital art and the independent voices behind it. Your next favorite is waiting to be found.</p>
+                <a href="{{ url('/artworks') }}" class="about-button about-button-primary">
+                    Explore the collection
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
             </div>
-            <img src="{{ asset('images/hero-banner.png') }}" alt="A bright, welcoming artist studio filled with works in progress" class="about-hero-image">
+            <span class="about-hero-index" aria-hidden="true">01 / 04</span>
         </section>
 
         <section class="about-intro" aria-labelledby="why-artfolio-title">
             <div class="about-intro-heading">
-                <span class="about-eyebrow">WHY ARTFOLIO</span>
-                <h2 id="why-artfolio-title">Creativity deserves<br>to be discovered.</h2>
+                <span class="about-eyebrow">A DIFFERENT KIND OF ART SPACE</span>
+                <h2 id="why-artfolio-title">Creativity deserves to be <em>discovered.</em></h2>
             </div>
             <div class="about-intro-copy">
-                <h3>We make discovering digital art feel personal.</h3>
-                <p>From expressive abstracts to cinematic posters, every artwork offers a different perspective. ARTFOLIO is a place to explore those perspectives, find new favorites, and meet the artists behind them.</p>
-                <p class="about-intro-note">Find what moves you. Make it part of your collection.</p>
+                <p>We bring digital art and creative voices together in one place. Wander through expressive abstracts, bold typography, pixel art, and cinematic posters—each with a person and a perspective behind it.</p>
+                <a href="{{ url('/artists') }}" class="about-text-link">
+                    Get to know the artists
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
             </div>
         </section>
 
-        <section class="about-values" aria-label="What you can do on ARTFOLIO">
-            <article class="about-value-card">
-                <span class="about-value-number">01</span>
-                <h3>Discover your style</h3>
-                <p>Explore digital artwork across abstract, typography, pixel, poster, and digital art categories.</p>
-            </article>
-            <article class="about-value-card">
-                <span class="about-value-number">02</span>
-                <h3>Meet the creators</h3>
-                <p>Get to know the artists behind the work and explore their individual perspectives.</p>
-            </article>
-            <article class="about-value-card">
-                <span class="about-value-number">03</span>
-                <h3>Keep the art you love</h3>
-                <p>Save your favorites and access purchased artwork downloads through My Orders.</p>
-            </article>
+        <section class="about-gallery" aria-labelledby="about-gallery-title">
+            <div class="about-section-heading">
+                <div>
+                    <span class="about-eyebrow">A FEW PLACES TO BEGIN</span>
+                    <h2 id="about-gallery-title">Art with its own point of view.</h2>
+                </div>
+                <a href="{{ url('/artworks') }}" class="about-text-link">
+                    Browse all artworks
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="about-artwork-grid">
+                <a href="{{ route('artworks.show', ['slug' => 'fluid-geometric']) }}" class="about-artwork-card about-artwork-card-featured">
+                    <img src="{{ asset('images/artwork-fluid-geometric.png') }}" alt="Fluid Geometric, an abstract artwork by Cristine Joy Montes" loading="lazy">
+                    <span class="about-artwork-caption">
+                        <span class="about-artwork-category">ABSTRACT</span>
+                        <span class="about-artwork-title">Fluid Geometric</span>
+                        <span class="about-artwork-artist">Cristine Joy Montes</span>
+                    </span>
+                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a href="{{ route('artworks.show', ['slug' => 'stranger-things-poster']) }}" class="about-artwork-card">
+                    <img src="{{ asset('images/artwork-stranger-things.png') }}" alt="Stranger Things Poster by Gian Gomez" loading="lazy">
+                    <span class="about-artwork-caption">
+                        <span class="about-artwork-category">POSTER</span>
+                        <span class="about-artwork-title">Stranger Things Poster</span>
+                        <span class="about-artwork-artist">Gian Gomez</span>
+                    </span>
+                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a href="{{ route('artworks.show', ['slug' => 'minimalist-organic']) }}" class="about-artwork-card">
+                    <img src="{{ asset('images/artwork-minimalist-organic.png') }}" alt="Minimalist Organic, an abstract artwork by Gian Gomez" loading="lazy">
+                    <span class="about-artwork-caption">
+                        <span class="about-artwork-category">ABSTRACT</span>
+                        <span class="about-artwork-title">Minimalist Organic</span>
+                        <span class="about-artwork-artist">Gian Gomez</span>
+                    </span>
+                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="about-values" aria-labelledby="about-values-title">
+            <div class="about-section-heading about-values-heading">
+                <div>
+                    <span class="about-eyebrow">YOUR ART JOURNEY</span>
+                    <h2 id="about-values-title">Follow what moves you.</h2>
+                </div>
+            </div>
+            <div class="about-values-grid">
+                <article class="about-value-card">
+                    <span class="about-value-number">01</span>
+                    <h3>Find your style</h3>
+                    <p>Explore abstract, typography, pixel, poster, and digital art.</p>
+                </article>
+                <article class="about-value-card">
+                    <span class="about-value-number">02</span>
+                    <h3>Meet the makers</h3>
+                    <p>Discover the artists and perspectives behind every piece.</p>
+                </article>
+                <article class="about-value-card">
+                    <span class="about-value-number">03</span>
+                    <h3>Keep what you love</h3>
+                    <p>Save your favorites and revisit the art that speaks to you.</p>
+                </article>
+            </div>
         </section>
 
         <section class="about-cta" aria-labelledby="about-cta-title">
-            <div class="about-cta-artworks" aria-hidden="true">
-                <img src="{{ asset('images/artwork-fluid-geometric.png') }}" alt="" loading="lazy">
-                <img src="{{ asset('images/artwork-minimalist-organic.png') }}" alt="" loading="lazy">
-            </div>
+            <span class="about-cta-orbit about-cta-orbit-one" aria-hidden="true"></span>
+            <span class="about-cta-orbit about-cta-orbit-two" aria-hidden="true"></span>
             <div class="about-cta-copy">
                 <span class="about-eyebrow">YOUR NEXT FAVORITE IS OUT THERE</span>
                 <h2 id="about-cta-title">Bring a little more art into your day.</h2>
-                <p>Explore the collection or get to know our artists.</p>
+                <p>Take a look around. You might find something that feels like it was made for you.</p>
                 <div class="about-cta-actions">
                     <a href="{{ url('/artworks') }}" class="about-button about-button-primary">
                         Explore artworks

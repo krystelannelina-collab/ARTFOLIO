@@ -32,6 +32,7 @@
     $allArtworks = [
         [
             'id' => 1,
+            'slug' => 'fluid-geometric',
             'title' => 'Fluid Geometric',
             'price' => 28.56,
             'author' => 'Cristine Joy Montes',
@@ -41,6 +42,7 @@
         ],
         [
             'id' => 2,
+            'slug' => 'stranger-things-poster',
             'title' => 'Stranger Things Poster',
             'price' => 35.76,
             'author' => 'Gian Gomez',
@@ -50,6 +52,7 @@
         ],
         [
             'id' => 3,
+            'slug' => 'minimalist-organic',
             'title' => 'Minimalist Organic',
             'price' => 15.67,
             'author' => 'Gian Gomez',
@@ -59,6 +62,7 @@
         ],
         [
             'id' => 4,
+            'slug' => 'geometric-contrast',
             'title' => 'Geometric Contrast',
             'price' => 20.43,
             'author' => 'Kalvin Dave Ramos',
@@ -68,6 +72,7 @@
         ],
         [
             'id' => 5,
+            'slug' => 'the-one-poster',
             'title' => 'The One Poster',
             'price' => 25.86,
             'author' => 'Kalvin Dave Ramos',
@@ -77,6 +82,7 @@
         ],
         [
             'id' => 6,
+            'slug' => 'geometric-abstract',
             'title' => 'Geometric Abstract',
             'price' => 21.43,
             'author' => 'Krystel Anne Lina',
@@ -86,6 +92,7 @@
         ],
         [
             'id' => 7,
+            'slug' => 'goldmidnight-pixel-art',
             'title' => 'GoldMidnight Pixel Art',
             'price' => 18.50,
             'author' => 'Kalvin Dave Ramos',
@@ -95,6 +102,7 @@
         ],
         [
             'id' => 8,
+            'slug' => 'golden-mood-typography',
             'title' => 'Golden Mood Typography',
             'price' => 24.50,
             'author' => 'Gian Gomez',
@@ -104,6 +112,7 @@
         ],
         [
             'id' => 9,
+            'slug' => 'modern-muse-digital',
             'title' => 'Modern Muse Digital',
             'price' => 27.00,
             'author' => 'Cristine Joy Montes',
@@ -207,11 +216,13 @@
                          data-name="{{ $art['title'] }}"
                          data-artist="{{ $art['author'] }}">
                     <div class="artwork-image-box">
-                        <img src="{{ $art['image'] }}" alt="{{ $art['title'] }}" class="artwork-image" loading="lazy">
+                        <a href="{{ route('artworks.show', ['slug' => $art['slug']]) }}" aria-label="View {{ $art['title'] }} details">
+                            <img src="{{ $art['image'] }}" alt="{{ $art['title'] }}" class="artwork-image" loading="lazy">
+                        </a>
                     </div>
 
                     <div class="artwork-title-row">
-                        <h2 class="artwork-name">{{ $art['title'] }}</h2>
+                        <h2 class="artwork-name"><a href="{{ route('artworks.show', ['slug' => $art['slug']]) }}">{{ $art['title'] }}</a></h2>
                         <span class="artwork-price">${{ number_format($art['price'], 2) }}</span>
                     </div>
 
