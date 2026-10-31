@@ -30,7 +30,7 @@
                 <span class="admin-nav-count">{{ $artworkCount }}</span>
             @endif
         </a>
-        <a href="{{ route('admin.dashboard') }}#artists" class="admin-nav-link">
+        <a href="{{ route('admin.artists.index') }}" class="admin-nav-link {{ $active === 'artists' ? 'is-active' : '' }}" @if ($active === 'artists') aria-current="page" @endif>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="8" r="3.5"></circle>
                 <path d="M4.5 20v-1.5a7.5 7.5 0 0 1 15 0V20"></path>
