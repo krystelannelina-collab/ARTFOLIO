@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
+use App\Http\Controllers\Admin\ArtistController as AdminArtistController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Artwork;
 use App\Models\User;
@@ -24,6 +25,7 @@ Route::get('/home', function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/artists', [AdminArtistController::class, 'index'])->name('artists.index');
     Route::resource('artworks', AdminArtworkController::class)->except('show');
 });
 
