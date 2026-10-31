@@ -1,0 +1,298 @@
+/**
+ * ARTFOLIO - Artists Page Specific Styles
+ */
+
+/* ================= HEADER SECTION ================= */
+.artists-header-section {
+    margin-bottom: 24px;
+}
+
+.header-category-tag {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #1F513F;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.header-main-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #171717;
+    letter-spacing: -0.6px;
+    margin: 0 0 6px 0;
+    line-height: 1.15;
+}
+
+.header-description {
+    font-size: 13.5px;
+    color: #71717A;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* ================= FILTER & SORT BAR ================= */
+.filter-sort-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.filter-pills-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.category-filter-btn {
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    color: #3F3F46;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.category-filter-btn:hover {
+    border-color: #A1A1AA;
+    color: #18181B;
+}
+
+.category-filter-btn.active {
+    background: #1F513F;
+    border-color: #1F513F;
+    color: #FFFFFF;
+}
+
+.sort-dropdown-container {
+    position: relative;
+}
+
+.sort-btn {
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    color: #27272A;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.sort-btn:hover {
+    border-color: #A1A1AA;
+}
+
+.sort-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    min-width: 150px;
+    display: none;
+    flex-direction: column;
+    padding: 4px 0;
+    z-index: 50;
+}
+
+.sort-menu.is-open {
+    display: flex;
+}
+
+.sort-option-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #27272A;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.sort-option-btn:hover {
+    background: #F4F4F5;
+}
+
+.sort-option-btn.active {
+    font-weight: 700;
+    color: #1F513F;
+}
+
+/* ================= 2x2 ARTISTS GRID ================= */
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.artist-card {
+    background: #FFFFFF;
+    border: 1px solid #E8E8E8;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    gap: 18px;
+    align-items: stretch;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.artist-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    border-color: #D4D4D8;
+}
+
+.artist-photo-container {
+    width: 126px;
+    flex: 0 0 126px;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #EBEBEB;
+}
+
+.artist-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.artist-card:hover .artist-photo {
+    transform: scale(1.03);
+}
+
+.artist-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.artist-info-top {
+    padding-top: 2px;
+}
+
+.artist-name {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: #171717;
+    margin: 0 0 2px 0;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+}
+
+.artist-category-label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #71717A;
+    margin: 0 0 10px 0;
+}
+
+.artist-bio {
+    font-size: 12.5px;
+    color: #52525B;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.artist-info-bottom {
+    margin-top: 14px;
+}
+
+.artist-badge-text {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #A1A1AA;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+}
+
+.btn-view-artist {
+    background: #1F513F;
+    color: #FFFFFF;
+    border: 1px solid #1F513F;
+    border-radius: 6px;
+    padding: 6.5px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.btn-view-artist:hover {
+    background: #163E30;
+    border-color: #163E30;
+    color: #FFFFFF;
+}
+
+/* Empty state */
+.empty-artists-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: #FAFAFA;
+    border-radius: 16px;
+    border: 1px dashed #E4E4E7;
+    display: none;
+}
+
+.empty-artists-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #27272A;
+    margin-bottom: 6px;
+}
+
+.empty-artists-desc {
+    font-size: 12.5px;
+    color: #71717A;
+    margin-bottom: 16px;
+}
+
+/* Footer */
+.artists-footer {
+    text-align: center;
+    margin-top: 48px;
+    margin-bottom: 24px;
+    font-size: 11.5px;
+    color: #71717A;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 991px) {
+    .artists-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .filter-sort-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
