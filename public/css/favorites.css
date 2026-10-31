@@ -1,0 +1,430 @@
+/**
+ * ARTFOLIO - Favorites Page Specific Styles
+ */
+
+/* ================= HEADER SECTION ================= */
+.favorites-header-section {
+    margin-bottom: 24px;
+}
+
+.header-collection-tag {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #1F513F;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.header-main-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #171717;
+    letter-spacing: -0.6px;
+    margin: 0 0 6px 0;
+    line-height: 1.15;
+}
+
+.header-description {
+    font-size: 13.5px;
+    color: #71717A;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* ================= FILTER & SORT ROW ================= */
+.favorites-filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.filter-pills-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.fav-filter-btn {
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    color: #3F3F46;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.fav-filter-btn:hover {
+    border-color: #A1A1AA;
+    color: #18181B;
+}
+
+.fav-filter-btn.active {
+    background: #1F513F;
+    border-color: #1F513F;
+    color: #FFFFFF;
+}
+
+/* Sort Dropdown */
+.sort-dropdown-container {
+    position: relative;
+}
+
+.sort-btn-pill {
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #27272A;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.sort-btn-pill:hover {
+    border-color: #A1A1AA;
+}
+
+.sort-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    min-width: 160px;
+    display: none;
+    flex-direction: column;
+    padding: 4px 0;
+    z-index: 50;
+}
+
+.sort-dropdown-menu.is-open {
+    display: flex;
+}
+
+.sort-menu-item {
+    background: transparent;
+    border: none;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #27272A;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.sort-menu-item:hover {
+    background: #F4F4F5;
+}
+
+.sort-menu-item.active {
+    font-weight: 700;
+    color: #1F513F;
+}
+
+/* ================= SUB-HEADER INFO ROW ================= */
+.favorites-subbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.saved-count-text {
+    font-weight: 700;
+    color: #171717;
+}
+
+.saved-hint-text {
+    font-size: 11.5px;
+    color: #71717A;
+}
+
+/* ================= 3-COLUMN FAVORITES GRID ================= */
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 20px;
+    transition: opacity 0.15s ease;
+}
+
+.favorite-card {
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 10px 10px 14px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.25s ease;
+}
+
+.favorite-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.favorite-card.is-hidden {
+    display: none !important;
+}
+
+.favorite-card.is-removed {
+    opacity: 0;
+    transform: scale(0.92);
+    pointer-events: none;
+}
+
+/* Image Container */
+.favorite-img-box {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10.5;
+    background: #EDEAE4;
+    position: relative;
+}
+
+.favorite-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.favorite-card:hover .favorite-img {
+    transform: scale(1.02);
+}
+
+/* Heart Favorite Button */
+.btn-fav-heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 5;
+    padding: 0;
+}
+
+.btn-fav-heart:hover {
+    transform: scale(1.12);
+    background: #FFF5F5;
+}
+
+.btn-fav-heart:active {
+    transform: scale(0.92);
+}
+
+.heart-icon {
+    width: 16px;
+    height: 16px;
+    fill: #C53030;
+    transition: fill 0.15s ease, transform 0.15s ease;
+}
+
+.btn-fav-heart.is-unfavorited .heart-icon {
+    fill: #A1A1AA;
+}
+
+/* Content */
+.favorite-content {
+    padding: 12px 6px 2px 6px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.favorite-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #2F6A4F;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.favorite-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #171717;
+    margin: 0 0 3px 0;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+}
+
+.favorite-author {
+    font-size: 11.5px;
+    color: #71717A;
+    margin: 0 0 16px 0;
+}
+
+.favorite-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.favorite-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #27272A;
+}
+
+.favorite-star {
+    color: #E5A83B;
+}
+
+.btn-view-details {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #D8E6DD;
+    color: #1E3326;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-view-details:hover {
+    background: #CADED1;
+    color: #14241B;
+}
+
+/* Empty State */
+.favorites-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: #FAFAFA;
+    border-radius: 16px;
+    border: 1px dashed #E4E4E7;
+    display: none;
+}
+
+.empty-state-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #27272A;
+    margin-bottom: 6px;
+}
+
+.empty-state-desc {
+    font-size: 13px;
+    color: #71717A;
+    margin-bottom: 16px;
+}
+
+.btn-browse-collection {
+    background: #1F513F;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s ease;
+}
+
+.btn-browse-collection:hover {
+    background: #173E30;
+    color: #FFFFFF;
+}
+
+/* ================= BOTTOM BROWSE ROW ================= */
+.bottom-browse-row {
+    margin-top: 48px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12.5px;
+    color: #71717A;
+    flex-wrap: wrap;
+}
+
+.btn-browse-more {
+    background: #FFFFFF;
+    border: 1px solid #D4D4D8;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #171717;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn-browse-more:hover {
+    background: #F4F4F5;
+    border-color: #A1A1AA;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 991.98px) {
+    .favorites-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .favorites-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .favorites-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .favorites-subbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}

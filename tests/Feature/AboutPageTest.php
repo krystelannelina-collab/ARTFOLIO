@@ -1,0 +1,31 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class AboutPageTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_authenticated_client_can_view_about_page_and_navigate_to_artworks_and_artists(): void
+    {
+        $response = $this->actingAs(User::factory()->create())->get('/about');
+
+        $response->assertOk()
+            ->assertSee('<title>ARTFOLIO - About Us</title>', false)
+            ->assertSee('A space for art.', false)
+            ->assertSee('Creativity deserves', false)
+            ->assertSee('Keep the art you love')
+            ->assertSee('href="'.url('/about').'" class="nav-item-link active"', false)
+            ->assertSee('href="'.url('/artworks').'" class="about-button about-button-primary"', false)
+            ->assertSee('href="'.url('/artists').'" class="about-button about-button-secondary"', false);
+    }
+
+    public function test_guest_is_redirected_to_login_when_visiting_about_page(): void
+    {
+        $this->get('/about')->assertRedirect('/login');
+    }
+}

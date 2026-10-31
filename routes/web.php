@@ -23,6 +23,34 @@ Route::get('/artworks', function () {
     return view('artworks');
 })->middleware('auth')->name('artworks');
 
+Route::get('/artists', function () {
+    return view('artists');
+})->middleware('auth')->name('artists');
+
+Route::get('/about', function () {
+    return view('about');
+})->middleware('auth')->name('about');
+
+Route::get('/favorites', function () {
+    return view('favorites');
+})->middleware('auth')->name('favorites');
+
+Route::get('/cart', function () {
+    return view('cart');
+})->middleware('auth')->name('cart');
+
+Route::get('/checkout', function () {
+    return view('checkout');
+})->middleware('auth')->name('checkout');
+
+Route::get('/order-success', function () {
+    return view('order-success');
+})->middleware('auth')->name('order.success');
+
+Route::get('/orders', function () {
+    return view('order-success');
+})->middleware('auth')->name('orders');
+
 Route::get('/abstract', function () {
     return view('abstract');
 })->middleware('auth')->name('abstract');
