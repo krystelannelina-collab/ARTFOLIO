@@ -129,6 +129,13 @@
         ]);
     }
     $allArtworks = $artworksBySlug->values()->all();
+    $hiddenCategoryNames = collect($hiddenCategoryNames ?? [])
+        ->map(fn (string $category): string => mb_strtolower($category))
+        ->all();
+    $allArtworks = collect($allArtworks)
+        ->reject(fn (array $artwork): bool => in_array(mb_strtolower($artwork['category']), $hiddenCategoryNames, true))
+        ->values()
+        ->all();
 
     $selectedCategory = trim((string) request('category'));
 @endphp
@@ -255,12 +262,14 @@
                     @endif
 
                     <div class="artwork-actions-row">
-                        <button type="button" class="btn-cart-outline">
-                            Add to cart
-                        </button>
-                        <button type="button" class="btn-buy-solid">
-                            Buy now
-                        </button>
+                        <form method="POST" action="{{ route('cart.add', ['slug' => $art['slug']]) }}" class="artwork-cart-action-form">
+                            @csrf
+                            <button type="submit" class="btn-cart-outline">Add to cart</button>
+                        </form>
+                        <form method="POST" action="{{ route('checkout.buy-now', ['slug' => $art['slug']]) }}" class="artwork-cart-action-form">
+                            @csrf
+                            <button type="submit" class="btn-buy-solid">Buy now</button>
+                        </form>
                         <button type="button" class="btn-icon-square ms-auto" aria-label="Share artwork">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="18" cy="5" r="3"></circle>

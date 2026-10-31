@@ -37,13 +37,26 @@
             </svg>
             <span>Artists</span>
         </a>
-        <a href="{{ route('admin.dashboard') }}#clients" class="admin-nav-link">
+        <a href="{{ route('admin.orders.index') }}" class="admin-nav-link {{ $active === 'orders' ? 'is-active' : '' }}" @if ($active === 'orders') aria-current="page" @endif>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"></path>
+            </svg>
+            <span>Orders</span>
+        </a>
+        <a href="{{ route('admin.customers.index') }}" class="admin-nav-link {{ $active === 'customers' ? 'is-active' : '' }}" @if ($active === 'customers') aria-current="page" @endif>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="9" cy="8" r="3"></circle>
                 <path d="M3.5 20v-1.5A4.5 4.5 0 0 1 8 14h2a4.5 4.5 0 0 1 4.5 4.5V20"></path>
                 <path d="M16 5.2a3 3 0 0 1 0 5.6M17 14h.5a3 3 0 0 1 3 3v1"></path>
             </svg>
-            <span>Clients</span>
+            <span>Customers</span>
+        </a>
+        <a href="{{ route('admin.categories.index') }}" class="admin-nav-link {{ $active === 'categories' ? 'is-active' : '' }}" @if ($active === 'categories') aria-current="page" @endif>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 13 11 22 2 13V4h9l9 9Z"></path>
+                <circle cx="7" cy="8" r="1"></circle>
+            </svg>
+            <span>Categories</span>
         </a>
     </nav>
 

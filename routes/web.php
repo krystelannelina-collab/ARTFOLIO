@@ -1,9 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
 use App\Http\Controllers\Admin\ArtistController as AdminArtistController;
+use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 use App\Models\Artwork;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,18 +33,38 @@ Route::get('/home', function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::get('/artists', [AdminArtistController::class, 'index'])->name('artists.index');
+    Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::patch('/categories/{category}/visibility', [AdminCategoryController::class, 'toggleVisibility'])->name('categories.visibility');
+    Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::resource('artworks', AdminArtworkController::class)->except('show');
 });
 
 Route::get('/artworks', function () {
+    $hiddenCategories = Category::query()->where('is_visible', false)->pluck('name');
     $catalogArtworks = Artwork::query()
         ->where('status', 'published')
+        ->whereNotIn('category', $hiddenCategories)
         ->orderBy('title')
         ->get();
+    $visibleCategories = Category::query()
+        ->where('is_visible', true)
+        ->orderBy('sort_order')
+        ->orderBy('name')
+        ->pluck('name');
+    $catalogCategories = $catalogArtworks->pluck('category')
+        ->merge($visibleCategories)
+        ->unique()
+        ->values();
 
     return view('artworks', [
         'catalogArtworks' => $catalogArtworks,
-        'catalogCategories' => $catalogArtworks->pluck('category')->unique()->values(),
+        'catalogCategories' => $catalogCategories,
+        'hiddenCategoryNames' => $hiddenCategories,
     ]);
 })->middleware('auth')->name('artworks');
 
@@ -140,8 +167,20 @@ Route::get('/artworks/{slug}', function (string $slug) {
         abort_unless(isset($artworks[$slug]), 404);
     }
 
+    $hiddenCategoryNames = Category::query()
+        ->where('is_visible', false)
+        ->pluck('name')
+        ->map(fn (string $category): string => mb_strtolower($category));
+    $hiddenCategoryExists = Category::query()
+        ->where('name', $artworks[$slug]['category'])
+        ->where('is_visible', false)
+        ->exists();
+    abort_unless(! $hiddenCategoryExists || Auth::user()?->role === 'admin', 404);
+
     $artwork = ['slug' => $slug, 'rating' => '5.0', ...$artworks[$slug]];
     $relatedArtworks = collect($artworks)
+        ->reject(fn (array $relatedArtwork): bool => $hiddenCategoryNames->contains(mb_strtolower($relatedArtwork['category']))
+            && Auth::user()?->role !== 'admin')
         ->except($slug)
         ->take(3)
         ->map(fn (array $relatedArtwork, string $relatedSlug): array => [
@@ -165,21 +204,17 @@ Route::get('/favorites', function () {
     return view('favorites');
 })->middleware('auth')->name('favorites');
 
-Route::get('/cart', function () {
-    return view('cart');
-})->middleware('auth')->name('cart');
-
-Route::get('/checkout', function () {
-    return view('checkout');
-})->middleware('auth')->name('checkout');
-
-Route::get('/order-success', function () {
-    return view('order-success');
-})->middleware('auth')->name('order.success');
-
-Route::get('/orders', function () {
-    return view('order-success');
-})->middleware('auth')->name('orders');
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/{slug}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/checkout/{slug}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
+    Route::delete('/cart/items/{artwork}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/order-success/{order}', [OrderController::class, 'show'])->name('order.success');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 Route::get('/abstract', function () {
     return view('abstract');

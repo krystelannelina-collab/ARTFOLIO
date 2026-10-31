@@ -89,13 +89,19 @@
                 </div>
 
                 <div class="artwork-purchase-actions">
-                    <a href="{{ url('/cart') }}" class="artwork-action artwork-action-primary">Add to cart</a>
-                    <a href="{{ url('/checkout') }}" class="artwork-action artwork-action-dark">
-                        Buy now
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </a>
+                    <form method="POST" action="{{ route('cart.add', ['slug' => $artwork['slug']]) }}">
+                        @csrf
+                        <button type="submit" class="artwork-action artwork-action-primary">Add to cart</button>
+                    </form>
+                    <form method="POST" action="{{ route('checkout.buy-now', ['slug' => $artwork['slug']]) }}">
+                        @csrf
+                        <button type="submit" class="artwork-action artwork-action-dark">
+                            Buy now
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

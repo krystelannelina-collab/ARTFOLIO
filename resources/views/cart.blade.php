@@ -29,40 +29,6 @@
         ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
     ];
 
-    $cartItems = [
-        [
-            'id' => 1,
-            'title' => 'Fluid Geometric',
-            'category' => 'Abstract',
-            'author' => 'Cristine Joy Montes',
-            'price' => 28.56,
-            'quantity' => 1,
-            'image' => asset('images/artwork-fluid-geometric.png'),
-        ],
-        [
-            'id' => 2,
-            'title' => 'Stranger Things Poster',
-            'category' => 'Poster',
-            'author' => 'Gian Gomez',
-            'price' => 35.76,
-            'quantity' => 1,
-            'image' => asset('images/artwork-stranger-things.png'),
-        ],
-        [
-            'id' => 3,
-            'title' => 'Minimalist Organic',
-            'category' => 'Abstract',
-            'author' => 'Gian Gomez',
-            'price' => 15.67,
-            'quantity' => 1,
-            'image' => asset('images/artwork-minimalist-organic.png'),
-        ],
-    ];
-
-    $subtotal = array_sum(array_map(function ($item) {
-        return $item['price'] * $item['quantity'];
-    }, $cartItems));
-
     $userInitials = 'CJ';
     if (Auth::check() && Auth::user()->name) {
         $words = explode(' ', trim(Auth::user()->name));
@@ -132,8 +98,12 @@
                     <span class="cart-card-count" id="cart-items-count">{{ count($cartItems) }} items</span>
                 </div>
 
-                <!-- Items List -->
-                <div class="cart-items-list" id="cart-items-list">
+                    @if (session('status'))
+                        <p class="cart-status-notice" role="status">{{ session('status') }}</p>
+                    @endif
+
+                    <!-- Items List -->
+                    <div class="cart-items-list" id="cart-items-list">
                     @foreach ($cartItems as $item)
                         <article class="cart-item"
                                  id="cart-item-{{ $item['id'] }}"
@@ -153,7 +123,11 @@
 
                             <div class="cart-item-right">
                                 <div class="cart-item-price">${{ number_format($item['price'], 2) }}</div>
-                                <button type="button" class="btn-cart-remove" data-id="{{ $item['id'] }}">Remove</button>
+                                <form method="POST" action="{{ route('cart.remove', $item['id']) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-cart-remove">Remove</button>
+                                </form>
                                 <button type="button" class="btn-cart-save" data-id="{{ $item['id'] }}">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -166,7 +140,7 @@
                 </div>
 
                 <!-- Empty State -->
-                <div class="cart-empty-state" id="cart-empty-state">
+                <div class="cart-empty-state" id="cart-empty-state" @if (count($cartItems) > 0) hidden @endif>
                     <div class="empty-cart-title">Your cart is empty</div>
                     <div class="empty-cart-desc">Discover original artworks and add pieces to your cart.</div>
                     <a href="{{ url('/artworks') }}" class="btn-explore-artworks">
@@ -198,7 +172,7 @@
                     <span class="summary-total-val" id="summary-total">${{ number_format($subtotal, 2) }}</span>
                 </div>
 
-                <a href="{{ url('/checkout') }}" class="btn-checkout" id="btn-checkout">
+                <a href="{{ route('checkout') }}" class="btn-checkout {{ count($cartItems) === 0 ? 'disabled' : '' }}" id="btn-checkout" @if (count($cartItems) === 0) aria-disabled="true" @endif>
                     <span>Proceed to checkout</span>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>

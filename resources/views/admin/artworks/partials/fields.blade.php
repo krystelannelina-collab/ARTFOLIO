@@ -1,7 +1,6 @@
 <div class="artwork-form-fields">
     @php
         $useFormOldInput = old('_form_context') === $formContext;
-        $categoryListId = $formContext.'-artwork-categories';
     @endphp
 
     <label class="artwork-field">
@@ -18,12 +17,14 @@
 
     <label class="artwork-field">
         <span>Category <b aria-hidden="true">*</b></span>
-        <input type="text" name="category" value="{{ $useFormOldInput ? old('category', $artwork->category) : $artwork->category }}" list="{{ $categoryListId }}" maxlength="100" required>
-        <datalist id="{{ $categoryListId }}">
+        <select name="category" required>
+            <option value="">Select a category</option>
             @foreach ($categories as $category)
-                <option value="{{ $category }}">
+                <option value="{{ $category->name }}" @selected(($useFormOldInput ? old('category', $artwork->category) : $artwork->category) === $category->name)>
+                    {{ $category->name }}{{ $category->is_visible ? '' : ' (hidden)' }}
+                </option>
             @endforeach
-        </datalist>
+        </select>
         @if ($useFormOldInput && $errors->has('category'))<small class="field-error">{{ $errors->first('category') }}</small>@endif
     </label>
 

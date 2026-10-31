@@ -11,6 +11,15 @@
     margin-bottom: 24px;
 }
 
+.order-pending-banner {
+    background: #f7f1e4;
+}
+
+.order-pending-banner .success-check-badge {
+    background: #806436;
+    box-shadow: 0 4px 10px rgba(128, 100, 54, 0.18);
+}
+
 .success-check-badge {
     width: 44px;
     height: 44px;

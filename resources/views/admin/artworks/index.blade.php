@@ -54,7 +54,7 @@
                     <select name="category">
                         <option value="">All categories</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category }}" @selected(($filters['category'] ?? '') === $category)>{{ $category }}</option>
+                            <option value="{{ $category->name }}" @selected(($filters['category'] ?? '') === $category->name)>{{ $category->name }}{{ $category->is_visible ? '' : ' (hidden)' }}</option>
                         @endforeach
                     </select>
                 </label>

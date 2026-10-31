@@ -169,9 +169,9 @@
             </article>
         </section>
 
-        <aside class="admin-coming-soon" aria-label="Sales reporting status">
+        <aside class="admin-coming-soon" aria-label="Order reporting">
             <span class="coming-soon-icon" aria-hidden="true">↗</span>
-            <span><strong>Sales reporting is next.</strong> Orders and revenue will appear here once checkout is connected to the SQLite database.</span>
+            <span><strong>Order tracking is available.</strong> Review checkout activity and payment status on the <a href="{{ route('admin.orders.index') }}">Orders page</a>.</span>
         </aside>
 
         <footer class="admin-footer">ARTFOLIO ADMIN <span aria-hidden="true">·</span> Catalog and client metrics update from SQLite.</footer>

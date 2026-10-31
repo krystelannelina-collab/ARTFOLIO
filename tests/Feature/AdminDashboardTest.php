@@ -27,7 +27,8 @@ class AdminDashboardTest extends TestCase
             ->assertSee('From the collection')
             ->assertSee('Client signups')
             ->assertSee('Recently added artworks')
-            ->assertSee('Sales reporting is next.')
+            ->assertSee('Order tracking is available.')
+            ->assertSee(route('admin.orders.index'), false)
             ->assertSee('FEATURED ARTISTS')
             ->assertSee(route('admin.artworks.index'), false)
             ->assertViewHas('stats', [
