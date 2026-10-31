@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
+use App\Models\Category;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -58,7 +59,7 @@ class ArtworkController extends Controller
 
         return view('admin.artworks.index', [
             'artworks' => $query->paginate(8)->withQueryString(),
-            'categories' => Artwork::query()->distinct()->orderBy('category')->pluck('category'),
+            'categories' => Category::query()->orderBy('name')->get(),
             'newArtwork' => new Artwork(['status' => 'draft']),
             'editArtwork' => $editArtwork,
             'editModalOpen' => old('_form_context') === 'edit-artwork' && $editArtwork->exists,
@@ -137,7 +138,7 @@ class ArtworkController extends Controller
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'artist_name' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:100'],
+            'category' => ['required', 'string', 'max:100', Rule::exists('categories', 'name')],
             'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'description' => ['required', 'string', 'max:5000'],
             'status' => ['required', Rule::in(['published', 'draft', 'archived'])],

@@ -29,47 +29,6 @@
         ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
     ];
 
-    $orderItems = [
-        [
-            'id' => 1,
-            'title' => 'Fluid Geometric',
-            'author' => 'Cristine Joy Montes',
-            'price' => 28.56,
-            'quantity' => 1,
-            'image' => asset('images/artwork-fluid-geometric.png'),
-        ],
-        [
-            'id' => 2,
-            'title' => 'Stranger Things Poster',
-            'author' => 'Gian Gomez',
-            'price' => 35.76,
-            'quantity' => 1,
-            'image' => asset('images/artwork-stranger-things.png'),
-        ],
-        [
-            'id' => 3,
-            'title' => 'Minimalist Organic',
-            'author' => 'Gian Gomez',
-            'price' => 15.67,
-            'quantity' => 1,
-            'image' => asset('images/artwork-minimalist-organic.png'),
-        ],
-    ];
-
-    $total = array_sum(array_map(function ($item) {
-        return $item['price'] * $item['quantity'];
-    }, $orderItems));
-
-    $userInitials = 'CJ';
-    $userEmail = Auth::check() ? Auth::user()->email : '';
-    if (Auth::check() && Auth::user()->name) {
-        $words = explode(' ', trim(Auth::user()->name));
-        if (count($words) >= 2) {
-            $userInitials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-        } else {
-            $userInitials = strtoupper(substr(Auth::user()->name, 0, 2));
-        }
-    }
 @endphp
 
 @include('partials.mobile-header')
@@ -121,7 +80,8 @@
         </div>
 
         <!-- Main 2-Column Layout -->
-        <div class="checkout-layout-grid">
+        <form method="POST" action="{{ route('checkout.store') }}" class="checkout-layout-grid" id="checkout-form">
+            @csrf
 
             <!-- LEFT COLUMN: Forms -->
             <div class="checkout-forms-col">
@@ -136,18 +96,21 @@
                             id="contact-email"
                             class="form-control-custom"
                             placeholder="you@example.com"
-                            value="{{ $userEmail }}"
+                            name="contact_email"
+                            value="{{ old('contact_email', $userEmail) }}"
                             required
                         >
+                        @error('contact_email')
+                            <small class="field-error" role="alert">{{ $message }}</small>
+                        @enderror
                     </div>
                 </section>
 
                 <!-- Notice Banner: Digital art. Ready when you are. -->
                 <div class="digital-notice-banner">
-                    <h3 class="notice-title">Digital art. Ready when you are.</h3>
+                    <h3 class="notice-title">Payment setup is still in progress.</h3>
                     <p class="notice-text">
-                        Your files will be available in My Orders after payment.<br>
-                        An order confirmation and receipt will be sent to your email.
+                        Your order will be recorded as pending. No payment will be charged and downloads will remain locked until a payment provider is connected.
                     </p>
                 </div>
 
@@ -155,68 +118,9 @@
                 <section class="checkout-step-card">
                     <h2 class="step-title">2. Payment method</h2>
 
-                    <!-- Payment Option Tabs -->
-                    <div class="payment-tabs-group" role="tablist">
-                        <button type="button" class="payment-tab-btn active" id="tab-credit-card" role="tab" aria-selected="true">
-                            <span class="tab-dot"></span>
-                            <span>Credit / debit card</span>
-                        </button>
-                        <button type="button" class="payment-tab-btn" id="tab-paypal" role="tab" aria-selected="false">
-                            <span class="tab-dot"></span>
-                            <span>PayPal</span>
-                        </button>
-                    </div>
-
-                    <!-- Card Form Fields -->
-                    <div id="credit-card-fields">
-                        <div class="form-group">
-                            <label for="card-name" class="form-label">Cardholder name</label>
-                            <input
-                                type="text"
-                                id="card-name"
-                                class="form-control-custom"
-                                placeholder="Name as shown on card"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="card-number" class="form-label">Card number</label>
-                            <input
-                                type="text"
-                                id="card-number"
-                                class="form-control-custom"
-                                placeholder="0000 0000 0000 0000"
-                                maxlength="19"
-                            >
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="card-expiry" class="form-label">Expiry date</label>
-                                <input
-                                    type="text"
-                                    id="card-expiry"
-                                    class="form-control-custom"
-                                    placeholder="MM / YY"
-                                    maxlength="7"
-                                >
-                            </div>
-                            <div class="form-group">
-                                <label for="card-cvc" class="form-label">Security code</label>
-                                <input
-                                    type="text"
-                                    id="card-cvc"
-                                    class="form-control-custom"
-                                    placeholder="CVC"
-                                    maxlength="4"
-                                >
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PayPal info (hidden by default) -->
-                    <div id="paypal-fields" style="display: none; padding: 16px 0; font-size: 13px; color: #52525B;">
-                        You will be redirected to PayPal to complete your purchase securely.
+                    <div class="payment-pending-note" role="note">
+                        <strong>No payment method is connected yet.</strong>
+                        <span>Placing this order saves it for tracking, but does not process a charge.</span>
                     </div>
                 </section>
 
@@ -271,8 +175,8 @@
                     Your artwork will be ready to download from My Orders once payment is confirmed.
                 </p>
 
-                <button type="button" class="btn-place-order" id="btn-place-order">
-                    <span>Place order</span>
+                <button type="submit" class="btn-place-order" id="btn-place-order">
+                    <span>Place pending order</span>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -284,75 +188,21 @@
                 </p>
             </aside>
 
-        </div>
+        </form>
 
     </main>
 </div>
 
-<!-- Interactive Checkout Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // --- 1. Payment Method Tabs Toggle ---
-        const tabCreditCard = document.getElementById('tab-credit-card');
-        const tabPayPal = document.getElementById('tab-paypal');
-        const creditCardFields = document.getElementById('credit-card-fields');
-        const paypalFields = document.getElementById('paypal-fields');
-
-        if (tabCreditCard && tabPayPal) {
-            tabCreditCard.addEventListener('click', function () {
-                tabCreditCard.classList.add('active');
-                tabPayPal.classList.remove('active');
-                if (creditCardFields) creditCardFields.style.display = 'block';
-                if (paypalFields) paypalFields.style.display = 'none';
-            });
-
-            tabPayPal.addEventListener('click', function () {
-                tabPayPal.classList.add('active');
-                tabCreditCard.classList.remove('active');
-                if (creditCardFields) creditCardFields.style.display = 'none';
-                if (paypalFields) paypalFields.style.display = 'block';
-            });
+    document.getElementById('checkout-form').addEventListener('submit', (event) => {
+        const button = document.getElementById('btn-place-order');
+        if (button.disabled) {
+            event.preventDefault();
+            return;
         }
 
-        // --- 4. Card Formatting Helpers ---
-        const cardNumberInput = document.getElementById('card-number');
-        if (cardNumberInput) {
-            cardNumberInput.addEventListener('input', function (e) {
-                let val = this.value.replace(/\D/g, '');
-                let formatted = val.match(/.{1,4}/g)?.join(' ') || val;
-                this.value = formatted.substring(0, 19);
-            });
-        }
-
-        const expiryInput = document.getElementById('card-expiry');
-        if (expiryInput) {
-            expiryInput.addEventListener('input', function () {
-                let val = this.value.replace(/\D/g, '');
-                if (val.length >= 2) {
-                    val = val.substring(0, 2) + ' / ' + val.substring(2, 4);
-                }
-                this.value = val.substring(0, 7);
-            });
-        }
-
-        // --- 5. Place Order Button ---
-        const placeOrderBtn = document.getElementById('btn-place-order');
-        if (placeOrderBtn) {
-            placeOrderBtn.addEventListener('click', function () {
-                const email = document.getElementById('contact-email')?.value.trim();
-                if (!email) {
-                    alert('Please enter your email address for order confirmation.');
-                    return;
-                }
-
-                this.disabled = true;
-                this.innerHTML = `<span>Processing order...</span>`;
-
-                setTimeout(() => {
-                    window.location.href = "{{ url('/order-success') }}";
-                }, 400);
-            });
-        }
+        button.disabled = true;
+        button.querySelector('span').textContent = 'Saving order...';
     });
 </script>
 

@@ -1,5 +1,5 @@
 @php
-    $navCategories = [
+    $navCategories = $storeCategories ?? [
         ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
         ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
         ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
