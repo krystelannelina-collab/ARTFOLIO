@@ -57,6 +57,24 @@ class AuthFlowTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_public_registration_cannot_create_an_admin_account(): void
+    {
+        $this->withSession(['_token' => 'test-token'])
+            ->post('/register', [
+                '_token' => 'test-token',
+                'name' => 'Public Admin',
+                'email' => 'public-admin@example.com',
+                'password' => 'password123',
+                'role' => 'admin',
+            ])
+            ->assertRedirect('/login');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'public-admin@example.com',
+            'role' => 'client',
+        ]);
+    }
+
     public function test_guest_is_redirected_to_login_route_when_accessing_homepage(): void
     {
         $response = $this->get('/home');

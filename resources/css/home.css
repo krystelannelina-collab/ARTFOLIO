@@ -170,6 +170,12 @@ body {
     background: #EDEAE4;
 }
 
+.art-img-container > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .art-img {
     width: 100%;
     height: 100%;
@@ -200,6 +206,15 @@ body {
     margin: 0 0 3px 0;
     line-height: 1.25;
     letter-spacing: -0.3px;
+}
+
+.art-title-text a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.art-title-text a:hover {
+    color: #1F684C;
 }
 
 .art-author-text {

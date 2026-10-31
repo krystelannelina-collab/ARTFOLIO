@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,112 @@ Route::get('/home', function () {
     return view('welcome');
 })->middleware('auth')->name('home');
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', DashboardController::class)->name('dashboard');
+});
+
 Route::get('/artworks', function () {
     return view('artworks');
 })->middleware('auth')->name('artworks');
+
+Route::get('/artworks/{slug}', function (string $slug) {
+    $artworks = [
+        'fluid-geometric' => [
+            'title' => 'Fluid Geometric',
+            'author' => 'Cristine Joy Montes',
+            'category' => 'Abstract',
+            'price' => 28.56,
+            'image' => asset('images/artwork-fluid-geometric.png'),
+            'description' => 'A study in movement and color, Fluid Geometric brings flowing shapes together in a bold, contemporary composition.',
+        ],
+        'stranger-things-poster' => [
+            'title' => 'Stranger Things Poster',
+            'author' => 'Gian Gomez',
+            'category' => 'Poster',
+            'price' => 35.76,
+            'image' => asset('images/artwork-stranger-things.png'),
+            'description' => 'An atmospheric poster pairing a bold red palette with a cinematic composition and dramatic lighting.',
+        ],
+        'minimalist-organic' => [
+            'title' => 'Minimalist Organic',
+            'author' => 'Gian Gomez',
+            'category' => 'Abstract',
+            'price' => 15.67,
+            'image' => asset('images/artwork-minimalist-organic.png'),
+            'description' => 'Soft, organic shapes and a restrained palette create a calm, modern addition to any collection.',
+        ],
+        'geometric-contrast' => [
+            'title' => 'Geometric Contrast',
+            'author' => 'Kalvin Dave Ramos',
+            'category' => 'Abstract',
+            'price' => 20.43,
+            'image' => asset('images/artwork-geometric-contrast.png'),
+            'description' => 'Crisp geometric forms meet expressive color in a composition built around contrast and balance.',
+        ],
+        'colorful-abstract' => [
+            'title' => 'Colorful Abstract',
+            'author' => 'Kalvin Dave Ramos',
+            'category' => 'Abstract',
+            'price' => 24.50,
+            'image' => asset('images/artwork-colorful-abstract.png'),
+            'description' => 'A vibrant abstract composition that brings expressive color and movement into focus.',
+        ],
+        'the-one-poster' => [
+            'title' => 'The One Poster',
+            'author' => 'Kalvin Dave Ramos',
+            'category' => 'Poster',
+            'price' => 25.86,
+            'image' => asset('images/artwork-the-one-poster.png'),
+            'description' => 'A striking poster design with a memorable focal point and a clean, graphic sensibility.',
+        ],
+        'geometric-abstract' => [
+            'title' => 'Geometric Abstract',
+            'author' => 'Krystel Anne Lina',
+            'category' => 'Abstract',
+            'price' => 21.43,
+            'image' => asset('images/artwork-geometric-abstract.png'),
+            'description' => 'Layered geometric forms create depth and rhythm in this imaginative abstract artwork.',
+        ],
+        'goldmidnight-pixel-art' => [
+            'title' => 'GoldMidnight Pixel Art',
+            'author' => 'Kalvin Dave Ramos',
+            'category' => 'Pixel',
+            'price' => 18.50,
+            'image' => asset('images/artwork-geometric-contrast.png'),
+            'description' => 'A pixel-inspired composition that brings a graphic, digital edge to a warm and moody palette.',
+        ],
+        'golden-mood-typography' => [
+            'title' => 'Golden Mood Typography',
+            'author' => 'Gian Gomez',
+            'category' => 'Typography',
+            'price' => 24.50,
+            'image' => asset('images/artwork-stranger-things.png'),
+            'description' => 'Expressive type and cinematic color make this artwork a bold statement for your space.',
+        ],
+        'modern-muse-digital' => [
+            'title' => 'Modern Muse Digital',
+            'author' => 'Cristine Joy Montes',
+            'category' => 'Digital',
+            'price' => 27.00,
+            'image' => asset('images/artwork-fluid-geometric.png'),
+            'description' => 'A contemporary digital artwork shaped by fluid forms, color, and a playful sense of movement.',
+        ],
+    ];
+
+    abort_unless(isset($artworks[$slug]), 404);
+
+    $artwork = ['slug' => $slug, 'rating' => '5.0', ...$artworks[$slug]];
+    $relatedArtworks = collect($artworks)
+        ->except($slug)
+        ->take(3)
+        ->map(fn (array $relatedArtwork, string $relatedSlug): array => [
+            'slug' => $relatedSlug,
+            ...$relatedArtwork,
+        ])
+        ->all();
+
+    return view('artwork-details', compact('artwork', 'relatedArtworks'));
+})->middleware('auth')->name('artworks.show');
 
 Route::get('/artists', function () {
     return view('artists');
@@ -56,7 +160,8 @@ Route::get('/abstract', function () {
 })->middleware('auth')->name('abstract');
 
 Route::get('/admin-signup', function () {
-    return view('admin-signup');
+    return redirect()->route('login')
+        ->with('status', 'Admin access must be granted by an existing system administrator.');
 });
 
 Route::get('/client-signup', function () {
@@ -72,14 +177,13 @@ Route::post('/register', function (Request $request) {
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
         'password' => ['required', 'string', 'min:8'],
-        'role' => ['nullable', Rule::in(['client', 'admin'])],
     ]);
 
     User::create([
         'name' => $validated['name'],
         'email' => $validated['email'],
         'password' => Hash::make($validated['password']),
-        'role' => $validated['role'] ?? 'client',
+        'role' => 'client',
     ]);
 
     return redirect()->route('login')->with('success', 'Account created successfully. Please log in.');
@@ -106,6 +210,10 @@ Route::post('/login', function (Request $request) {
     }
 
     $request->session()->regenerate();
+
+    if (Auth::user()?->role === 'admin') {
+        return redirect()->intended(route('admin.dashboard'));
+    }
 
     return redirect()->intended(route('home'));
 })->name('login');

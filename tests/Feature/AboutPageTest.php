@@ -16,12 +16,17 @@ class AboutPageTest extends TestCase
 
         $response->assertOk()
             ->assertSee('<title>ARTFOLIO - About Us</title>', false)
-            ->assertSee('A space for art.', false)
-            ->assertSee('Creativity deserves', false)
-            ->assertSee('Keep the art you love')
+            ->assertSee('Find art that', false)
+            ->assertSee('Creativity deserves to be', false)
+            ->assertSee('Fluid Geometric')
+            ->assertSee('Cristine Joy Montes')
+            ->assertSee('Follow what moves you.')
+            ->assertSee('Keep what you love')
             ->assertSee('href="'.url('/about').'" class="nav-item-link active"', false)
             ->assertSee('href="'.url('/artworks').'" class="about-button about-button-primary"', false)
-            ->assertSee('href="'.url('/artists').'" class="about-button about-button-secondary"', false);
+            ->assertSee('href="'.url('/artists').'" class="about-button about-button-secondary"', false)
+            ->assertDontSee('artist-cristine-joy-montes.png')
+            ->assertDontSee('Meet Cristine Joy Montes');
     }
 
     public function test_guest_is_redirected_to_login_when_visiting_about_page(): void

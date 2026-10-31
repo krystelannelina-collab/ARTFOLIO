@@ -313,23 +313,14 @@
                 </svg>
             </button>
 
-            <div class="admin-box">
+            <div class="admin-box" role="note">
                 <div class="admin-heading">
                     <i class="bi bi-shield-fill" style="color:#F25100"></i>
-                    Admin portal access
+                    Admin access
                 </div>
-
-                <div class="role-buttons">
-                    <button type="button" class="role-button active" id="clientRole">
-                        <i class="bi bi-person" style="font-size:14px"></i>
-                        Client
-                    </button>
-
-                    <button type="button" class="role-button" id="adminRole">
-                        <i class="bi bi-shield-lock" style="font-size:14px"></i>
-                        Admin
-                    </button>
-                </div>
+                <p class="mb-0 mt-2 text-secondary" style="font-size:12px">
+                    Administrators sign in here with their account and are taken to the admin dashboard.
+                </p>
             </div>
 
             <div class="divider">
@@ -343,6 +334,12 @@
                     @foreach ($errors->all() as $error)
                         <div>{{ $error }}</div>
                     @endforeach
+                </div>
+            @endif
+
+            @if (session('status'))
+                <div class="alert alert-info" role="status" style="margin-bottom: 12px; font-size: 12px;">
+                    {{ session('status') }}
                 </div>
             @endif
 
@@ -407,18 +404,6 @@
         eyeIcon.className = show ? 'bi bi-eye' : 'bi bi-eye-slash';
     });
 
-    const clientRole = document.getElementById('clientRole');
-    const adminRole = document.getElementById('adminRole');
-
-    clientRole.addEventListener('click', function () {
-        clientRole.classList.add('active');
-        adminRole.classList.remove('active');
-    });
-
-    adminRole.addEventListener('click', function () {
-        adminRole.classList.add('active');
-        clientRole.classList.remove('active');
-    });
 </script>
 </body>
 </html>

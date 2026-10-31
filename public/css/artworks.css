@@ -204,6 +204,12 @@
     transition: transform 0.25s ease;
 }
 
+.artwork-image-box > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .artwork-item:hover .artwork-image {
     transform: scale(1.02);
 }
@@ -224,6 +230,15 @@
     margin: 0;
     line-height: 1.25;
     letter-spacing: -0.3px;
+}
+
+.artwork-name a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.artwork-name a:hover {
+    color: #1F684C;
 }
 
 .artwork-price {
