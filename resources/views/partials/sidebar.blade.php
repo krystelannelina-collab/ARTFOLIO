@@ -6,6 +6,19 @@
         ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
         ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
     ];
+    foreach ($catalogCategories ?? [] as $catalogCategory) {
+        $categoryExists = collect($navCategories)->contains(
+            fn (array $category): bool => strcasecmp($category['label'], $catalogCategory) === 0,
+        );
+
+        if (! $categoryExists) {
+            $navCategories[] = [
+                'label' => $catalogCategory,
+                'url' => url('/artworks?category='.urlencode($catalogCategory)),
+                'type' => 'abstract',
+            ];
+        }
+    }
 
     $currentActive = $active ?? '';
     $currentCategory = $activeCategory ?? '';

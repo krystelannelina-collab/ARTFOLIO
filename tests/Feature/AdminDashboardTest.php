@@ -29,6 +29,7 @@ class AdminDashboardTest extends TestCase
             ->assertSee('Recently added artworks')
             ->assertSee('Sales reporting is next.')
             ->assertSee('FEATURED ARTISTS')
+            ->assertSee(route('admin.artworks.index'), false)
             ->assertViewHas('stats', [
                 'artworks' => 10,
                 'artists' => 4,

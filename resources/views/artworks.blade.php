@@ -21,14 +21,6 @@
 <body>
 
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
     $allArtworks = [
         [
             'id' => 1,
@@ -122,6 +114,22 @@
         ],
     ];
 
+    $artworksBySlug = collect($allArtworks)->keyBy('slug');
+    foreach ($catalogArtworks as $catalogArtwork) {
+        $existingArtwork = $artworksBySlug->get($catalogArtwork->slug, []);
+        $artworksBySlug->put($catalogArtwork->slug, [
+            'id' => $catalogArtwork->id,
+            'slug' => $catalogArtwork->slug,
+            'title' => $catalogArtwork->title,
+            'price' => (float) $catalogArtwork->price,
+            'author' => $catalogArtwork->artist_name,
+            'category' => $catalogArtwork->category,
+            'rating' => $existingArtwork['rating'] ?? null,
+            'image' => asset($catalogArtwork->image_path),
+        ]);
+    }
+    $allArtworks = $artworksBySlug->values()->all();
+
     $selectedCategory = trim((string) request('category'));
 @endphp
 
@@ -129,7 +137,11 @@
 
 <div class="app-layout">
 
-    @include('partials.sidebar', ['active' => 'artworks', 'activeCategory' => $selectedCategory])
+    @include('partials.sidebar', [
+        'active' => 'artworks',
+        'activeCategory' => $selectedCategory,
+        'catalogCategories' => $catalogCategories,
+    ])
 
     <!-- ================= MAIN CONTENT ================= -->
     <main class="main-content">
@@ -194,6 +206,11 @@
                     <option value="filter-Pixel" {{ strcasecmp($selectedCategory, 'Pixel') === 0 ? 'selected' : '' }}>Category: Pixel Art</option>
                     <option value="filter-Typography" {{ strcasecmp($selectedCategory, 'Typography') === 0 ? 'selected' : '' }}>Category: Typography</option>
                     <option value="filter-Digital" {{ strcasecmp($selectedCategory, 'Digital') === 0 ? 'selected' : '' }}>Category: Digital Art</option>
+                    @foreach ($catalogCategories as $catalogCategory)
+                        @if (! in_array(strtolower($catalogCategory), ['abstract', 'typography', 'pixel', 'poster', 'digital']))
+                            <option value="filter-{{ $catalogCategory }}" @selected(strcasecmp($selectedCategory, $catalogCategory) === 0)>Category: {{ $catalogCategory }}</option>
+                        @endif
+                    @endforeach
                 </select>
                 <svg class="sort-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none">
                     <path d="M3 6L8 11L13 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -228,12 +245,14 @@
 
                     <p class="artwork-artist">by {{ $art['author'] }}</p>
 
-                    <div class="artwork-rating-row">
-                        <svg class="artwork-star-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 1.5l3.09 6.26L22 8.77l-5 4.87 1.18 6.86L12 17.27l-6.18 3.23L7 13.64l-5-4.87 6.91-1.01L12 1.5z"/>
-                        </svg>
-                        <span class="artwork-rating-text">{{ $art['rating'] }}</span>
-                    </div>
+                    @if (! empty($art['rating']))
+                        <div class="artwork-rating-row">
+                            <svg class="artwork-star-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 1.5l3.09 6.26L22 8.77l-5 4.87 1.18 6.86L12 17.27l-6.18 3.23L7 13.64l-5-4.87 6.91-1.01L12 1.5z"/>
+                            </svg>
+                            <span class="artwork-rating-text">{{ $art['rating'] }}</span>
+                        </div>
+                    @endif
 
                     <div class="artwork-actions-row">
                         <button type="button" class="btn-cart-outline">

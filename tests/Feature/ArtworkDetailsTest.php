@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Artwork;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -31,6 +32,82 @@ class ArtworkDetailsTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get('/artworks/not-a-real-artwork')
             ->assertNotFound();
+    }
+
+    public function test_published_admin_artwork_can_be_previewed_by_clients(): void
+    {
+        $artwork = Artwork::query()->create([
+            'slug' => 'admin-added-artwork',
+            'title' => 'Admin Added Artwork',
+            'artist_name' => 'Ari Artist',
+            'category' => 'Digital',
+            'price' => 19.95,
+            'image_path' => 'images/artwork-fluid-geometric.png',
+            'description' => 'A digital artwork added from the admin catalog.',
+            'status' => 'published',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('artworks.show', ['slug' => $artwork->slug]))
+            ->assertOk()
+            ->assertSee('Admin Added Artwork')
+            ->assertSee('Ari Artist')
+            ->assertSee('A digital artwork added from the admin catalog.');
+    }
+
+    public function test_draft_artwork_is_only_visible_to_admins(): void
+    {
+        $artwork = Artwork::query()->create([
+            'slug' => 'draft-artwork',
+            'title' => 'Draft Artwork',
+            'artist_name' => 'Ari Artist',
+            'category' => 'Digital',
+            'price' => 19.95,
+            'image_path' => 'images/artwork-fluid-geometric.png',
+            'description' => 'A draft artwork preview.',
+            'status' => 'draft',
+        ]);
+
+        $this->actingAs(User::factory()->create(['role' => 'client']))
+            ->get(route('artworks.show', ['slug' => $artwork->slug]))
+            ->assertNotFound();
+
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->get(route('artworks.show', ['slug' => $artwork->slug]))
+            ->assertOk()
+            ->assertSee('Draft Artwork');
+    }
+
+    public function test_public_artworks_page_lists_published_admin_artworks_but_not_drafts(): void
+    {
+        Artwork::query()->create([
+            'slug' => 'published-new-artwork',
+            'title' => 'Published New Artwork',
+            'artist_name' => 'Ari Artist',
+            'category' => 'Digital Paintings',
+            'price' => 19.95,
+            'image_path' => 'images/artwork-fluid-geometric.png',
+            'description' => 'A newly published catalog piece.',
+            'status' => 'published',
+        ]);
+        Artwork::query()->create([
+            'slug' => 'draft-new-artwork',
+            'title' => 'Draft New Artwork',
+            'artist_name' => 'Ari Artist',
+            'category' => 'Digital Paintings',
+            'price' => 20,
+            'image_path' => 'images/artwork-fluid-geometric.png',
+            'description' => 'A draft that is not for sale yet.',
+            'status' => 'draft',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->get('/artworks')
+            ->assertOk()
+            ->assertSee('Published New Artwork')
+            ->assertSee(route('artworks.show', ['slug' => 'published-new-artwork']), false)
+            ->assertSee(url('/artworks?category=Digital+Paintings'), false)
+            ->assertDontSee('Draft New Artwork');
     }
 
     public function test_guest_is_redirected_to_login_from_artwork_details(): void

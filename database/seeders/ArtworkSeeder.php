@@ -32,6 +32,7 @@ class ArtworkSeeder extends Seeder
                     'price' => $price,
                     'image_path' => "images/{$imagePath}",
                     'description' => $description,
+                    'status' => 'published',
                 ],
             );
         }
