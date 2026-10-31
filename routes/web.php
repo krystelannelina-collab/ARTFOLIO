@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Models\Artwork;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +24,19 @@ Route::get('/home', function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::resource('artworks', AdminArtworkController::class)->except('show');
 });
 
 Route::get('/artworks', function () {
-    return view('artworks');
+    $catalogArtworks = Artwork::query()
+        ->where('status', 'published')
+        ->orderBy('title')
+        ->get();
+
+    return view('artworks', [
+        'catalogArtworks' => $catalogArtworks,
+        'catalogCategories' => $catalogArtworks->pluck('category')->unique()->values(),
+    ]);
 })->middleware('auth')->name('artworks');
 
 Route::get('/artworks/{slug}', function (string $slug) {
@@ -112,7 +123,20 @@ Route::get('/artworks/{slug}', function (string $slug) {
         ],
     ];
 
-    abort_unless(isset($artworks[$slug]), 404);
+    $catalogArtwork = Artwork::query()->where('slug', $slug)->first();
+    if ($catalogArtwork !== null) {
+        abort_unless($catalogArtwork->status === 'published' || Auth::user()?->role === 'admin', 404);
+        $artworks[$slug] = [
+            'title' => $catalogArtwork->title,
+            'author' => $catalogArtwork->artist_name,
+            'category' => $catalogArtwork->category,
+            'price' => (float) $catalogArtwork->price,
+            'image' => asset($catalogArtwork->image_path),
+            'description' => $catalogArtwork->description,
+        ];
+    } else {
+        abort_unless(isset($artworks[$slug]), 404);
+    }
 
     $artwork = ['slug' => $slug, 'rating' => '5.0', ...$artworks[$slug]];
     $relatedArtworks = collect($artworks)
