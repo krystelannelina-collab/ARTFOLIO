@@ -221,6 +221,27 @@ body {
     color: #fff;
 }
 
+.artwork-favorite-form {
+    grid-column: 1 / -1;
+}
+
+.artwork-action-outline {
+    border: 1px solid #d4dcd6;
+    background: #ffffff;
+    color: #1d2922;
+}
+
+.artwork-action-outline:hover {
+    background: #f3f6f4;
+    color: #183729;
+}
+
+.artwork-action-outline.is-favorited {
+    border-color: #216b4f;
+    background: #eaf3ed;
+    color: #18563e;
+}
+
 .artwork-about-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(190px, 0.46fr);

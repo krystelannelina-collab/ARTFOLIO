@@ -93,6 +93,12 @@ class AdminOrdersTest extends TestCase
         $csv = $response->streamedContent();
         $this->assertStringContainsString("'=HYPERLINK", $csv);
         $this->assertStringContainsString("'=Formula artwork", $csv);
+
+        $this->patch(route('admin.orders.status', $order), [
+            'status' => 'completed',
+        ])->assertRedirect(route('admin.orders.show', $order));
+
+        $this->assertSame('completed', $order->fresh()->status);
     }
 
     public function test_non_admins_cannot_access_admin_orders(): void

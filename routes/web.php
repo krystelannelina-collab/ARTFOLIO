@@ -1,34 +1,34 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\ArtistController as AdminArtistController;
 use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
-use App\Models\Artwork;
-use App\Models\Category;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rule;
 
-Route::get('/', function () {
-    return view('client-login');
-})->name('welcome');
+Route::get('/', [AuthController::class, 'showLogin'])->name('welcome');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/client-login', [AuthController::class, 'showLogin']);
+Route::get('/client-signup', [AuthController::class, 'showRegister'])->name('register.show');
 
-Route::get('/login', function () {
-    return view('client-login');
-})->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/home', function () {
-    return view('welcome');
-})->middleware('auth')->name('home');
+Route::get('/home', HomeController::class)
+    ->middleware('auth')
+    ->name('home');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
@@ -40,180 +40,32 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/categories/{category}/visibility', [AdminCategoryController::class, 'toggleVisibility'])->name('categories.visibility');
     Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::resource('artworks', AdminArtworkController::class)->except('show');
 });
 
-Route::get('/artworks', function () {
-    $hiddenCategories = Category::query()->where('is_visible', false)->pluck('name');
-    $catalogArtworks = Artwork::query()
-        ->where('status', 'published')
-        ->whereNotIn('category', $hiddenCategories)
-        ->orderBy('title')
-        ->get();
-    $visibleCategories = Category::query()
-        ->where('is_visible', true)
-        ->orderBy('sort_order')
-        ->orderBy('name')
-        ->pluck('name');
-    $catalogCategories = $catalogArtworks->pluck('category')
-        ->merge($visibleCategories)
-        ->unique()
-        ->values();
-
-    return view('artworks', [
-        'catalogArtworks' => $catalogArtworks,
-        'catalogCategories' => $catalogCategories,
-        'hiddenCategoryNames' => $hiddenCategories,
-    ]);
-})->middleware('auth')->name('artworks');
-
-Route::get('/artworks/{slug}', function (string $slug) {
-    $artworks = [
-        'fluid-geometric' => [
-            'title' => 'Fluid Geometric',
-            'author' => 'Cristine Joy Montes',
-            'category' => 'Abstract',
-            'price' => 28.56,
-            'image' => asset('images/artwork-fluid-geometric.png'),
-            'description' => 'A study in movement and color, Fluid Geometric brings flowing shapes together in a bold, contemporary composition.',
-        ],
-        'stranger-things-poster' => [
-            'title' => 'Stranger Things Poster',
-            'author' => 'Gian Gomez',
-            'category' => 'Poster',
-            'price' => 35.76,
-            'image' => asset('images/artwork-stranger-things.png'),
-            'description' => 'An atmospheric poster pairing a bold red palette with a cinematic composition and dramatic lighting.',
-        ],
-        'minimalist-organic' => [
-            'title' => 'Minimalist Organic',
-            'author' => 'Gian Gomez',
-            'category' => 'Abstract',
-            'price' => 15.67,
-            'image' => asset('images/artwork-minimalist-organic.png'),
-            'description' => 'Soft, organic shapes and a restrained palette create a calm, modern addition to any collection.',
-        ],
-        'geometric-contrast' => [
-            'title' => 'Geometric Contrast',
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Abstract',
-            'price' => 20.43,
-            'image' => asset('images/artwork-geometric-contrast.png'),
-            'description' => 'Crisp geometric forms meet expressive color in a composition built around contrast and balance.',
-        ],
-        'colorful-abstract' => [
-            'title' => 'Colorful Abstract',
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Abstract',
-            'price' => 24.50,
-            'image' => asset('images/artwork-colorful-abstract.png'),
-            'description' => 'A vibrant abstract composition that brings expressive color and movement into focus.',
-        ],
-        'the-one-poster' => [
-            'title' => 'The One Poster',
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Poster',
-            'price' => 25.86,
-            'image' => asset('images/artwork-the-one-poster.png'),
-            'description' => 'A striking poster design with a memorable focal point and a clean, graphic sensibility.',
-        ],
-        'geometric-abstract' => [
-            'title' => 'Geometric Abstract',
-            'author' => 'Krystel Anne Lina',
-            'category' => 'Abstract',
-            'price' => 21.43,
-            'image' => asset('images/artwork-geometric-abstract.png'),
-            'description' => 'Layered geometric forms create depth and rhythm in this imaginative abstract artwork.',
-        ],
-        'goldmidnight-pixel-art' => [
-            'title' => 'GoldMidnight Pixel Art',
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Pixel',
-            'price' => 18.50,
-            'image' => asset('images/artwork-geometric-contrast.png'),
-            'description' => 'A pixel-inspired composition that brings a graphic, digital edge to a warm and moody palette.',
-        ],
-        'golden-mood-typography' => [
-            'title' => 'Golden Mood Typography',
-            'author' => 'Gian Gomez',
-            'category' => 'Typography',
-            'price' => 24.50,
-            'image' => asset('images/artwork-stranger-things.png'),
-            'description' => 'Expressive type and cinematic color make this artwork a bold statement for your space.',
-        ],
-        'modern-muse-digital' => [
-            'title' => 'Modern Muse Digital',
-            'author' => 'Cristine Joy Montes',
-            'category' => 'Digital',
-            'price' => 27.00,
-            'image' => asset('images/artwork-fluid-geometric.png'),
-            'description' => 'A contemporary digital artwork shaped by fluid forms, color, and a playful sense of movement.',
-        ],
-    ];
-
-    $catalogArtwork = Artwork::query()->where('slug', $slug)->first();
-    if ($catalogArtwork !== null) {
-        abort_unless($catalogArtwork->status === 'published' || Auth::user()?->role === 'admin', 404);
-        $artworks[$slug] = [
-            'title' => $catalogArtwork->title,
-            'author' => $catalogArtwork->artist_name,
-            'category' => $catalogArtwork->category,
-            'price' => (float) $catalogArtwork->price,
-            'image' => asset($catalogArtwork->image_path),
-            'description' => $catalogArtwork->description,
-        ];
-    } else {
-        abort_unless(isset($artworks[$slug]), 404);
-    }
-
-    $hiddenCategoryNames = Category::query()
-        ->where('is_visible', false)
-        ->pluck('name')
-        ->map(fn (string $category): string => mb_strtolower($category));
-    $hiddenCategoryExists = Category::query()
-        ->where('name', $artworks[$slug]['category'])
-        ->where('is_visible', false)
-        ->exists();
-    abort_unless(! $hiddenCategoryExists || Auth::user()?->role === 'admin', 404);
-
-    $artwork = ['slug' => $slug, 'rating' => '5.0', ...$artworks[$slug]];
-    $relatedArtworks = collect($artworks)
-        ->reject(fn (array $relatedArtwork): bool => $hiddenCategoryNames->contains(mb_strtolower($relatedArtwork['category']))
-            && Auth::user()?->role !== 'admin')
-        ->except($slug)
-        ->take(3)
-        ->map(fn (array $relatedArtwork, string $relatedSlug): array => [
-            'slug' => $relatedSlug,
-            ...$relatedArtwork,
-        ])
-        ->all();
-
-    return view('artwork-details', compact('artwork', 'relatedArtworks'));
-})->middleware('auth')->name('artworks.show');
-
-Route::get('/artists', function () {
-    return view('artists');
-})->middleware('auth')->name('artists');
-
-Route::get('/about', function () {
-    return view('about');
-})->middleware('auth')->name('about');
-
-Route::get('/favorites', function () {
-    return view('favorites');
-})->middleware('auth')->name('favorites');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks');
+    Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+    Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
+    Route::get('/about', AboutController::class)->name('about');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favorites/{slug}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::delete('/favorites/{slug}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/{slug}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/checkout/{slug}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
     Route::delete('/cart/items/{artwork}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/items/{artwork}/save-for-later', [CartController::class, 'saveForLater'])->name('cart.save-for-later');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/order-success/{order}', [OrderController::class, 'show'])->name('order.success');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/items/{item}/download', [OrderController::class, 'downloadItem'])->name('orders.items.download');
+    Route::get('/orders/{order}/receipt', [OrderController::class, 'downloadReceipt'])->name('orders.receipt');
 });
 
 Route::get('/abstract', function () {
@@ -224,65 +76,3 @@ Route::get('/admin-signup', function () {
     return redirect()->route('login')
         ->with('status', 'Admin access must be granted by an existing system administrator.');
 });
-
-Route::get('/client-signup', function () {
-    return view('client-signup');
-});
-
-Route::get('/client-login', function () {
-    return view('client-login');
-});
-
-Route::post('/register', function (Request $request) {
-    $validated = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-        'password' => ['required', 'string', 'min:8'],
-    ]);
-
-    User::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
-        'role' => 'client',
-    ]);
-
-    return redirect()->route('login')->with('success', 'Account created successfully. Please log in.');
-})->name('register');
-
-Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required', 'string'],
-    ]);
-
-    $user = User::where('email', $credentials['email'])->first();
-
-    if (! $user) {
-        return back()->withErrors([
-            'email' => 'No account found. Please create an account first.',
-        ])->onlyInput('email');
-    }
-
-    if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-        return back()->withErrors([
-            'password' => 'Incorrect password. Please try again.',
-        ])->onlyInput('email');
-    }
-
-    $request->session()->regenerate();
-
-    if (Auth::user()?->role === 'admin') {
-        return redirect()->intended(route('admin.dashboard'));
-    }
-
-    return redirect()->intended(route('home'));
-})->name('login');
-
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login');
-})->name('logout');

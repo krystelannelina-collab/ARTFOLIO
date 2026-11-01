@@ -106,33 +106,17 @@
             </div>
 
             <div class="about-artwork-grid">
-                <a href="{{ route('artworks.show', ['slug' => 'fluid-geometric']) }}" class="about-artwork-card about-artwork-card-featured">
-                    <img src="{{ asset('images/artwork-fluid-geometric.png') }}" alt="Fluid Geometric, an abstract artwork by Cristine Joy Montes" loading="lazy">
-                    <span class="about-artwork-caption">
-                        <span class="about-artwork-category">ABSTRACT</span>
-                        <span class="about-artwork-title">Fluid Geometric</span>
-                        <span class="about-artwork-artist">Cristine Joy Montes</span>
-                    </span>
-                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
-                </a>
-                <a href="{{ route('artworks.show', ['slug' => 'stranger-things-poster']) }}" class="about-artwork-card">
-                    <img src="{{ asset('images/artwork-stranger-things.png') }}" alt="Stranger Things Poster by Gian Gomez" loading="lazy">
-                    <span class="about-artwork-caption">
-                        <span class="about-artwork-category">POSTER</span>
-                        <span class="about-artwork-title">Stranger Things Poster</span>
-                        <span class="about-artwork-artist">Gian Gomez</span>
-                    </span>
-                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
-                </a>
-                <a href="{{ route('artworks.show', ['slug' => 'minimalist-organic']) }}" class="about-artwork-card">
-                    <img src="{{ asset('images/artwork-minimalist-organic.png') }}" alt="Minimalist Organic, an abstract artwork by Gian Gomez" loading="lazy">
-                    <span class="about-artwork-caption">
-                        <span class="about-artwork-category">ABSTRACT</span>
-                        <span class="about-artwork-title">Minimalist Organic</span>
-                        <span class="about-artwork-artist">Gian Gomez</span>
-                    </span>
-                    <span class="about-artwork-arrow" aria-hidden="true">↗</span>
-                </a>
+                @foreach ($featuredArtworks ?? [] as $index => $artwork)
+                    <a href="{{ $artwork['url'] }}" class="about-artwork-card {{ $index === 0 ? 'about-artwork-card-featured' : '' }}">
+                        <img src="{{ $artwork['image'] }}" alt="{{ $artwork['title'] }} by {{ $artwork['author'] }}" loading="lazy">
+                        <span class="about-artwork-caption">
+                            <span class="about-artwork-category">{{ $artwork['category'] }}</span>
+                            <span class="about-artwork-title">{{ $artwork['title'] }}</span>
+                            <span class="about-artwork-artist">{{ $artwork['author'] }}</span>
+                        </span>
+                        <span class="about-artwork-arrow" aria-hidden="true">↗</span>
+                    </a>
+                @endforeach
             </div>
         </section>
 

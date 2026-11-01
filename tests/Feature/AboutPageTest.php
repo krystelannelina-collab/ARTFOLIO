@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\ArtworkSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,6 +13,8 @@ class AboutPageTest extends TestCase
 
     public function test_authenticated_client_can_view_about_page_and_navigate_to_artworks_and_artists(): void
     {
+        $this->seed(ArtworkSeeder::class);
+
         $response = $this->actingAs(User::factory()->create())->get('/about');
 
         $response->assertOk()

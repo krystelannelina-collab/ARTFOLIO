@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Order;
 use App\Models\User;
+use Database\Seeders\ArtworkSeeder;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,5 +47,33 @@ class CartLayoutTest extends TestCase
         $response->assertOk();
         $response->assertSee('class="artworks-submenu is-open"', false);
         $response->assertSee('aria-expanded="true"', false);
+    }
+
+    public function test_cart_checkout_and_orders_pages_have_consistent_top_bar_search_form(): void
+    {
+        $this->seed(ArtworkSeeder::class);
+
+        $user = User::factory()->create(['name' => 'Cristine Joy']);
+        $this->actingAs($user)->post(route('cart.add', ['slug' => 'fluid-geometric']));
+
+        $order = Order::query()->create([
+            'order_number' => 'ART-000101',
+            'user_id' => $user->id,
+            'customer_name' => $user->name,
+            'customer_email' => $user->email,
+            'total' => 28.56,
+            'status' => 'pending',
+            'payment_method' => 'not_configured',
+        ]);
+
+        foreach (['/cart', '/checkout', route('order.success', $order), '/orders'] as $pageUrl) {
+            $response = $this->actingAs($user)->get($pageUrl);
+
+            $response->assertOk()
+                ->assertSee('<header class="top-bar">', false)
+                ->assertSee('action="'.url('/artworks').'"', false)
+                ->assertSee('name="search"', false)
+                ->assertSee('CJ');
+        }
     }
 }

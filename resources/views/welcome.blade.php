@@ -21,40 +21,7 @@
 <body>
 
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
-    $featuredArtworks = [
-        [
-            'title' => 'Fluid Geometric',
-            'author' => 'Cristine Joy Montes',
-            'category' => 'ABSTRACT',
-            'rating' => '5.0',
-            'image' => asset('images/artwork-fluid-geometric.png'),
-            'url' => route('artworks.show', ['slug' => 'fluid-geometric']),
-        ],
-        [
-            'title' => 'Stranger Things Poster',
-            'author' => 'Gian Gomez',
-            'category' => 'POSTER',
-            'rating' => '5.0',
-            'image' => asset('images/artwork-stranger-things.png'),
-            'url' => route('artworks.show', ['slug' => 'stranger-things-poster']),
-        ],
-        [
-            'title' => 'Minimalist Organic',
-            'author' => 'Gian Gomez',
-            'category' => 'ABSTRACT',
-            'rating' => '5.0',
-            'image' => asset('images/artwork-minimalist-organic.png'),
-            'url' => route('artworks.show', ['slug' => 'minimalist-organic']),
-        ],
-    ];
+    $featuredArtworks = $featuredArtworks ?? [];
 
     $userInitials = 'CJ';
     if (Auth::check() && !empty(Auth::user()->name)) {
@@ -113,10 +80,9 @@
         <section class="hero-banner">
             <!-- Painter studio image background -->
             <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/66782d815052068e1b1dfe82e874ea27b8e9eb69?width=2382"
+                src="{{ asset('images/hero-banner.png') }}"
                 alt=""
                 class="hero-banner-img"
-                onerror="this.src='{{ asset('images/hero-banner.png') }}';"
             >
             <div class="hero-banner-overlay"></div>
 

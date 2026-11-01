@@ -168,19 +168,94 @@ a {
     font-size: 12px;
 }
 
-.admin-logout {
-    width: 100%;
+.admin-account-menu {
+    position: relative;
+    margin-top: 8px;
 }
 
 .admin-sidebar-account {
     display: flex;
+    width: 100%;
     min-width: 0;
     align-items: center;
     gap: 8px;
-    margin-top: 8px;
     padding: 7px;
     border: 1px solid #d8d7ce;
     background: #fcfbf7;
+    cursor: pointer;
+    list-style: none;
+    text-align: left;
+}
+
+.admin-sidebar-account::-webkit-details-marker {
+    display: none;
+}
+
+.admin-sidebar-account:hover,
+.admin-account-menu[open] .admin-sidebar-account {
+    border-color: #aebfac;
+    background: #f2f5ef;
+}
+
+.admin-sidebar-account:focus-visible {
+    outline: 2px solid #d09b64;
+    outline-offset: 2px;
+}
+
+.admin-account-menu-panel {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    bottom: calc(100% + 8px);
+    left: 0;
+    display: grid;
+    gap: 3px;
+    min-width: 150px;
+    padding: 5px;
+    border: 1px solid #d8d7ce;
+    background: #fcfbf7;
+    box-shadow: 0 5px 16px rgba(38, 48, 39, 0.14);
+}
+
+.admin-account-menu-panel form {
+    margin: 0;
+}
+
+.admin-account-menu-item {
+    display: flex;
+    width: 100%;
+    min-height: 34px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: #687168;
+    font: inherit;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.admin-account-menu-item:not(:disabled):hover {
+    background: #f0f0e9;
+    color: #315b45;
+}
+
+.admin-account-menu-item:disabled {
+    color: #9a9c94;
+    cursor: not-allowed;
+}
+
+.admin-account-menu-item svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
 }
 
 .admin-account-avatar,
@@ -225,6 +300,11 @@ a {
 .admin-account-caret {
     color: #80877e;
     font-size: 11px;
+    transition: transform 140ms ease;
+}
+
+.admin-account-menu[open] .admin-account-caret {
+    transform: rotate(180deg);
 }
 
 .admin-main {
@@ -864,9 +944,20 @@ button:focus-visible {
 
     .admin-brand-caption,
     .admin-nav-label,
-    .admin-sidebar-bottom,
-    .admin-sidebar-account {
+    .admin-sidebar-bottom {
         display: none;
+    }
+
+    .admin-account-menu {
+        margin-top: 8px;
+    }
+
+    .admin-account-menu-panel {
+        top: calc(100% + 6px);
+        right: 0;
+        bottom: auto;
+        left: auto;
+        width: min(220px, 100%);
     }
 
     .admin-nav {

@@ -13,7 +13,7 @@ class OrdersTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_client_can_add_artwork_and_place_a_pending_order(): void
+    public function test_client_can_add_artwork_and_place_a_paid_order_with_card_or_gcash(): void
     {
         $artwork = $this->createArtwork(['price' => 28.56]);
         $user = User::factory()->create();
@@ -23,24 +23,41 @@ class OrdersTest extends TestCase
             ->assertRedirect(route('cart'))
             ->assertSessionHas('cart', [$artwork->id => 1]);
 
-        $this->post(route('checkout.store'), ['contact_email' => 'receipt@example.com'])
-            ->assertSessionMissing('cart');
+        $this->post(route('checkout.store'), [
+            'contact_email' => 'receipt@example.com',
+            'payment_method' => 'gcash',
+            'gcash_name' => 'Test Collector',
+            'gcash_number' => '09171234567',
+        ])->assertSessionMissing('cart');
 
         $order = Order::query()->with('items')->sole();
 
         $this->assertSame('ART-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT), $order->order_number);
-        $this->assertSame('pending', $order->status);
-        $this->assertSame('not_configured', $order->payment_method);
+        $this->assertSame('completed', $order->status);
+        $this->assertSame('GCash', $order->payment_method);
         $this->assertSame('receipt@example.com', $order->customer_email);
         $this->assertEquals(28.56, (float) $order->total);
         $this->assertSame('Original artwork', $order->items->sole()->title);
         $this->assertEquals(28.56, (float) $order->items->sole()->unit_price);
 
+        $item = $order->items->sole();
+
         $this->get(route('order.success', $order))
             ->assertOk()
-            ->assertSee('Your order is recorded.')
-            ->assertSee('No payment has been charged.')
-            ->assertSee('Downloads will become available only after payment is confirmed.');
+            ->assertSee('Your next masterpiece is yours.')
+            ->assertSee('Payment received. Your digital artwork is ready to download.')
+            ->assertSee('GCash')
+            ->assertSee(route('orders.items.download', [$order, $item]), false)
+            ->assertSee(route('orders.receipt', $order), false);
+
+        $this->get(route('orders.items.download', [$order, $item]))
+            ->assertOk()
+            ->assertDownload('original-artwork.png');
+
+        $receiptResponse = $this->get(route('orders.receipt', $order));
+        $receiptResponse->assertOk()
+            ->assertDownload('receipt-'.strtolower($order->order_number).'.txt');
+        $this->assertStringContainsString($order->order_number, $receiptResponse->streamedContent());
     }
 
     public function test_checkout_uses_artwork_price_from_database_instead_of_session_data(): void

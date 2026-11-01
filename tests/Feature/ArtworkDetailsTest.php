@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Artwork;
 use App\Models\User;
+use Database\Seeders\ArtworkSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,6 +14,8 @@ class ArtworkDetailsTest extends TestCase
 
     public function test_authenticated_client_can_view_an_artwork_and_related_artworks(): void
     {
+        $this->seed(ArtworkSeeder::class);
+
         $response = $this->actingAs(User::factory()->create())
             ->get('/artworks/stranger-things-poster');
 
@@ -118,6 +121,7 @@ class ArtworkDetailsTest extends TestCase
 
     public function test_all_catalog_artworks_have_a_detail_page(): void
     {
+        $this->seed(ArtworkSeeder::class);
         $user = User::factory()->create();
 
         foreach ([
@@ -140,6 +144,7 @@ class ArtworkDetailsTest extends TestCase
 
     public function test_artwork_cards_link_to_their_details_page(): void
     {
+        $this->seed(ArtworkSeeder::class);
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -158,5 +163,47 @@ class ArtworkDetailsTest extends TestCase
         $this->get('/favorites')
             ->assertOk()
             ->assertSee(route('artworks.show', ['slug' => 'colorful-abstract']), false);
+    }
+
+    public function test_storefront_pages_reflect_database_changes_and_favorites_persist(): void
+    {
+        $this->seed(ArtworkSeeder::class);
+        $user = User::factory()->create();
+
+        $artwork = Artwork::query()->where('slug', 'fluid-geometric')->firstOrFail();
+        $artwork->update([
+            'title' => 'Database Updated Geometric',
+            'price' => 44.00,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/home')
+            ->assertOk()
+            ->assertSee('Database Updated Geometric');
+
+        $this->get('/artworks')
+            ->assertOk()
+            ->assertSee('Database Updated Geometric')
+            ->assertSee('$44.00');
+
+        $this->get('/favorites')
+            ->assertOk()
+            ->assertSee('Database Updated Geometric');
+
+        $this->deleteJson(route('favorites.destroy', ['slug' => 'fluid-geometric']))
+            ->assertOk()
+            ->assertJson(['removed' => true, 'count' => 5]);
+
+        $this->get('/favorites')
+            ->assertOk()
+            ->assertDontSee('Database Updated Geometric');
+
+        $this->postJson(route('favorites.toggle', ['slug' => 'the-one-poster']))
+            ->assertOk()
+            ->assertJson(['saved' => true, 'count' => 6]);
+
+        $this->get('/favorites')
+            ->assertOk()
+            ->assertSee('The One Poster');
     }
 }

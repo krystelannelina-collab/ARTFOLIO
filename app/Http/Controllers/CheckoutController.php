@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CheckoutController extends Controller
 {
@@ -40,6 +41,13 @@ class CheckoutController extends Controller
     {
         $data = $request->validate([
             'contact_email' => ['required', 'email', 'max:255'],
+            'payment_method' => ['nullable', 'string', Rule::in(['card', 'gcash', 'Card', 'GCash'])],
+            'cardholder_name' => ['nullable', 'string', 'max:255'],
+            'card_number' => ['nullable', 'string', 'max:32'],
+            'card_expiry' => ['nullable', 'string', 'max:16'],
+            'card_cvc' => ['nullable', 'string', 'max:8'],
+            'gcash_name' => ['nullable', 'string', 'max:255'],
+            'gcash_number' => ['nullable', 'string', 'max:32'],
         ]);
         $orderItems = $cartController->items($request);
 
@@ -48,7 +56,10 @@ class CheckoutController extends Controller
                 ->with('status', 'Your cart is empty or no longer contains available artworks.');
         }
 
-        $order = DB::transaction(function () use ($request, $data, $orderItems): Order {
+        $rawMethod = mb_strtolower(trim((string) ($data['payment_method'] ?? 'card')));
+        $paymentMethod = $rawMethod === 'gcash' ? 'GCash' : 'Card';
+
+        $order = DB::transaction(function () use ($request, $data, $orderItems, $paymentMethod): Order {
             $total = array_sum(array_map(
                 fn (array $item): float => $item['price'] * $item['quantity'],
                 $orderItems,
@@ -60,8 +71,8 @@ class CheckoutController extends Controller
                 'customer_name' => $request->user()->name,
                 'customer_email' => $data['contact_email'],
                 'total' => $total,
-                'status' => 'pending',
-                'payment_method' => 'not_configured',
+                'status' => 'completed',
+                'payment_method' => $paymentMethod,
             ]);
             $order->update(['order_number' => 'ART-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT)]);
 

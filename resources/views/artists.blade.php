@@ -21,48 +21,8 @@
 <body>
 
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
-    $artists = [
-        [
-            'id' => 1,
-            'name' => 'Cristine Joy Montes',
-            'category_label' => 'Abstract',
-            'categories' => ['Abstract'],
-            'bio' => 'Flowing shapes, bold forms, and a fresh perspective.',
-            'image' => asset('images/artist-cristine-joy-montes.png'),
-        ],
-        [
-            'id' => 2,
-            'name' => 'Gian Gomez',
-            'category_label' => 'Poster · Abstract',
-            'categories' => ['Poster', 'Abstract'],
-            'bio' => 'From cinematic posters to expressive abstract pieces.',
-            'image' => asset('images/artist-gian-gomez.png'),
-        ],
-        [
-            'id' => 3,
-            'name' => 'Kalvin Dave Ramos',
-            'category_label' => 'Abstract',
-            'categories' => ['Abstract'],
-            'bio' => 'Explore color, contrast, and expressive compositions.',
-            'image' => asset('images/artist-kalvin-dave-ramos.png'),
-        ],
-        [
-            'id' => 4,
-            'name' => 'Krystel Anne Lina',
-            'category_label' => 'Abstract',
-            'categories' => ['Abstract'],
-            'bio' => 'Discover layered forms and imaginative geometry.',
-            'image' => asset('images/artist-krystel-anne-lina.png'),
-        ],
-    ];
+    $artists = $artists ?? [];
+    $categories = $categories ?? [];
 
     $userInitials = 'CJ';
     if (Auth::check() && Auth::user()->name) {
@@ -127,11 +87,9 @@
         <div class="filter-sort-row">
             <div class="filter-pills-group" id="filter-pills-group">
                 <button type="button" class="category-filter-btn active" data-filter="all">All artists</button>
-                <button type="button" class="category-filter-btn" data-filter="Abstract">Abstract</button>
-                <button type="button" class="category-filter-btn" data-filter="Typography">Typography</button>
-                <button type="button" class="category-filter-btn" data-filter="Pixel">Pixel</button>
-                <button type="button" class="category-filter-btn" data-filter="Poster">Poster</button>
-                <button type="button" class="category-filter-btn" data-filter="Digital">Digital</button>
+                @foreach ($categories as $category)
+                    <button type="button" class="category-filter-btn" data-filter="{{ $category }}">{{ $category }}</button>
+                @endforeach
             </div>
 
             <div class="sort-dropdown-container">
@@ -195,7 +153,7 @@
 
         <!-- Footer -->
         <footer class="artists-footer">
-            <span id="artists-count-label">4 artists</span> · Sample portraits and profile descriptions for layout preview.
+            <span id="artists-count-label">{{ count($artists) }} {{ \Illuminate\Support\Str::plural('artist', count($artists)) }}</span> · Sample portraits and profile descriptions for layout preview.
         </footer>
 
     </main>
