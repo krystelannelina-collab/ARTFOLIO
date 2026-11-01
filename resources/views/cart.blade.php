@@ -21,14 +21,6 @@
 <body>
 
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
     $userInitials = 'CJ';
     if (Auth::check() && Auth::user()->name) {
         $words = explode(' ', trim(Auth::user()->name));
@@ -52,20 +44,21 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <!-- Search Pill -->
-            <div class="search-pill-container">
+            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
                 <svg class="search-icon-left" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
                 <input
-                    type="text"
+                    type="search"
+                    name="search"
                     id="cart-search-input"
                     class="search-input"
                     placeholder="Search artworks, artists, and inspiration"
                     aria-label="Search artworks, artists, and inspiration"
-                    value=""
+                    value="{{ request('search') }}"
                 >
-            </div>
+            </form>
 
             <!-- Top Actions -->
             <div class="top-bar-actions">
@@ -128,12 +121,15 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn-cart-remove">Remove</button>
                                 </form>
-                                <button type="button" class="btn-cart-save" data-id="{{ $item['id'] }}">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                    <span>Save for later</span>
-                                </button>
+                                <form method="POST" action="{{ route('cart.save-for-later', $item['id']) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-cart-save" data-id="{{ $item['id'] }}">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                        <span>Save for later</span>
+                                    </button>
+                                </form>
                             </div>
                         </article>
                     @endforeach
@@ -238,51 +234,25 @@
             if (summaryTotal) summaryTotal.textContent = formattedTotal;
 
             if (count === 0) {
-                if (emptyState) emptyState.style.display = 'block';
+                if (emptyState) {
+                    emptyState.hidden = false;
+                    emptyState.style.display = 'block';
+                }
                 if (checkoutBtn) {
-                    checkoutBtn.disabled = true;
+                    checkoutBtn.classList.add('disabled');
+                    checkoutBtn.setAttribute('aria-disabled', 'true');
                 }
             } else {
-                if (emptyState) emptyState.style.display = 'none';
+                if (emptyState) {
+                    emptyState.hidden = true;
+                    emptyState.style.display = 'none';
+                }
                 if (checkoutBtn) {
-                    checkoutBtn.disabled = false;
+                    checkoutBtn.classList.remove('disabled');
+                    checkoutBtn.removeAttribute('aria-disabled');
                 }
             }
         }
-
-        // Remove item buttons
-        document.querySelectorAll('.btn-cart-remove').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const item = this.closest('.cart-item');
-                if (!item) return;
-
-                item.classList.add('is-removing');
-                setTimeout(() => {
-                    item.remove();
-                    recalculateCart();
-                }, 200);
-            });
-        });
-
-        // Save for later buttons
-        document.querySelectorAll('.btn-cart-save').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const item = this.closest('.cart-item');
-                if (!item) return;
-
-                this.textContent = 'Saved to favorites!';
-                this.style.color = '#1F513F';
-                this.style.fontWeight = '700';
-
-                setTimeout(() => {
-                    item.classList.add('is-removing');
-                    setTimeout(() => {
-                        item.remove();
-                        recalculateCart();
-                    }, 200);
-                }, 400);
-            });
-        });
 
         // Checkout Button state
         if (checkoutBtn) {

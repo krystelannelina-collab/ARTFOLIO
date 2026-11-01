@@ -337,6 +337,16 @@
     background: #F4F4F5;
 }
 
+.btn-icon-square.is-favorited,
+.btn-icon-action.is-favorited {
+    color: #1F513F;
+}
+
+.btn-icon-square.is-copied {
+    color: #1F513F;
+    background: #E6F0EC;
+}
+
 /* Empty State */
 .no-results-msg,
 .empty-artworks-state {

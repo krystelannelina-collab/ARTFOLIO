@@ -25,6 +25,10 @@
             <a href="{{ route('admin.orders.index') }}" class="orders-filter-reset">Back to orders</a>
         </header>
 
+        @if (session('status'))
+            <div class="orders-status-flash" role="status">{{ session('status') }}</div>
+        @endif
+
         <div class="orders-payment-notice" role="note">
             @if ($order->status === 'pending')
                 This order is pending. No payment has been processed and downloads are not available.
@@ -69,8 +73,22 @@
                     <div><dt>Name</dt><dd>{{ $order->customer_name }}</dd></div>
                     <div><dt>Email</dt><dd>{{ $order->customer_email }}</dd></div>
                     <div><dt>Payment status</dt><dd>{{ ucfirst($order->status) }}</dd></div>
-                    <div><dt>Payment method</dt><dd>Not configured</dd></div>
+                    <div><dt>Payment method</dt><dd>{{ $order->payment_method === 'not_configured' ? 'Not configured' : $order->payment_method }}</dd></div>
                 </dl>
+
+                <form method="POST" action="{{ route('admin.orders.status', $order) }}" class="order-status-form">
+                    @csrf
+                    @method('PATCH')
+                    <label for="order-status-select" class="order-status-label">Update order status</label>
+                    <div class="order-status-controls">
+                        <select id="order-status-select" name="status" class="order-status-select">
+                            @foreach (['pending' => 'Pending payment', 'completed' => 'Completed', 'refunded' => 'Refunded', 'failed' => 'Failed'] as $statusValue => $statusLabel)
+                                <option value="{{ $statusValue }}" @selected($order->status === $statusValue)>{{ $statusLabel }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="orders-filter-submit">Update</button>
+                    </div>
+                </form>
             </aside>
         </div>
     </main>

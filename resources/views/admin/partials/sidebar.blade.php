@@ -65,24 +65,31 @@
             <span aria-hidden="true">↗</span>
             View client site
         </a>
-        <form method="POST" action="{{ url('/logout') }}">
-            @csrf
-            <button type="submit" class="admin-logout">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M10 17l5-5-5-5M15 12H3"></path>
-                    <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"></path>
-                </svg>
-                Log out
-            </button>
-        </form>
     </div>
 
-    <div class="admin-sidebar-account">
-        <span class="admin-account-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-        <span class="admin-account-copy">
-            <strong>{{ auth()->user()->name }}</strong>
-            <small>Administrator</small>
-        </span>
-        <span class="admin-account-caret" aria-hidden="true">⌃</span>
-    </div>
+    <details class="admin-account-menu">
+        <summary class="admin-sidebar-account" aria-label="Account menu for {{ auth()->user()->name }}">
+            <span class="admin-account-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+            <span class="admin-account-copy">
+                <strong>{{ auth()->user()->name }}</strong>
+                <small>Administrator</small>
+            </span>
+            <span class="admin-account-caret" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="admin-account-menu-panel" aria-label="Account options">
+            <button type="button" class="admin-account-menu-item" disabled title="Settings are coming soon.">
+                Settings
+            </button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="admin-account-menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M10 17l5-5-5-5M15 12H3"></path>
+                        <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"></path>
+                    </svg>
+                    Log out
+                </button>
+            </form>
+        </div>
+    </details>
 </aside>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -33,6 +34,18 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order->load('items'),
         ]);
+    }
+
+    public function updateStatus(Request $request, Order $order): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(['pending', 'completed', 'refunded', 'failed'])],
+        ]);
+
+        $order->update(['status' => $validated['status']]);
+
+        return redirect()->route('admin.orders.show', $order)
+            ->with('status', "Order #{$order->order_number} status updated to ".ucfirst($validated['status']).'.');
     }
 
     public function export(Request $request): StreamedResponse

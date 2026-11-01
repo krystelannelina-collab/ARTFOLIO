@@ -20,17 +20,6 @@
 </head>
 <body>
 
-@php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
-@endphp
-
 @include('partials.mobile-header')
 
 <div class="app-layout">
@@ -43,20 +32,21 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <!-- Search Pill -->
-            <div class="search-pill-container">
+            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
                 <svg class="search-icon-left" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
                 <input
-                    type="text"
+                    type="search"
+                    name="search"
                     id="checkout-search-input"
                     class="search-input"
                     placeholder="Search artworks, artists, and inspiration"
                     aria-label="Search artworks, artists, and inspiration"
-                    value=""
+                    value="{{ request('search') }}"
                 >
-            </div>
+            </form>
 
             <!-- Top Actions -->
             <div class="top-bar-actions">
@@ -108,19 +98,128 @@
 
                 <!-- Notice Banner: Digital art. Ready when you are. -->
                 <div class="digital-notice-banner">
-                    <h3 class="notice-title">Payment setup is still in progress.</h3>
+                    <h3 class="notice-title">Digital art. Ready when you are.</h3>
                     <p class="notice-text">
-                        Your order will be recorded as pending. No payment will be charged and downloads will remain locked until a payment provider is connected.
+                        Your files will be available in My Orders after payment.<br>
+                        An order confirmation and receipt will be sent to your email.
                     </p>
                 </div>
 
                 <!-- 2. Payment Method Card -->
+                @php
+                    $selectedMethod = strtolower((string) old('payment_method', 'card')) === 'gcash' ? 'gcash' : 'card';
+                @endphp
                 <section class="checkout-step-card">
                     <h2 class="step-title">2. Payment method</h2>
 
-                    <div class="payment-pending-note" role="note">
-                        <strong>No payment method is connected yet.</strong>
-                        <span>Placing this order saves it for tracking, but does not process a charge.</span>
+                    <input type="hidden" name="payment_method" id="payment-method-input" value="{{ $selectedMethod }}">
+
+                    <div class="payment-tabs-group" role="tablist" aria-label="Choose payment method">
+                        <button
+                            type="button"
+                            class="payment-tab-btn {{ $selectedMethod === 'card' ? 'active' : '' }}"
+                            data-payment-tab="card"
+                            role="tab"
+                            aria-selected="{{ $selectedMethod === 'card' ? 'true' : 'false' }}"
+                        >
+                            <span class="tab-dot" aria-hidden="true"></span>
+                            <span>Credit / debit card</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="payment-tab-btn {{ $selectedMethod === 'gcash' ? 'active' : '' }}"
+                            data-payment-tab="gcash"
+                            role="tab"
+                            aria-selected="{{ $selectedMethod === 'gcash' ? 'true' : 'false' }}"
+                        >
+                            <span class="tab-dot" aria-hidden="true"></span>
+                            <span>GCash</span>
+                        </button>
+                    </div>
+
+                    <!-- Credit / Debit Card Panel -->
+                    <div id="payment-panel-card" class="payment-method-panel {{ $selectedMethod !== 'card' ? 'is-hidden' : '' }}">
+                        <div class="form-group">
+                            <label for="cardholder-name" class="form-label">Cardholder name</label>
+                            <input
+                                type="text"
+                                id="cardholder-name"
+                                name="cardholder_name"
+                                class="form-control-custom"
+                                placeholder="Name as shown on card"
+                                value="{{ old('cardholder_name', Auth::user()->name ?? '') }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="card-number" class="form-label">Card number</label>
+                            <input
+                                type="text"
+                                id="card-number"
+                                name="card_number"
+                                class="form-control-custom"
+                                placeholder="0000 0000 0000 0000"
+                                inputmode="numeric"
+                                autocomplete="cc-number"
+                                value="{{ old('card_number') }}"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-expiry" class="form-label">Expiry date</label>
+                                <input
+                                    type="text"
+                                    id="card-expiry"
+                                    name="card_expiry"
+                                    class="form-control-custom"
+                                    placeholder="MM / YY"
+                                    autocomplete="cc-exp"
+                                    value="{{ old('card_expiry') }}"
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvc" class="form-label">Security code</label>
+                                <input
+                                    type="text"
+                                    id="card-cvc"
+                                    name="card_cvc"
+                                    class="form-control-custom"
+                                    placeholder="CVC"
+                                    inputmode="numeric"
+                                    autocomplete="cc-csc"
+                                    value="{{ old('card_cvc') }}"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GCash Panel -->
+                    <div id="payment-panel-gcash" class="payment-method-panel {{ $selectedMethod !== 'gcash' ? 'is-hidden' : '' }}">
+                        <div class="form-group">
+                            <label for="gcash-name" class="form-label">GCash account name</label>
+                            <input
+                                type="text"
+                                id="gcash-name"
+                                name="gcash_name"
+                                class="form-control-custom"
+                                placeholder="Full name on GCash account"
+                                value="{{ old('gcash_name', Auth::user()->name ?? '') }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gcash-number" class="form-label">GCash mobile number</label>
+                            <input
+                                type="tel"
+                                id="gcash-number"
+                                name="gcash_number"
+                                class="form-control-custom"
+                                placeholder="09XX XXX XXXX"
+                                inputmode="tel"
+                                value="{{ old('gcash_number') }}"
+                            >
+                        </div>
                     </div>
                 </section>
 
@@ -176,7 +275,7 @@
                 </p>
 
                 <button type="submit" class="btn-place-order" id="btn-place-order">
-                    <span>Place pending order</span>
+                    <span>Place order</span>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -194,15 +293,47 @@
 </div>
 
 <script>
-    document.getElementById('checkout-form').addEventListener('submit', (event) => {
-        const button = document.getElementById('btn-place-order');
-        if (button.disabled) {
-            event.preventDefault();
-            return;
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        const methodInput = document.getElementById('payment-method-input');
+        const tabButtons = document.querySelectorAll('[data-payment-tab]');
+        const cardPanel = document.getElementById('payment-panel-card');
+        const gcashPanel = document.getElementById('payment-panel-gcash');
 
-        button.disabled = true;
-        button.querySelector('span').textContent = 'Saving order...';
+        tabButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const selected = btn.dataset.paymentTab;
+                if (methodInput) {
+                    methodInput.value = selected;
+                }
+
+                tabButtons.forEach((tab) => {
+                    const isActive = tab.dataset.paymentTab === selected;
+                    tab.classList.toggle('active', isActive);
+                    tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+
+                if (cardPanel) {
+                    cardPanel.classList.toggle('is-hidden', selected !== 'card');
+                }
+                if (gcashPanel) {
+                    gcashPanel.classList.toggle('is-hidden', selected !== 'gcash');
+                }
+            });
+        });
+
+        const checkoutForm = document.getElementById('checkout-form');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', (event) => {
+                const button = document.getElementById('btn-place-order');
+                if (button.disabled) {
+                    event.preventDefault();
+                    return;
+                }
+
+                button.disabled = true;
+                button.querySelector('span').textContent = 'Placing order...';
+            });
+        }
     });
 </script>
 

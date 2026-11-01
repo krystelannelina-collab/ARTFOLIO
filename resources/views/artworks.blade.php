@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARTFOLIO - Artworks from our Artists</title>
     <meta name="description" content="Explore original artworks created by talented artists">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,123 +22,9 @@
 <body>
 
 @php
-    $allArtworks = [
-        [
-            'id' => 1,
-            'slug' => 'fluid-geometric',
-            'title' => 'Fluid Geometric',
-            'price' => 28.56,
-            'author' => 'Cristine Joy Montes',
-            'category' => 'Abstract',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-fluid-geometric.png'),
-        ],
-        [
-            'id' => 2,
-            'slug' => 'stranger-things-poster',
-            'title' => 'Stranger Things Poster',
-            'price' => 35.76,
-            'author' => 'Gian Gomez',
-            'category' => 'Poster',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-stranger-things.png'),
-        ],
-        [
-            'id' => 3,
-            'slug' => 'minimalist-organic',
-            'title' => 'Minimalist Organic',
-            'price' => 15.67,
-            'author' => 'Gian Gomez',
-            'category' => 'Abstract',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-minimalist-organic.png'),
-        ],
-        [
-            'id' => 4,
-            'slug' => 'geometric-contrast',
-            'title' => 'Geometric Contrast',
-            'price' => 20.43,
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Abstract',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-geometric-contrast.png'),
-        ],
-        [
-            'id' => 5,
-            'slug' => 'the-one-poster',
-            'title' => 'The One Poster',
-            'price' => 25.86,
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Poster',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-the-one-poster.png'),
-        ],
-        [
-            'id' => 6,
-            'slug' => 'geometric-abstract',
-            'title' => 'Geometric Abstract',
-            'price' => 21.43,
-            'author' => 'Krystel Anne Lina',
-            'category' => 'Abstract',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-geometric-abstract.png'),
-        ],
-        [
-            'id' => 7,
-            'slug' => 'goldmidnight-pixel-art',
-            'title' => 'GoldMidnight Pixel Art',
-            'price' => 18.50,
-            'author' => 'Kalvin Dave Ramos',
-            'category' => 'Pixel',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-geometric-contrast.png'),
-        ],
-        [
-            'id' => 8,
-            'slug' => 'golden-mood-typography',
-            'title' => 'Golden Mood Typography',
-            'price' => 24.50,
-            'author' => 'Gian Gomez',
-            'category' => 'Typography',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-stranger-things.png'),
-        ],
-        [
-            'id' => 9,
-            'slug' => 'modern-muse-digital',
-            'title' => 'Modern Muse Digital',
-            'price' => 27.00,
-            'author' => 'Cristine Joy Montes',
-            'category' => 'Digital',
-            'rating' => '5.0 (1k reviews)',
-            'image' => asset('images/artwork-fluid-geometric.png'),
-        ],
-    ];
-
-    $artworksBySlug = collect($allArtworks)->keyBy('slug');
-    foreach ($catalogArtworks as $catalogArtwork) {
-        $existingArtwork = $artworksBySlug->get($catalogArtwork->slug, []);
-        $artworksBySlug->put($catalogArtwork->slug, [
-            'id' => $catalogArtwork->id,
-            'slug' => $catalogArtwork->slug,
-            'title' => $catalogArtwork->title,
-            'price' => (float) $catalogArtwork->price,
-            'author' => $catalogArtwork->artist_name,
-            'category' => $catalogArtwork->category,
-            'rating' => $existingArtwork['rating'] ?? null,
-            'image' => asset($catalogArtwork->image_path),
-        ]);
-    }
-    $allArtworks = $artworksBySlug->values()->all();
-    $hiddenCategoryNames = collect($hiddenCategoryNames ?? [])
-        ->map(fn (string $category): string => mb_strtolower($category))
-        ->all();
-    $allArtworks = collect($allArtworks)
-        ->reject(fn (array $artwork): bool => in_array(mb_strtolower($artwork['category']), $hiddenCategoryNames, true))
-        ->values()
-        ->all();
-
-    $selectedCategory = trim((string) request('category'));
+    $allArtworks = $artworks ?? [];
+    $catalogCategories = collect($catalogCategories ?? []);
+    $selectedCategory = trim((string) ($selectedCategory ?? request('category')));
 @endphp
 
 @include('partials.mobile-header')
@@ -208,15 +95,8 @@
                     <option value="price-low">Price: Low to High</option>
                     <option value="price-high">Price: High to Low</option>
                     <option value="name">Name (A-Z)</option>
-                    <option value="filter-Abstract" {{ strcasecmp($selectedCategory, 'Abstract') === 0 ? 'selected' : '' }}>Category: Abstract</option>
-                    <option value="filter-Poster" {{ strcasecmp($selectedCategory, 'Poster') === 0 ? 'selected' : '' }}>Category: Poster</option>
-                    <option value="filter-Pixel" {{ strcasecmp($selectedCategory, 'Pixel') === 0 ? 'selected' : '' }}>Category: Pixel Art</option>
-                    <option value="filter-Typography" {{ strcasecmp($selectedCategory, 'Typography') === 0 ? 'selected' : '' }}>Category: Typography</option>
-                    <option value="filter-Digital" {{ strcasecmp($selectedCategory, 'Digital') === 0 ? 'selected' : '' }}>Category: Digital Art</option>
                     @foreach ($catalogCategories as $catalogCategory)
-                        @if (! in_array(strtolower($catalogCategory), ['abstract', 'typography', 'pixel', 'poster', 'digital']))
-                            <option value="filter-{{ $catalogCategory }}" @selected(strcasecmp($selectedCategory, $catalogCategory) === 0)>Category: {{ $catalogCategory }}</option>
-                        @endif
+                        <option value="filter-{{ $catalogCategory }}" @selected(strcasecmp($selectedCategory, $catalogCategory) === 0)>Category: {{ $catalogCategory }}</option>
                     @endforeach
                 </select>
                 <svg class="sort-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none">
@@ -270,7 +150,12 @@
                             @csrf
                             <button type="submit" class="btn-buy-solid">Buy now</button>
                         </form>
-                        <button type="button" class="btn-icon-square ms-auto" aria-label="Share artwork">
+                        <button type="button"
+                                class="btn-icon-square ms-auto"
+                                aria-label="Share artwork"
+                                title="Share artwork"
+                                data-share-url="{{ route('artworks.show', ['slug' => $art['slug']]) }}"
+                                data-share-title="{{ $art['title'] }}">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="18" cy="5" r="3"></circle>
                                 <circle cx="6" cy="12" r="3"></circle>
@@ -279,11 +164,18 @@
                                 <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                             </svg>
                         </button>
-                        <button type="button" class="btn-icon-square" aria-label="Save to favorites">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </button>
+                        <form method="POST" action="{{ route('favorites.toggle', ['slug' => $art['slug']]) }}" class="artwork-cart-action-form" data-favorite-form>
+                            @csrf
+                            <button type="submit"
+                                    class="btn-icon-square {{ ! empty($art['is_favorited']) ? 'is-favorited' : '' }}"
+                                    aria-label="{{ ! empty($art['is_favorited']) ? 'Remove from favorites' : 'Save to favorites' }}"
+                                    aria-pressed="{{ ! empty($art['is_favorited']) ? 'true' : 'false' }}"
+                                    title="{{ ! empty($art['is_favorited']) ? 'Saved in favorites' : 'Save to favorites' }}">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="{{ ! empty($art['is_favorited']) ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </article>
             @endforeach
@@ -312,7 +204,7 @@
         const noResults = document.getElementById('no-results');
 
         let currentCategory = new URLSearchParams(window.location.search).get('category') || '';
-        let currentSearch = '';
+        let currentSearch = (searchInput ? searchInput.value : (new URLSearchParams(window.location.search).get('search') || '')).trim().toLowerCase();
 
         function applyFilterAndSort() {
             let visibleCount = 0;
@@ -449,6 +341,87 @@
                 applyFilterAndSort();
             });
         }
+
+        // Share artwork link handler
+        document.querySelectorAll('[data-share-url]').forEach(shareBtn => {
+            shareBtn.addEventListener('click', async function () {
+                const shareUrl = this.dataset.shareUrl;
+                const shareTitle = this.dataset.shareTitle || 'ARTFOLIO Artwork';
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share({ title: shareTitle, url: shareUrl });
+                        return;
+                    } catch (err) {
+                        if (err && err.name === 'AbortError') {
+                            return;
+                        }
+                    }
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(shareUrl);
+                        this.classList.add('is-copied');
+                        this.setAttribute('title', 'Link copied!');
+                        setTimeout(() => {
+                            this.classList.remove('is-copied');
+                            this.setAttribute('title', 'Share artwork');
+                        }, 1800);
+                    } catch (err) {
+                        window.prompt('Copy artwork link:', shareUrl);
+                    }
+                } else {
+                    window.prompt('Copy artwork link:', shareUrl);
+                }
+            });
+        });
+
+        // Seamless Favorite toggle handler
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        document.querySelectorAll('[data-favorite-form]').forEach(favForm => {
+            favForm.addEventListener('submit', async function (e) {
+                if (!window.fetch || !csrfToken) {
+                    return;
+                }
+                e.preventDefault();
+
+                const button = this.querySelector('button[type="submit"]');
+                const svg = button ? button.querySelector('svg') : null;
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+
+                    if (!response.ok) {
+                        this.submit();
+                        return;
+                    }
+
+                    const data = await response.json();
+                    const isFav = Boolean(data.favorited);
+
+                    if (button) {
+                        button.classList.toggle('is-favorited', isFav);
+                        button.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+                        button.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Save to favorites');
+                        button.setAttribute('title', isFav ? 'Saved in favorites' : 'Save to favorites');
+                    }
+
+                    if (svg) {
+                        svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
+                    }
+                } catch (err) {
+                    this.submit();
+                }
+            });
+        });
 
         // Initial setup
         applyFilterAndSort();

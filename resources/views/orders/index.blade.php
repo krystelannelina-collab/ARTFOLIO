@@ -8,18 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/orders.css') }}">
 </head>
 <body>
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
     $nameParts = preg_split('/\s+/', trim(auth()->user()->name));
     $userInitials = strtoupper(substr($nameParts[0] ?? 'U', 0, 1));
     if (count($nameParts) > 1) {
@@ -31,6 +25,34 @@
     @include('partials.sidebar', ['active' => 'orders'])
 
     <main class="main-content orders-content">
+        <header class="top-bar">
+            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
+                <svg class="search-icon-left" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                    type="search"
+                    name="search"
+                    class="search-input"
+                    placeholder="Search artworks, artists, and inspiration"
+                    aria-label="Search artworks, artists, and inspiration"
+                >
+            </form>
+
+            <div class="top-bar-actions">
+                <button type="button" class="topbar-btn" title="Notifications" aria-label="Notifications">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+                <div class="user-avatar-pill" title="{{ auth()->user()->name }}">
+                    {{ $userInitials }}
+                </div>
+            </div>
+        </header>
+
         <header class="orders-heading">
             <span class="orders-eyebrow">YOUR ACCOUNT</span>
             <h1>My orders.</h1>
@@ -50,15 +72,31 @@
                                 <span class="client-order-label">ORDER</span>
                                 <strong>#{{ $order->order_number }}</strong>
                             </div>
-                            <span class="client-order-status status-{{ $order->status }}">{{ $order->status === 'pending' ? 'Pending payment' : ucfirst($order->status) }}</span>
+                            <span class="client-order-status status-{{ $order->status }}">
+                                @if ($order->status === 'completed')
+                                    Paid
+                                @elseif ($order->status === 'pending')
+                                    Pending payment
+                                @else
+                                    {{ ucfirst($order->status) }}
+                                @endif
+                            </span>
                         </header>
                         <div class="client-order-summary">
                             <span>{{ $order->items->count() }} {{ \Illuminate\Support\Str::plural('artwork', $order->items->count()) }}</span>
                             <span>{{ $order->created_at->format('M j, Y') }}</span>
                             <strong>${{ number_format((float) $order->total, 2) }}</strong>
                         </div>
-                        <p>{{ $order->status === 'pending' ? 'Payment processing is not available yet. No charge has been made.' : 'Payment status: '.ucfirst($order->status).'.' }}</p>
-                        <a href="{{ route('orders.show', $order) }}" class="client-order-link">View order details <span aria-hidden="true">→</span></a>
+                        <p>
+                            @if ($order->status === 'completed')
+                                Paid via {{ $order->payment_method === 'not_configured' ? 'Card' : $order->payment_method }}. Digital downloads are ready.
+                            @elseif ($order->status === 'pending')
+                                Payment is pending. No charge has been made.
+                            @else
+                                Payment status: {{ ucfirst($order->status) }}.
+                            @endif
+                        </p>
+                        <a href="{{ route('orders.show', $order) }}" class="client-order-link">View order &amp; downloads <span aria-hidden="true">→</span></a>
                     </article>
                 @endforeach
             </section>

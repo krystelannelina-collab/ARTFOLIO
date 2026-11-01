@@ -58,6 +58,21 @@ class CartController extends Controller
             ->with('status', "{$artwork->title} removed from your cart.");
     }
 
+    public function saveForLater(Request $request, Artwork $artwork): RedirectResponse
+    {
+        FavoriteController::ensureUserFavoritesInitialized($request);
+        $request->session()->put('favorites_initialized', true);
+
+        $request->user()?->favoriteArtworks()->syncWithoutDetaching([$artwork->id]);
+
+        $cart = $request->session()->get('cart', []);
+        unset($cart[$artwork->id]);
+        $request->session()->put('cart', $cart);
+
+        return redirect()->route('cart')
+            ->with('status', "{$artwork->title} saved to your favorites.");
+    }
+
     /**
      * @return array<int, array{id: int, title: string, category: string, author: string, price: float, quantity: int, image: string, slug: string}>
      */

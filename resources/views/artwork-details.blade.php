@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $artwork['title'] }} | ARTFOLIO</title>
     <meta name="description" content="{{ $artwork['description'] }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,15 +92,26 @@
                 <div class="artwork-purchase-actions">
                     <form method="POST" action="{{ route('cart.add', ['slug' => $artwork['slug']]) }}">
                         @csrf
-                        <button type="submit" class="artwork-action artwork-action-primary">Add to cart</button>
+                        <button type="submit" class="artwork-action artwork-action-primary w-100">Add to cart</button>
                     </form>
                     <form method="POST" action="{{ route('checkout.buy-now', ['slug' => $artwork['slug']]) }}">
                         @csrf
-                        <button type="submit" class="artwork-action artwork-action-dark">
+                        <button type="submit" class="artwork-action artwork-action-dark w-100">
                             Buy now
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                                 <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('favorites.toggle', ['slug' => $artwork['slug']]) }}" class="artwork-favorite-form" data-favorite-form>
+                        @csrf
+                        <button type="submit"
+                                class="artwork-action artwork-action-outline w-100 {{ ! empty($artwork['is_favorited']) ? 'is-favorited' : '' }}"
+                                aria-pressed="{{ ! empty($artwork['is_favorited']) ? 'true' : 'false' }}">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="{{ ! empty($artwork['is_favorited']) ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span data-favorite-label>{{ ! empty($artwork['is_favorited']) ? 'Saved in favorites' : 'Save to favorites' }}</span>
                         </button>
                     </form>
                 </div>
@@ -141,6 +153,58 @@
         </section>
     </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        document.querySelectorAll('[data-favorite-form]').forEach(favForm => {
+            favForm.addEventListener('submit', async function (e) {
+                if (!window.fetch || !csrfToken) {
+                    return;
+                }
+                e.preventDefault();
+
+                const button = this.querySelector('button[type="submit"]');
+                const svg = button ? button.querySelector('svg') : null;
+                const label = button ? button.querySelector('[data-favorite-label]') : null;
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+
+                    if (!response.ok) {
+                        this.submit();
+                        return;
+                    }
+
+                    const data = await response.json();
+                    const isFav = Boolean(data.favorited);
+
+                    if (button) {
+                        button.classList.toggle('is-favorited', isFav);
+                        button.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+                    }
+
+                    if (svg) {
+                        svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
+                    }
+
+                    if (label) {
+                        label.textContent = isFav ? 'Saved in favorites' : 'Save to favorites';
+                    }
+                } catch (err) {
+                    this.submit();
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

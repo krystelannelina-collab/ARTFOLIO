@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artist;
 use App\Models\Artwork;
 use App\Models\Category;
 use Illuminate\Contracts\View\View;
@@ -87,7 +88,8 @@ class ArtworkController extends Controller
         $data['image_path'] = $this->storeImage($image);
         $data['slug'] = $this->uniqueSlug($data['title']);
 
-        Artwork::query()->create($data);
+        $artwork = Artwork::query()->create($data);
+        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
 
         return redirect()->route('admin.artworks.index')
             ->with('status', 'Artwork added to the catalog.');
@@ -114,6 +116,7 @@ class ArtworkController extends Controller
         }
 
         $artwork->update($data);
+        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
 
         if (isset($data['image_path'])) {
             $this->removeStoredImage($previousImagePath);
@@ -188,5 +191,30 @@ class ArtworkController extends Controller
         if ($disk->exists($storedPath) && ! $disk->delete($storedPath)) {
             throw new RuntimeException('The artwork was saved, but its previous uploaded image could not be removed.');
         }
+    }
+
+    private function ensureArtistProfileExists(string $artistName, string $category, string $imagePath): void
+    {
+        $trimmedName = trim($artistName);
+        if ($trimmedName === '' || Artist::query()->whereRaw('LOWER(name) = ?', [mb_strtolower($trimmedName)])->exists()) {
+            return;
+        }
+
+        $baseSlug = Str::slug($trimmedName) ?: 'artist';
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (Artist::query()->where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$suffix}";
+            $suffix++;
+        }
+
+        Artist::query()->create([
+            'name' => $trimmedName,
+            'slug' => $slug,
+            'bio' => 'Explore original '.strtolower($category).' works in the ARTFOLIO collection.',
+            'image_path' => $imagePath,
+            'sort_order' => ((int) Artist::query()->max('sort_order')) + 1,
+        ]);
     }
 }

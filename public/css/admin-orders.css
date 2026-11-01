@@ -437,6 +437,48 @@
     font-weight: 600;
 }
 
+.orders-status-flash {
+    margin: 18px 0 0;
+    padding: 12px 15px;
+    border: 1px solid #c9d9c8;
+    border-radius: 6px;
+    color: #264a37;
+    background: #eef5eb;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.order-status-form {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #e8e9e4;
+    display: grid;
+    gap: 8px;
+}
+
+.order-status-label {
+    color: #858980;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.order-status-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.order-status-select {
+    flex: 1;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #dfe1da;
+    border-radius: 6px;
+    color: #3a4039;
+    background: #fff;
+    font: inherit;
+    font-size: 12px;
+}
+
 .visually-hidden {
     position: absolute;
     width: 1px;

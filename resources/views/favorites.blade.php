@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>ARTFOLIO - Your Favorites</title>
     <meta name="description" content="Keep the art you love close. Save pieces as you explore and revisit them here.">
 
@@ -21,76 +22,8 @@
 <body>
 
 @php
-    $categories = [
-        ['label' => 'Abstract', 'url' => url('/artworks?category=Abstract'), 'type' => 'abstract'],
-        ['label' => 'Typography', 'url' => url('/artworks?category=Typography'), 'type' => 'typography'],
-        ['label' => 'Pixel', 'url' => url('/artworks?category=Pixel'), 'type' => 'pixel'],
-        ['label' => 'Poster', 'url' => url('/artworks?category=Poster'), 'type' => 'poster'],
-        ['label' => 'Digital', 'url' => url('/artworks?category=Digital'), 'type' => 'digital'],
-    ];
-
-    $favorites = [
-        [
-            'id' => 1,
-            'slug' => 'fluid-geometric',
-            'title' => 'Fluid Geometric',
-            'category' => 'Abstract',
-            'author' => 'Cristine Joy Montes',
-            'rating' => '5.0',
-            'price' => 28.56,
-            'image' => asset('images/artwork-fluid-geometric.png'),
-        ],
-        [
-            'id' => 2,
-            'slug' => 'stranger-things-poster',
-            'title' => 'Stranger Things Poster',
-            'category' => 'Poster',
-            'author' => 'Gian Gomez',
-            'rating' => '5.0',
-            'price' => 35.76,
-            'image' => asset('images/artwork-stranger-things.png'),
-        ],
-        [
-            'id' => 3,
-            'slug' => 'minimalist-organic',
-            'title' => 'Minimalist Organic',
-            'category' => 'Abstract',
-            'author' => 'Gian Gomez',
-            'rating' => '5.0',
-            'price' => 15.67,
-            'image' => asset('images/artwork-minimalist-organic.png'),
-        ],
-        [
-            'id' => 4,
-            'slug' => 'geometric-contrast',
-            'title' => 'Geometric Contrast',
-            'category' => 'Abstract',
-            'author' => 'Kalvin Dave Ramos',
-            'rating' => '5.0',
-            'price' => 20.43,
-            'image' => asset('images/artwork-geometric-contrast.png'),
-        ],
-        [
-            'id' => 5,
-            'slug' => 'colorful-abstract',
-            'title' => 'Colorful Abstract',
-            'category' => 'Abstract',
-            'author' => 'Kalvin Dave Ramos',
-            'rating' => '5.0',
-            'price' => 24.50,
-            'image' => asset('images/artwork-colorful-abstract.png'),
-        ],
-        [
-            'id' => 6,
-            'slug' => 'geometric-abstract',
-            'title' => 'Geometric Abstract',
-            'category' => 'Abstract',
-            'author' => 'Krystel Anne Lina',
-            'rating' => '5.0',
-            'price' => 21.43,
-            'image' => asset('images/artwork-geometric-abstract.png'),
-        ],
-    ];
+    $favorites = $favorites ?? [];
+    $favoriteCategories = $favoriteCategories ?? [];
 
     $userInitials = 'CJ';
     if (Auth::check() && Auth::user()->name) {
@@ -154,9 +87,10 @@
         <!-- Filter & Sort Bar -->
         <div class="favorites-filter-row">
             <div class="filter-pills-group" id="fav-filter-group">
-                <button type="button" class="fav-filter-btn active" data-filter="all">All artworks · <span id="pill-count">6</span></button>
-                <button type="button" class="fav-filter-btn" data-filter="Abstract">Abstract</button>
-                <button type="button" class="fav-filter-btn" data-filter="Poster">Poster</button>
+                <button type="button" class="fav-filter-btn active" data-filter="all">All artworks · <span id="pill-count">{{ count($favorites) }}</span></button>
+                @foreach ($favoriteCategories as $favCategory)
+                    <button type="button" class="fav-filter-btn" data-filter="{{ $favCategory }}">{{ $favCategory }}</button>
+                @endforeach
             </div>
 
             <div class="sort-dropdown-container">
@@ -177,7 +111,7 @@
 
         <!-- Subbar: Counter & Hint -->
         <div class="favorites-subbar">
-            <div class="saved-count-text" id="saved-count-text">6 saved artworks</div>
+            <div class="saved-count-text" id="saved-count-text">{{ count($favorites) }} saved {{ \Illuminate\Support\Str::plural('artwork', count($favorites)) }}</div>
             <div class="saved-hint-text">Click the heart to remove a favorite</div>
         </div>
 
@@ -198,6 +132,7 @@
                         <button type="button"
                                 class="btn-fav-heart"
                                 data-id="{{ $item['id'] }}"
+                                data-remove-url="{{ route('favorites.destroy', ['slug' => $item['slug']]) }}"
                                 title="Remove from favorites"
                                 aria-label="Remove {{ $item['title'] }} from favorites">
                             <svg class="heart-icon" viewBox="0 0 24 24">
@@ -326,12 +261,24 @@
         }
 
         // Heart removal click
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         const heartButtons = document.querySelectorAll('.btn-fav-heart');
         heartButtons.forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const card = this.closest('.favorite-card');
                 if (!card) return;
+
+                const removeUrl = this.getAttribute('data-remove-url');
+                if (removeUrl) {
+                    fetch(removeUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                        },
+                    }).catch(() => {});
+                }
 
                 card.classList.add('is-removed');
                 setTimeout(() => {
