@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/abstract', function () {
-    return view('abstract');
+    return redirect()->route('artworks', ['category' => 'Abstract']);
 })->middleware('auth')->name('abstract');
 
 Route::get('/admin-signup', function () {
