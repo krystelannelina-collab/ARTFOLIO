@@ -1,0 +1,418 @@
+body {
+    background: #f5f6f3;
+}
+
+.artwork-detail-content {
+    padding-top: 16px;
+}
+
+.artwork-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: -4px 0 18px;
+    color: #818981;
+    font-size: 11px;
+}
+
+.artwork-breadcrumbs a {
+    color: #28664c;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.artwork-breadcrumbs a:hover {
+    color: #174630;
+    text-decoration: underline;
+}
+
+.artwork-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(310px, 1fr);
+    gap: 18px;
+    align-items: stretch;
+}
+
+.artwork-preview-card,
+.artwork-purchase-card,
+.artwork-about-card {
+    margin: 0;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.artwork-preview-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px;
+}
+
+.artwork-preview-image-wrap {
+    display: grid;
+    min-height: 300px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f1f0eb;
+}
+
+.artwork-preview-image {
+    display: block;
+    width: 100%;
+    max-height: 510px;
+    object-fit: contain;
+}
+
+.artwork-preview-card figcaption {
+    padding: 10px 0 0;
+    color: #828982;
+    font-size: 9px;
+    letter-spacing: 0.65px;
+    text-align: center;
+}
+
+.artwork-purchase-card {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 3vw, 30px);
+}
+
+.artwork-category-label {
+    color: #246849;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.75px;
+}
+
+.artwork-purchase-card h1 {
+    margin: 9px 0 12px;
+    color: #1d2922;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+}
+
+.artwork-artist-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 9px;
+    color: #353d37;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.artwork-artist-link:hover {
+    color: #216b4f;
+}
+
+.artwork-artist-avatar {
+    display: grid;
+    width: 27px;
+    height: 27px;
+    place-items: center;
+    border-radius: 50%;
+    background: #e6f0e9;
+    color: #246849;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.artwork-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    color: #737d75;
+    font-size: 10px;
+}
+
+.artwork-rating-stars {
+    color: #a77737;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.artwork-detail-price {
+    margin: 8px 0 8px;
+    color: #1c2921;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.artwork-short-description {
+    margin: 0 0 16px;
+    color: #748078;
+    font-size: 11.5px;
+    line-height: 1.65;
+}
+
+.artwork-delivery-note {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+    padding: 12px;
+    border-radius: 9px;
+    background: #eaf3ed;
+    color: #286246;
+    font-size: 10px;
+}
+
+.artwork-delivery-note strong {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.artwork-delivery-note span {
+    color: #718078;
+    font-size: 9px;
+}
+
+.artwork-purchase-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 9px;
+}
+
+.artwork-action {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.artwork-action:hover {
+    transform: translateY(-1px);
+}
+
+.artwork-action-primary {
+    background: #216b4f;
+    color: #fff;
+}
+
+.artwork-action-primary:hover {
+    background: #18563e;
+    color: #fff;
+}
+
+.artwork-action-dark {
+    background: #183729;
+    color: #fff;
+}
+
+.artwork-action-dark:hover {
+    background: #10291e;
+    color: #fff;
+}
+
+.artwork-favorite-form {
+    grid-column: 1 / -1;
+}
+
+.artwork-action-outline {
+    border: 1px solid #d4dcd6;
+    background: #ffffff;
+    color: #1d2922;
+}
+
+.artwork-action-outline:hover {
+    background: #f3f6f4;
+    color: #183729;
+}
+
+.artwork-action-outline.is-favorited {
+    border-color: #216b4f;
+    background: #eaf3ed;
+    color: #18563e;
+}
+
+.artwork-about-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.46fr);
+    gap: 24px;
+    margin-top: 14px;
+    padding: 18px;
+}
+
+.artwork-about-card h2 {
+    margin: 0 0 7px;
+    color: #202b25;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.artwork-about-card p {
+    max-width: 660px;
+    margin: 0;
+    color: #748078;
+    font-size: 10.5px;
+    line-height: 1.65;
+}
+
+.artwork-metadata {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    margin: 0;
+}
+
+.artwork-metadata div {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 8px;
+    font-size: 9px;
+}
+
+.artwork-metadata dt {
+    color: #858d87;
+    font-weight: 500;
+}
+
+.artwork-metadata dd {
+    margin: 0;
+    color: #47534b;
+}
+
+.related-artworks-section {
+    margin-top: 20px;
+}
+
+.related-artworks-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.related-artworks-heading h2 {
+    margin: 4px 0 0;
+    color: #202b25;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.related-view-all {
+    color: #28664c;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.related-view-all:hover {
+    color: #174630;
+}
+
+.related-artworks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.related-artwork-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 12px;
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.related-artwork-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+}
+
+.related-artwork-image-wrap {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    background: #eeede8;
+}
+
+.related-artwork-image-wrap img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 250ms ease;
+}
+
+.related-artwork-card:hover .related-artwork-image-wrap img {
+    transform: scale(1.035);
+}
+
+.related-artwork-title {
+    overflow: hidden;
+    margin-top: 8px;
+    color: #202b25;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.related-artwork-artist {
+    margin-top: 3px;
+    color: #7b847d;
+    font-size: 9px;
+}
+
+@media (max-width: 760px) {
+    .artwork-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .artwork-preview-image-wrap {
+        min-height: 240px;
+    }
+
+    .artwork-preview-image {
+        max-height: 440px;
+    }
+}
+
+@media (max-width: 560px) {
+    .artwork-detail-content {
+        padding: 14px 14px 24px;
+    }
+
+    .artwork-about-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .related-artworks-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .artwork-action,
+    .related-artwork-card,
+    .related-artwork-image-wrap img {
+        transition: none;
+    }
+}

@@ -1,0 +1,138 @@
+.orders-content {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.orders-heading {
+    margin: 18px 0 22px;
+}
+
+.orders-eyebrow,
+.client-order-label {
+    color: #77786e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+
+.orders-heading h1 {
+    margin: 4px 0;
+    color: #30382f;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.orders-heading p,
+.client-order-card > p {
+    margin: 0;
+    color: #74766d;
+    font-size: 12px;
+}
+
+.orders-notice {
+    margin: 0 0 14px;
+    padding: 11px 14px;
+    border: 1px solid #cbd9ce;
+    background: #eff5ef;
+    color: #315b45;
+    font-size: 12px;
+}
+
+.client-orders-list {
+    display: grid;
+    gap: 12px;
+}
+
+.client-order-card,
+.client-orders-empty {
+    padding: 18px;
+    border: 1px solid #deded7;
+    background: #fff;
+}
+
+.client-order-card > header,
+.client-order-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.client-order-card > header > div {
+    display: grid;
+    gap: 3px;
+}
+
+.client-order-card > header strong,
+.client-order-summary strong {
+    color: #353c34;
+    font-size: 13px;
+}
+
+.client-order-status {
+    padding: 5px 8px;
+    border: 1px solid #d7c7a6;
+    background: #f7f0e1;
+    color: #806338;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.client-order-status.status-completed {
+    border-color: #cbd6c8;
+    background: #eef4ea;
+    color: #315b45;
+}
+
+.client-order-summary {
+    justify-content: flex-start;
+    margin: 14px 0 8px;
+    color: #696c62;
+    font-size: 11px;
+}
+
+.client-order-summary strong {
+    margin-left: auto;
+}
+
+.client-order-link,
+.client-orders-empty a {
+    display: inline-flex;
+    margin-top: 12px;
+    color: #315b45;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.client-orders-empty {
+    padding: 36px 20px;
+    text-align: center;
+}
+
+.client-orders-empty h2 {
+    margin: 0 0 6px;
+    color: #353c34;
+    font-size: 17px;
+}
+
+.client-orders-empty p {
+    margin: 0;
+    color: #74766d;
+    font-size: 12px;
+}
+
+@media (max-width: 580px) {
+    .orders-heading h1 {
+        font-size: 24px;
+    }
+
+    .client-order-card {
+        padding: 14px;
+    }
+
+    .client-order-summary {
+        gap: 8px;
+        font-size: 10px;
+    }
+}
