@@ -65,15 +65,7 @@
 
             <!-- Top Actions -->
             <div class="top-bar-actions">
-                <button type="button" class="topbar-btn" title="Notifications" aria-label="Notifications">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-                <div class="user-avatar-pill" title="{{ Auth::check() ? Auth::user()->name : 'User Profile' }}">
-                    {{ $userInitials }}
-                </div>
+                @include('partials.account-menu')
             </div>
         </header>
 
@@ -150,10 +142,7 @@
                         <p class="favorite-author">by {{ $item['author'] }}</p>
 
                         <div class="favorite-footer-row">
-                            <div class="favorite-rating">
-                                <span class="favorite-star">★</span>
-                                <span>{{ $item['rating'] }}</span>
-                            </div>
+                            <span class="edition-label">One of one</span>
                             <a href="{{ route('artworks.show', ['slug' => $item['slug']]) }}" class="btn-view-details">
                                 <span>View details</span>
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

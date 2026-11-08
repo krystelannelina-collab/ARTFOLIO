@@ -132,14 +132,7 @@
 
                     <p class="artwork-artist">by {{ $art['author'] }}</p>
 
-                    @if (! empty($art['rating']))
-                        <div class="artwork-rating-row">
-                            <svg class="artwork-star-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 1.5l3.09 6.26L22 8.77l-5 4.87 1.18 6.86L12 17.27l-6.18 3.23L7 13.64l-5-4.87 6.91-1.01L12 1.5z"/>
-                            </svg>
-                            <span class="artwork-rating-text">{{ $art['rating'] }}</span>
-                        </div>
-                    @endif
+                    <span class="edition-label">One of one</span>
 
                     <div class="artwork-actions-row">
                         <form method="POST" action="{{ route('cart.add', ['slug' => $art['slug']]) }}" class="artwork-cart-action-form">

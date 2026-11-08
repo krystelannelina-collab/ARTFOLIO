@@ -319,3 +319,16 @@ body {
     object-fit: contain;
     background: #f4f3ee;
 }
+
+/* ================= PLAIN HERO BACKGROUND ================= */
+/* No photo for now: a soft brand gradient stands in until a clean studio image is ready. */
+.hero-banner {
+    background:
+        radial-gradient(circle at 85% 20%, rgba(168, 209, 179, 0.22), transparent 45%),
+        radial-gradient(circle at 70% 110%, rgba(192, 152, 117, 0.25), transparent 40%),
+        linear-gradient(120deg, #102b21 0%, #1f513f 100%);
+}
+
+.hero-banner-overlay {
+    display: none;
+}

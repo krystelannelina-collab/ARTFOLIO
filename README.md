@@ -1,58 +1,208 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ARTFOLIO
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+ARTFOLIO is an online gallery and store for original digital artwork, built with Laravel and MySQL. Collectors browse artworks and artists, save favorites, and buy one-of-one pieces. Administrators manage the catalog and review payments from an admin dashboard.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### For collectors (clients)
+- Browse the artwork catalog by category, and view each artwork's details and file specifications.
+- Browse artists and read the About page, which includes contact details and a feedback form.
+- Save artworks to Favorites.
+- Add artworks to a cart and check out with GCash or a card.
+- Track orders in **My Orders**. After an admin approves the payment, download the original full-resolution file and a receipt.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### For administrators
+- Dashboard with catalog, client, payment, and feedback summaries.
+- **Artworks management (full CRUD):** add, view, edit, and delete artworks.
+- Categories: add, rename, and show or hide categories.
+- Orders: review payments, approve or reject them, mark refunds, and export orders to CSV.
+- View customers and artists.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Business rules
+- Every artwork is **one of one**. Checking out reserves it, an approved payment marks it sold, and a rejected payment puts it back on sale.
+- Downloads unlock only after an admin approves the payment, and only for the buyer.
+- Prices are in Philippine pesos (₱).
 
-## Learning Laravel
+## CRUD module (Week 14): Artworks
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The admin **Artworks** module is the project's main CRUD module. It stores records in the MySQL `artworks` table.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Operation | How it works | Code |
+|---|---|---|
+| Create | **Add artwork** opens a form. Inputs are validated, the image is uploaded, and the record is saved. | `Admin\ArtworkController@store` |
+| Read | The artwork list supports search, category and status filters, sorting, and pagination. **Preview** shows full details. | `Admin\ArtworkController@index` |
+| Update | **Edit** loads the record into a form. Changes are validated and saved, and a replacement image is optional. | `Admin\ArtworkController@update` |
+| Delete | **Delete** asks for confirmation, then removes the artwork and its files. Artworks that belong to an order cannot be deleted; archive them instead. | `Admin\ArtworkController@destroy` |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Part | File |
+|---|---|
+| Migrations | `database/migrations/2026_10_31_000000_create_artworks_table.php` (and later `artworks` migrations) |
+| Model | `app/Models/Artwork.php` |
+| Controller | `app/Http/Controllers/Admin/ArtworkController.php` |
+| Routes | `routes/web.php`: `Route::resource('artworks', ...)` in the `admin` group |
+| Views | `resources/views/admin/artworks/index.blade.php` (list, plus Add and Edit forms in modal dialogs) and `resources/views/admin/artworks/partials/fields.blade.php` (shared form fields) |
+| Tests | `tests/Feature/AdminArtworksTest.php` |
 
-## Agentic Development
+## Authentication (Week 15): Laravel Breeze
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Authentication uses **[Laravel Breeze](https://laravel.com/docs/starter-kits)** (`laravel/breeze` in `composer.json`). The Breeze pages are restyled to match the ARTFOLIO design.
+
+- **Register** (`/register`): name, username, email, password with confirmation, and a Terms and Conditions checkbox. Public sign-up always creates a client account.
+- **Log in** (`/login`) with "Remember me", and **log out**.
+- **Forgot and reset password**, **confirm password**, and **email verification** pages from Breeze.
+- Passwords are hashed and logins use sessions.
+- **Protected pages:** guests are redirected to the login page. Admin pages also require the `admin` role, and clients get "403 Forbidden".
+- After logging in, `/dashboard` sends admins to `/admin` and clients to `/home`.
+
+| Part | File |
+|---|---|
+| Controllers | `app/Http/Controllers/Auth/` |
+| Login validation | `app/Http/Requests/Auth/LoginRequest.php` |
+| Routes | `routes/auth.php` |
+| Views | `resources/views/auth/` and `resources/views/layouts/auth.blade.php` |
+| Admin check | `app/Http/Middleware/EnsureUserIsAdmin.php` |
+| Tests | `tests/Feature/Auth/` and `tests/Feature/AuthFlowTest.php` |
+
+## Tech stack
+
+- Laravel 13 (PHP 8.3 or newer)
+- MySQL (through XAMPP)
+- Blade templates, Bootstrap 5, and custom CSS in `public/css`
+- Laravel Breeze for authentication
+- PHPUnit for automated tests
+
+## Requirements
+
+- [XAMPP](https://www.apachefriends.org/) with PHP 8.3+ and MySQL
+- [Composer](https://getcomposer.org/)
+- Git
+
+You do not need Node.js or npm to run the app. The pages load their CSS directly from `public/css`.
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/krystelannelina-collab/ARTFOLIO.git
+   cd ARTFOLIO
+   ```
+
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Create your environment file**
+
+   Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   On Windows PowerShell, use `copy .env.example .env` instead. Then generate the application key:
+   ```bash
+   php artisan key:generate
+   ```
+   `.env.example` holds placeholder settings only. Never commit your `.env` file; it is in `.gitignore`.
+
+4. **Set up MySQL**
+   - Open the XAMPP Control Panel and start **MySQL**.
+   - Open http://localhost/phpmyadmin, click **New**, and create a database named `artfolio` with collation `utf8mb4_unicode_ci`.
+   - Check the database settings in `.env`:
+     ```env
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=artfolio
+     DB_USERNAME=root
+     DB_PASSWORD=
+     ```
+     XAMPP's default `root` user has no password. If yours has one, put it in `DB_PASSWORD`.
+
+5. **Set the first admin account**
+
+   In `.env`, choose the admin's email and password:
+   ```env
+   ARTFOLIO_ADMIN_NAME="ARTFOLIO Admin"
+   ARTFOLIO_ADMIN_EMAIL=admin@artfolio.com
+   ARTFOLIO_ADMIN_PASSWORD=choose-a-strong-password
+   ```
+   No admin password is stored in the code. If `ARTFOLIO_ADMIN_PASSWORD` is empty, seeding skips the admin account.
+
+6. **Run the migrations and sample data**
+   ```bash
+   php artisan migrate --seed
+   ```
+   This creates all tables (including the default categories and artists), the admin account, a sample client (`test@example.com` / `password`), and 10 sample artworks.
+
+7. **Link the storage folder**, so uploaded artwork images can be displayed:
+   ```bash
+   php artisan storage:link
+   ```
+
+## Running the application
+
+Start the development server:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Open http://localhost:8000. Log in as the admin you set in step 5, or create a client account with **Sign Up**.
 
-## Contributing
+To make an existing account an admin:
+```bash
+php artisan app:promote-admin someone@example.com
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Optional settings
 
-## Code of Conduct
+| Setting | Purpose |
+|---|---|
+| `ARTFOLIO_CONTACT_EMAIL`, `ARTFOLIO_CONTACT_PHONE`, `ARTFOLIO_FACEBOOK_URL`, `ARTFOLIO_CONTACT_ADDRESS` | Contact details on the About page. Empty values show "coming soon" placeholders. |
+| `MAIL_MAILER` | Defaults to `log`: password reset emails are written to `storage/logs/laravel.log` instead of being sent. |
+| GD extension | Enable `extension=gd` in `C:\xampp\php\php.ini` to create smaller public previews of uploaded artworks. Without it, the preview is a full-size copy. |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Running the tests
 
-## Security Vulnerabilities
+```bash
+php artisan test
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The tests use a temporary in-memory SQLite database (see `phpunit.xml`), so they never change your MySQL data. PHP's `pdo_sqlite` extension must be enabled; it is enabled in XAMPP by default.
 
-## License
+## Troubleshooting
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **"Access denied for user 'root'@'localhost'" or XAMPP MySQL will not start:** another MySQL server may be using port 3306, such as a separately installed MySQL 8.0 service. Stop it in Windows **Services** (`services.msc`), or use that server's password in `DB_PASSWORD`.
+- **Uploaded images do not appear:** run `php artisan storage:link`.
+- **Changes to `.env` have no effect:** run `php artisan config:clear`.
+
+## Project structure
+
+```
+app/Http/Controllers/          Storefront controllers (artworks, cart, checkout, orders, favorites)
+app/Http/Controllers/Admin/    Admin controllers (dashboard, artworks, categories, orders, customers, artists)
+app/Http/Controllers/Auth/     Laravel Breeze authentication controllers
+app/Models/                    Eloquent models (Artwork, Category, Order, OrderItem, User, Feedback, Artist)
+database/migrations/           Database tables
+database/seeders/              Admin account and sample artworks
+resources/views/               Blade templates (auth/, admin/, storefront pages)
+public/css/                    Page stylesheets
+routes/web.php, routes/auth.php
+tests/Feature/                 Automated feature tests
+```
+
+## Team
+
+| Member | GitHub account | Main contributions |
+|---|---|---|
+| _Name_ | _@username_ | _e.g. admin artworks module_ |
+| _Name_ | _@username_ | |
+| _Name_ | _@username_ | |
+| _Name_ | _@username_ | |
+| _Name_ | _@username_ | |
+
+## Collaboration workflow
+
+1. Create a branch for each feature: `git switch -c feature/short-name`.
+2. Commit with your own GitHub account and push the branch.
+3. Open a pull request into `main` and ask a teammate to review it before merging.

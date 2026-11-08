@@ -21,7 +21,6 @@ class HomeController extends Controller
                 'title' => $artwork->title,
                 'author' => $artwork->artist_name,
                 'category' => strtoupper($artwork->category),
-                'rating' => '5.0',
                 'image' => asset($artwork->image_path),
                 'url' => route('artworks.show', ['slug' => $artwork->slug]),
             ])

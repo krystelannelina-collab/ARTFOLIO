@@ -25,6 +25,16 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::directive('peso', fn (string $amount): string => "<?php echo e(\\App\\Providers\\AppServiceProvider::formatPeso({$amount})); ?>");
 
+        View::composer('partials.account-menu', function (ViewInstance $view): void {
+            $user = auth()->user();
+
+            $view->with([
+                'menuUser' => $user,
+                'orderUpdates' => $user?->orderUpdates()->limit(5)->get() ?? collect(),
+                'unseenOrderUpdates' => $user?->unseenOrderUpdatesCount() ?? 0,
+            ]);
+        });
+
         View::composer('partials.sidebar', function (ViewInstance $view): void {
             $view->with('storeCategories', Category::query()
                 ->where('is_visible', true)

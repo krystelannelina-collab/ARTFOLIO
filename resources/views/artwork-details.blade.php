@@ -41,13 +41,7 @@
             </form>
 
             <div class="top-right-actions">
-                <button type="button" class="notif-btn" aria-label="Notifications">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-                <div class="user-avatar-pill" title="{{ $userName }}" aria-label="{{ $userName }}">{{ $userInitials }}</div>
+                @include('partials.account-menu')
             </div>
         </header>
 
@@ -93,10 +87,7 @@
                     <span>{{ $artwork['author'] }}</span>
                 </a>
 
-                <div class="artwork-rating" aria-label="Rating: {{ $artwork['rating'] }} out of 5">
-                    <span class="artwork-rating-stars" aria-hidden="true">★★★★★</span>
-                    <span>{{ $artwork['rating'] }}</span>
-                </div>
+                <span class="edition-label">One of one · Original digital artwork</span>
 
                 <p class="artwork-detail-price">@peso($artwork['price'])</p>
                 <p class="artwork-short-description">{{ $artwork['description'] }}</p>

@@ -365,3 +365,8 @@ body {
 .form-header p {
     line-height: 1.5;
 }
+
+/* Backup background if the login hero photo cannot load. */
+.hero-panel {
+    background: linear-gradient(160deg, #102b21 0%, #1f513f 100%);
+}

@@ -17,7 +17,7 @@
         <img
             src="https://api.builder.io/api/v1/image/assets/TEMP/bbe1f71b84adbf86b9cb159ffe42d386fe34f525?width=1192"
             alt=""
-            onerror="this.src='{{ asset('images/hero-banner.png') }}';">
+            onerror="this.remove();">
     </div>
 
     <section class="form-panel">

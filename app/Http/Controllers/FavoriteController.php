@@ -67,7 +67,6 @@ class FavoriteController extends Controller
                 'title' => $artwork->title,
                 'category' => $artwork->category,
                 'author' => $artwork->artist_name,
-                'rating' => '5.0',
                 'price' => (float) $artwork->price,
                 'image' => asset($artwork->image_path),
                 'is_available' => $artwork->isAvailableForPurchase(),

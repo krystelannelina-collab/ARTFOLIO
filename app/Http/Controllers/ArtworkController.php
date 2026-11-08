@@ -45,7 +45,6 @@ class ArtworkController extends Controller
                 'price' => (float) $artwork->price,
                 'author' => $artwork->artist_name,
                 'category' => $artwork->category,
-                'rating' => '5.0 (1k reviews)',
                 'image' => asset($artwork->image_path),
                 'is_favorited' => in_array($artwork->id, $favoriteArtworkIds, true),
             ])
@@ -99,7 +98,6 @@ class ArtworkController extends Controller
             'author' => $catalogArtwork->artist_name,
             'category' => $catalogArtwork->category,
             'price' => (float) $catalogArtwork->price,
-            'rating' => '5.0',
             'image' => asset($catalogArtwork->image_path),
             'description' => $catalogArtwork->description,
             'is_favorited' => $isFavorited,

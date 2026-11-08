@@ -410,6 +410,185 @@ a {
     opacity: 0.9;
 }
 
+/* ================= ACCOUNT MENU (bell + avatar) ================= */
+.account-menu {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.account-menu-item {
+    position: relative;
+}
+
+button.user-avatar-pill {
+    padding: 0;
+    border: 0;
+    font-family: inherit;
+}
+
+.account-menu-trigger:focus-visible {
+    outline: 2px solid #315b45;
+    outline-offset: 2px;
+}
+
+.account-menu-badge {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #b42318;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 13px;
+    text-align: center;
+}
+
+.topbar-btn.account-menu-trigger {
+    position: relative;
+}
+
+.account-menu-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 50;
+    width: 240px;
+    padding: 8px;
+    border: 1px solid #d8d7ce;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgba(16, 43, 33, 0.16);
+}
+
+.order-updates-panel {
+    width: 300px;
+}
+
+.account-menu-heading {
+    margin: 4px 8px 8px;
+    color: #171717;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.account-menu-identity {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 6px;
+    padding: 6px 8px 10px;
+    border-bottom: 1px solid #e1e0d8;
+}
+
+.account-menu-identity strong {
+    color: #171717;
+    font-size: 14px;
+}
+
+.account-menu-identity span {
+    overflow: hidden;
+    color: #5f625a;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-menu-link {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: #27272a;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.account-menu-link:hover,
+.order-update-link:hover {
+    background: #f1f0eb;
+}
+
+.account-menu-logout {
+    margin-top: 4px;
+    border-top: 1px solid #e1e0d8;
+    border-radius: 0 0 8px 8px;
+    color: #9b2c1f;
+}
+
+.order-update-link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 8px;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.order-update-status {
+    grid-column: 1 / -1;
+    justify-self: start;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef6f0;
+    color: #1f513f;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.order-update-status.status-failed,
+.order-update-status.status-refunded {
+    background: #fdecea;
+    color: #9b2c1f;
+}
+
+.order-update-text {
+    color: #27272a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.order-update-link time {
+    color: #5f625a;
+    font-size: 12px;
+}
+
+.account-menu-empty {
+    margin: 0 8px 8px;
+    color: #5f625a;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.account-menu-footer-link {
+    display: block;
+    margin-top: 4px;
+    padding: 8px;
+    border-top: 1px solid #e1e0d8;
+    color: #1f513f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@media (max-width: 575px) {
+    .account-menu-panel,
+    .order-updates-panel {
+        position: fixed;
+        top: 64px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+    }
+}
+
 /* ================= MOBILE HEADER & RESPONSIVE ================= */
 .mobile-header {
     display: none;
@@ -499,4 +678,21 @@ img {
     font-size: 12px;
     font-weight: 600;
     line-height: 1.4;
+}
+
+/* ================= EDITION LABEL ================= */
+/* Replaces the old placeholder star ratings with a true fact about each piece. */
+.edition-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border: 1px solid #cfe0d4;
+    border-radius: 999px;
+    background: #eef6f0;
+    color: #1f513f;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
 }

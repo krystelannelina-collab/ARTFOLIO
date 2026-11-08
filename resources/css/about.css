@@ -969,3 +969,15 @@ body {
         padding: 20px;
     }
 }
+
+/* ================= PLAIN HERO BACKGROUND ================= */
+.about-hero {
+    background:
+        radial-gradient(circle at 85% 20%, rgba(168, 209, 179, 0.22), transparent 45%),
+        radial-gradient(circle at 70% 110%, rgba(192, 152, 117, 0.25), transparent 40%),
+        linear-gradient(120deg, #102b21 0%, #1f513f 100%);
+}
+
+.about-hero-overlay {
+    display: none;
+}

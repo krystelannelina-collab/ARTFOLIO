@@ -63,27 +63,12 @@
 
             <!-- Actions (Notification Bell & Profile Avatar) -->
             <div class="top-right-actions">
-                <button type="button" class="notif-btn" aria-label="Notifications">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-
-                <div class="user-avatar-pill" title="{{ Auth::user()->name ?? 'User' }}">
-                    {{ $userInitials }}
-                </div>
+                @include('partials.account-menu')
             </div>
         </header>
 
         <!-- Hero Card -->
         <section class="hero-banner">
-            <!-- Painter studio image background -->
-            <img
-                src="{{ asset('images/hero-banner.png') }}"
-                alt=""
-                class="hero-banner-img"
-            >
             <div class="hero-banner-overlay"></div>
 
             <div class="hero-banner-content">
@@ -127,12 +112,7 @@
                             <span class="art-author-text">by {{ $art['author'] }}</span>
 
                             <div class="art-footer-actions">
-                                <div class="art-rating-box">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#E5A83B">
-                                        <path d="M12 1.5l3.09 6.26L22 8.77l-5 4.87 1.18 6.86L12 17.27l-6.18 3.23L7 13.64l-5-4.87 6.91-1.01L12 1.5z"/>
-                                    </svg>
-                                    <span>{{ $art['rating'] }}</span>
-                                </div>
+                                <span class="edition-label">One of one</span>
                                 <a href="{{ $art['url'] }}" class="art-details-btn">
                                     <span>View details</span>
                                     <svg width="9" height="9" viewBox="0 0 16 16" fill="none">

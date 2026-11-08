@@ -46,20 +46,11 @@
             </form>
 
             <div class="top-right-actions">
-                <button type="button" class="notif-btn" aria-label="Notifications">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-                <div class="user-avatar-pill" title="{{ $userName }}" aria-label="{{ $userName }}">
-                    {{ $userInitials }}
-                </div>
+                @include('partials.account-menu')
             </div>
         </header>
 
         <section class="about-hero" aria-labelledby="about-title">
-            <img src="{{ asset('images/hero-banner.png') }}" alt="" class="about-hero-image">
             <div class="about-hero-overlay"></div>
             <div class="about-hero-copy">
                 <span class="about-eyebrow">ART LIVES HERE <span aria-hidden="true">·</span> MADE TO BE DISCOVERED</span>
