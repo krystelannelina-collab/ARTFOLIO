@@ -335,3 +335,33 @@ body {
     margin-top: 2px;
     accent-color: #102B21;
 }
+
+/* ================= BREEZE AUTH EXTRAS ================= */
+.auth-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.auth-row .terms-check {
+    margin: 0;
+}
+
+.auth-link,
+.auth-link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #1f513f;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.form-header p {
+    line-height: 1.5;
+}

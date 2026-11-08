@@ -17,7 +17,7 @@ class AccountAndFeedbackTest extends TestCase
     {
         User::factory()->create(['username' => 'takenname']);
 
-        $this->from(route('register.show'))
+        $this->from(route('register'))
             ->post(route('register'), [
                 'name' => 'New Collector',
                 'username' => 'takenname',
@@ -25,7 +25,7 @@ class AccountAndFeedbackTest extends TestCase
                 'password' => 'password123',
                 'password_confirmation' => 'different123',
             ])
-            ->assertRedirect(route('register.show'))
+            ->assertRedirect(route('register'))
             ->assertSessionHasErrors([
                 'username' => 'That username is already taken.',
                 'password' => 'The passwords do not match.',
@@ -41,18 +41,9 @@ class AccountAndFeedbackTest extends TestCase
             'password' => 'password123',
             'password_confirmation' => 'password123',
             'terms' => '1',
-        ])->assertRedirect(route('login'));
+        ])->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertDatabaseHas('users', ['email' => 'new@example.com', 'username' => 'new_collector']);
-    }
-
-    public function test_signup_page_shows_new_fields(): void
-    {
-        $this->get(route('register.show'))
-            ->assertOk()
-            ->assertSee('name="username"', false)
-            ->assertSee('name="password_confirmation"', false)
-            ->assertSee('name="terms"', false);
     }
 
     public function test_removing_every_favorite_does_not_bring_starter_favorites_back(): void

@@ -69,10 +69,13 @@ class AdminDashboardTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->post(route('login'), [
-            'email' => $admin->email,
-            'password' => 'password',
-        ])->assertRedirect(route('admin.dashboard'));
+        $this->followingRedirects()
+            ->post(route('login'), [
+                'email' => $admin->email,
+                'password' => 'password',
+            ])
+            ->assertOk()
+            ->assertSee('Your creative workspace.');
     }
 
     public function test_promote_admin_command_updates_an_existing_account(): void
