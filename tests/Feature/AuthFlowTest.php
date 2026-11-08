@@ -17,7 +17,10 @@ class AuthFlowTest extends TestCase
                 '_token' => 'test-token',
                 'name' => 'Jane Doe',
                 'email' => 'jane@example.com',
+                'username' => 'janedoe',
                 'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'terms' => '1',
                 'role' => 'client',
             ]);
 
@@ -64,7 +67,10 @@ class AuthFlowTest extends TestCase
                 '_token' => 'test-token',
                 'name' => 'Public Admin',
                 'email' => 'public-admin@example.com',
+                'username' => 'publicadmin',
                 'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'terms' => '1',
                 'role' => 'admin',
             ])
             ->assertRedirect('/login');
@@ -88,8 +94,11 @@ class AuthFlowTest extends TestCase
         $this->followingRedirects()
             ->post('/register', [
                 'name' => 'Sam Collector',
+                'username' => 'samcollects',
                 'email' => 'sam@example.com',
                 'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'terms' => '1',
             ])
             ->assertOk()
             ->assertSee('Account created successfully. Please log in.');

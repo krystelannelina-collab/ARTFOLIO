@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Artwork;
+use App\Models\Order;
 use App\Models\User;
 use Database\Seeders\ArtworkSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -40,7 +41,7 @@ class AdminArtworksTest extends TestCase
             ->assertSee('data-title="Fluid Geometric"', false)
             ->assertSee('data-artist="Cristine Joy Montes"', false)
             ->assertSee('data-category="Abstract"', false)
-            ->assertSee('data-price="$28.56"', false)
+            ->assertSee('data-price="₱28.56"', false)
             ->assertSee('data-status="published"', false)
             ->assertSee('A study in movement and color', false)
             ->assertSee('View client page')
@@ -121,6 +122,7 @@ class AdminArtworksTest extends TestCase
     public function test_admin_can_create_an_artwork_and_upload_its_image(): void
     {
         Storage::fake('public');
+        Storage::fake('local');
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->post(route('admin.artworks.store'), [
@@ -130,6 +132,7 @@ class AdminArtworksTest extends TestCase
             'price' => '19.95',
             'description' => 'A new digital artwork for the catalog.',
             'status' => 'published',
+            'canvas_size' => '24 × 36 in',
             'image' => $this->fakeArtworkImage('new-canvas.png'),
         ]);
 
@@ -140,11 +143,69 @@ class AdminArtworksTest extends TestCase
         $this->assertSame('new-canvas', $artwork->slug);
         $this->assertSame('storage/artworks/'.basename($artwork->image_path), $artwork->image_path);
         Storage::disk('public')->assertExists(substr($artwork->image_path, strlen('storage/')));
+        Storage::disk('local')->assertExists($artwork->original_path);
+        $this->assertStringStartsWith('artworks/originals/', $artwork->original_path);
+        $this->assertSame(1, $artwork->image_width);
+        $this->assertSame(1, $artwork->image_height);
+        $this->assertSame('1:1', $artwork->aspectRatio());
+        $this->assertSame('png', $artwork->file_format);
+        $this->assertSame('24 × 36 in', $artwork->canvas_size);
+
+        $this->get(route('artworks.show', ['slug' => $artwork->slug]))
+            ->assertOk()
+            ->assertSee('1 × 1 px')
+            ->assertSee('24 × 36 in');
+    }
+
+    public function test_upload_errors_are_explained_to_the_admin(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->from(route('admin.artworks.index'))
+            ->post(route('admin.artworks.store'), [
+                '_form_context' => 'artwork',
+                'title' => 'Wrong File',
+                'artist_name' => 'Ari Artist',
+                'category' => 'Abstract',
+                'price' => '19.95',
+                'description' => 'A file that is not an image.',
+                'status' => 'draft',
+                'image' => UploadedFile::fake()->createWithContent('notes.txt', 'plain text'),
+            ])
+            ->assertSessionHasErrors(['image' => 'The file must be an image.']);
+
+        $this->assertDatabaseMissing('artworks', ['title' => 'Wrong File']);
+    }
+
+    public function test_artwork_with_orders_cannot_be_deleted(): void
+    {
+        $this->seed(ArtworkSeeder::class);
+        $artwork = Artwork::query()->firstOrFail();
+        $order = Order::query()->create([
+            'order_number' => 'ART-000900',
+            'customer_name' => 'Buyer',
+            'customer_email' => 'buyer@example.com',
+            'total' => 10,
+            'status' => 'completed',
+        ]);
+        $order->items()->create([
+            'artwork_id' => $artwork->id,
+            'title' => $artwork->title,
+            'artist_name' => $artwork->artist_name,
+            'image_path' => $artwork->image_path,
+            'unit_price' => 10,
+        ]);
+
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->delete(route('admin.artworks.destroy', $artwork))
+            ->assertSessionHasErrors('artwork');
+
+        $this->assertModelExists($artwork);
     }
 
     public function test_new_artwork_slugs_are_unique(): void
     {
         Storage::fake('public');
+        Storage::fake('local');
         $this->seed(ArtworkSeeder::class);
         $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->post(route('admin.artworks.store'), [
@@ -192,6 +253,7 @@ class AdminArtworksTest extends TestCase
     public function test_admin_can_delete_an_artwork_and_its_uploaded_image(): void
     {
         Storage::fake('public');
+        Storage::fake('local');
         $path = $this->fakeArtworkImage('remove-me.png')->store('artworks', 'public');
         $artwork = Artwork::query()->create([
             'slug' => 'remove-me',

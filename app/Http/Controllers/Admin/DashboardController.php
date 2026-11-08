@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
+use App\Models\Feedback;
+use App\Models\Order;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
@@ -32,7 +34,9 @@ class DashboardController extends Controller
                 'artists' => Artwork::query()->distinct('artist_name')->count('artist_name'),
                 'clients' => User::query()->where('role', 'client')->count(),
                 'categories' => $categoryCounts->count(),
+                'pendingPayments' => Order::query()->where('status', Order::STATUS_PENDING)->count(),
             ],
+            'recentFeedback' => Feedback::query()->latest()->limit(5)->get(),
             'categoryChart' => [
                 'labels' => $categoryCounts->keys()->values(),
                 'values' => $categoryCounts->values(),

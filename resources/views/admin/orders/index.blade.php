@@ -28,24 +28,24 @@
         </header>
 
         <div class="orders-payment-notice" role="note">
-            Payment processing is not connected. New checkout orders are saved as pending; no payment is charged.
+            New orders wait in "Awaiting approval" until you confirm the payment. Approving unlocks the buyer's downloads and marks the artworks as sold.
         </div>
 
         <section class="orders-overview" aria-label="Order totals">
             <article>
                 <span>Revenue</span>
-                <strong>${{ number_format($stats['revenue'], 2) }}</strong>
-                <small>Completed payments</small>
+                <strong>@peso($stats['revenue'])</strong>
+                <small>Approved payments</small>
             </article>
             <article>
-                <span>Completed</span>
+                <span>Approved</span>
                 <strong>{{ number_format($stats['completed']) }}</strong>
                 <small>Payments confirmed</small>
             </article>
             <article>
-                <span>Pending payment</span>
+                <span>Awaiting approval</span>
                 <strong>{{ number_format($stats['pending']) }}</strong>
-                <small>Awaiting payment setup</small>
+                <small>Payments to review</small>
             </article>
             <article>
                 <span>Refunded</span>
@@ -69,7 +69,7 @@
                     <span class="visually-hidden">Filter by payment status</span>
                     <select name="status">
                         <option value="">All statuses</option>
-                        @foreach (['pending' => 'Pending payment', 'completed' => 'Completed', 'refunded' => 'Refunded', 'failed' => 'Failed'] as $value => $label)
+                        @foreach (\App\Models\Order::STATUS_LABELS as $value => $label)
                             <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
@@ -136,8 +136,8 @@
                                         </span>
                                     </td>
                                     <td class="order-date">{{ $order->created_at->format('M j, Y') }}</td>
-                                    <td><span class="order-payment status-{{ $order->status }}">{{ $order->status === 'pending' ? 'Pending' : ucfirst($order->status) }}</span></td>
-                                    <td class="order-total">${{ number_format((float) $order->total, 2) }}</td>
+                                    <td><span class="order-payment status-{{ $order->status }}">{{ $order->statusLabel() }}</span></td>
+                                    <td class="order-total">@peso((float) $order->total)</td>
                                     <td>
                                         <a href="{{ route('admin.orders.show', $order) }}" class="order-view-link">View order <span aria-hidden="true">↗</span></a>
                                     </td>
@@ -162,7 +162,7 @@
             @endif
         </section>
 
-        <p class="orders-footnote">Pending orders are not paid. Digital downloads remain unavailable until payment is confirmed.</p>
+        <p class="orders-footnote">Downloads stay locked until you approve an order's payment.</p>
     </main>
 </div>
 </body>

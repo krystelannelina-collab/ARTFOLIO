@@ -15,7 +15,7 @@
 <body>
 @php
     $isPendingPayment = $order->status === 'pending';
-    $isPaidOrder = in_array($order->status, ['completed', 'paid'], true);
+    $isPaidOrder = $order->isPaid();
     $paymentMethodLabel = $order->payment_method === 'not_configured'
         ? 'Not configured'
         : ($order->payment_method === 'gcash' ? 'GCash' : ucfirst($order->payment_method));
@@ -72,18 +72,18 @@
                 @if ($isPaidOrder)
                     Your next masterpiece is yours.
                 @elseif ($isPendingPayment)
-                    Your order is recorded.
+                    Payment submitted. Awaiting approval.
                 @else
                     Your order details.
                 @endif
             </h1>
             <p class="success-subtitle">
                 @if ($isPaidOrder)
-                    Payment received. Your digital artwork is ready to download.
+                    Payment approved. Your original artwork files are ready to download.
                 @elseif ($isPendingPayment)
-                    Payment processing is pending. No payment has been charged.
+                    We received your payment details. An ARTFOLIO admin will confirm your payment, then your downloads unlock here and in My Orders.
                 @else
-                    Current payment status: {{ ucfirst($order->status) }}.
+                    {{ $order->statusLabel() }}.{{ $order->rejection_reason ? ' Reason: '.$order->rejection_reason : '' }}
                 @endif
             </p>
             <div class="success-meta-row">
@@ -91,15 +91,15 @@
                 <span aria-hidden="true">·</span>
                 <span>{{ $order->items->count() }} {{ \Illuminate\Support\Str::plural('artwork', $order->items->count()) }}</span>
                 <span aria-hidden="true">·</span>
-                <span>${{ number_format((float) $order->total, 2) }} {{ $isPaidOrder ? 'paid' : ($isPendingPayment ? 'pending' : strtolower($order->status)) }}</span>
+                <span>@peso((float) $order->total) {{ $isPaidOrder ? 'paid' : ($isPendingPayment ? 'pending' : strtolower($order->status)) }}</span>
             </div>
             <p class="success-email-notice">
                 @if ($isPaidOrder)
-                    A confirmation and receipt have been sent to your email.
+                    Download your receipt anytime from this page.
                 @elseif ($isPendingPayment)
-                    Downloads will become available only after payment is confirmed.
+                    Downloads stay locked until your payment is approved. Most payments are reviewed within one business day.
                 @else
-                    Status updated for this order.
+                    No payment was taken for this order. You can place a new order anytime.
                 @endif
             </p>
         </section>
@@ -133,7 +133,7 @@
                                     <span aria-hidden="true">↓</span>
                                 </a>
                             @else
-                                <strong>${{ number_format((float) $item->unit_price * $item->quantity, 2) }}</strong>
+                                <strong>@peso((float) $item->unit_price * $item->quantity)</strong>
                             @endif
                         </div>
                     @endforeach
@@ -144,7 +144,7 @@
                 <h2 class="summary-card-title">Payment summary</h2>
                 <div class="summary-meta-row">
                     <span class="summary-meta-label">Payment status</span>
-                    <span class="summary-meta-val">{{ $isPaidOrder ? 'Paid' : ucfirst($order->status) }}</span>
+                    <span class="summary-meta-val">{{ $order->statusLabel() }}</span>
                 </div>
                 <div class="summary-meta-row">
                     <span class="summary-meta-label">Payment method</span>
@@ -153,7 +153,7 @@
                 <div class="summary-card-divider"></div>
                 <div class="summary-paid-row">
                     <span class="summary-paid-label">{{ $isPaidOrder ? 'Total paid' : 'Order total' }}</span>
-                    <span class="summary-paid-val">${{ number_format((float) $order->total, 2) }}</span>
+                    <span class="summary-paid-val">@peso((float) $order->total)</span>
                 </div>
                 @if ($isPaidOrder)
                     <a href="{{ route('orders.receipt', $order) }}" class="btn-download-receipt">
@@ -167,7 +167,7 @@
                     @elseif ($isPendingPayment)
                         Digital purchase · Downloads locked until payment is confirmed
                     @else
-                        Digital purchase · Status: {{ ucfirst($order->status) }}
+                        Digital purchase · {{ $order->statusLabel() }}
                     @endif
                 </p>
             </aside>

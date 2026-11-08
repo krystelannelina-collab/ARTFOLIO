@@ -80,7 +80,7 @@ body {
 .form-header p {
     margin: 4px 0 0;
     color: #6B7280;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .google-button {
@@ -94,7 +94,7 @@ body {
     border-radius: 8px;
     background: #fff;
     color: #4B5563;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -114,7 +114,7 @@ body {
     align-items: center;
     gap: 5px;
     color: #6B7280;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 16.5px;
     letter-spacing: .55px;
@@ -137,14 +137,14 @@ body {
 
 .divider span {
     padding: 0 8px;
-    color: #9CA3AF;
-    font-size: 12px;
+    color: #70757e;
+    font-size: 13px;
     line-height: 16px;
 }
 
 .auth-alert {
     margin-bottom: 12px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .account-form {
@@ -163,12 +163,12 @@ body {
     outline: none;
     background: #fff;
     color: #111827;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 18px;
 }
 
 .form-input::placeholder {
-    color: #9CA3AF;
+    color: #70757e;
 }
 
 .form-input:focus {
@@ -191,7 +191,7 @@ body {
     padding: 0;
     border: 0;
     background: transparent;
-    color: #9CA3AF;
+    color: #70757e;
     cursor: pointer;
 }
 
@@ -208,7 +208,7 @@ body {
     border-radius: 50px;
     background: #102B21;
     color: #fff;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1);
     cursor: pointer;
@@ -224,13 +224,13 @@ body {
     padding-top: 16px;
     margin: 0;
     color: #6B7280;
-    font-size: 12px;
+    font-size: 13px;
     text-align: center;
 }
 
 .signup-text a,
 .login-text a {
-    color: #FF383C;
+    color: #db3034;
     font-weight: 500;
     text-decoration: none;
 }
@@ -245,7 +245,7 @@ body {
 
 .social-links a {
     padding: 4px;
-    color: #9CA3AF;
+    color: #70757e;
     text-decoration: none;
 }
 
@@ -274,4 +274,64 @@ body {
         min-height: auto;
         padding: 32px 24px;
     }
+}
+
+/* ================= FIT THE VIEWPORT ================= */
+/* The card fills the screen height instead of forcing 839px, so short laptop
+   screens only scroll when the form itself needs the room. */
+body {
+    min-height: 100dvh;
+}
+
+.hero-panel,
+.form-panel {
+    min-height: min(839px, calc(100dvh - 32px));
+}
+
+@media (max-height: 860px) and (min-width: 576px) {
+    .logo {
+        width: auto;
+        height: 96px;
+    }
+
+    .form-panel {
+        padding-top: 24px;
+        padding-bottom: 20px;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero-panel,
+    .form-panel {
+        min-height: auto;
+    }
+}
+
+.account-form .field-error {
+    display: block;
+    margin: -4px 0 10px;
+    color: #b42318;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.terms-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 4px 0 14px;
+    color: #3f3f46;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: left;
+    cursor: pointer;
+}
+
+.terms-check input {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    accent-color: #102B21;
 }

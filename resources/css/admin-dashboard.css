@@ -21,7 +21,7 @@ body {
     background: #faf9f5;
     color: #30362f;
     font-family: "DM Sans", system-ui, sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -71,22 +71,22 @@ a {
 
 .admin-brand-name {
     margin-top: 3px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 3px;
 }
 
 .admin-brand-caption {
     margin-top: 2px;
-    color: #77796f;
-    font-size: 8px;
+    color: #73756c;
+    font-size: 11px;
     letter-spacing: 1.4px;
 }
 
 .admin-nav-label {
     padding: 15px 2px 7px;
     color: #73756b;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.55px;
 }
@@ -104,7 +104,7 @@ a {
     padding: 0 8px;
     border-radius: 2px;
     color: #465047;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     text-decoration: none;
     transition: background-color 140ms ease, color 140ms ease;
@@ -130,7 +130,7 @@ a {
 .admin-nav-count {
     margin-left: auto;
     color: #a8b7ab;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .admin-sidebar-bottom {
@@ -152,7 +152,7 @@ a {
     border-radius: 2px;
     background: transparent;
     color: #687168;
-    font-size: 10px;
+    font-size: 11px;
     text-align: left;
     text-decoration: none;
     cursor: pointer;
@@ -165,7 +165,7 @@ a {
 }
 
 .admin-back-link span {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .admin-account-menu {
@@ -233,7 +233,7 @@ a {
     background: transparent;
     color: #687168;
     font: inherit;
-    font-size: 11px;
+    font-size: 12px;
     text-align: left;
     cursor: pointer;
 }
@@ -244,7 +244,7 @@ a {
 }
 
 .admin-account-menu-item:disabled {
-    color: #9a9c94;
+    color: #73756f;
     cursor: not-allowed;
 }
 
@@ -268,7 +268,7 @@ a {
     border-radius: 50%;
     background: #315b45;
     color: #fff;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -288,18 +288,18 @@ a {
 
 .admin-account-copy strong {
     color: #30362f;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .admin-account-copy small {
     color: #707268;
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .admin-account-caret {
-    color: #80877e;
-    font-size: 11px;
+    color: #6f756e;
+    font-size: 12px;
     transition: transform 140ms ease;
 }
 
@@ -325,7 +325,7 @@ a {
 
 .admin-eyebrow {
     color: #6f7167;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.12px;
 }
@@ -342,7 +342,7 @@ a {
 .admin-page-heading p {
     margin: 0;
     color: #707268;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .admin-date-pill {
@@ -350,7 +350,7 @@ a {
     padding: 6px 8px;
     border: 1px solid #e5e3d9;
     color: #5f6258;
-    font-size: 10px;
+    font-size: 11px;
     white-space: nowrap;
 }
 
@@ -401,7 +401,7 @@ a {
 .admin-panel-heading p {
     margin: 4px 0 0;
     color: #6f7167;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.45;
 }
 
@@ -410,7 +410,7 @@ a {
     padding: 4px 5px;
     background: #f1f0e9;
     color: #5e6158;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.45px;
     white-space: nowrap;
@@ -448,7 +448,7 @@ a {
 .chart-center-total span {
     margin-top: 4px;
     color: #707267;
-    font-size: 8px;
+    font-size: 11px;
     letter-spacing: 0.45px;
 }
 
@@ -467,7 +467,7 @@ a {
     align-items: center;
     gap: 5px;
     color: #5e6258;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .legend-marker {
@@ -478,7 +478,7 @@ a {
 
 .category-legend strong {
     color: #3a4039;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .featured-panel {
@@ -505,7 +505,7 @@ a {
 .gallery-link,
 .panel-text-link {
     color: #d7e3d9;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
@@ -569,7 +569,7 @@ a {
 .gallery-card-copy > strong {
     overflow: hidden;
     color: #353a34;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -578,7 +578,7 @@ a {
 .gallery-card-copy > span {
     overflow: hidden;
     color: #696c62;
-    font-size: 9px;
+    font-size: 11px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -593,7 +593,7 @@ a {
 
 .gallery-card-bottom b {
     color: #3d443d;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -602,7 +602,7 @@ a {
     padding: 4px 8px;
     border: 1px solid #b9b9af;
     color: #3f463e;
-    font-size: 9px;
+    font-size: 11px;
     text-align: center;
     text-decoration: none;
 }
@@ -620,8 +620,8 @@ a {
     display: grid;
     min-height: 150px;
     place-items: center;
-    color: #929387;
-    font-size: 11px;
+    color: #75766c;
+    font-size: 12px;
     text-align: center;
 }
 
@@ -672,7 +672,7 @@ a {
     padding: 8px 7px;
     border-bottom: 1px solid #c9c8bf;
     color: #55584f;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.35px;
     text-align: left;
@@ -682,7 +682,7 @@ a {
     padding: 8px 7px;
     border-bottom: 1px solid #e4e2d9;
     color: #444c43;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .admin-table tbody tr:last-child td {
@@ -709,7 +709,7 @@ a {
     padding: 3px 5px;
     background: #f0f1e9;
     color: #65735f;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -738,7 +738,7 @@ a {
 
 .metric-label {
     color: #5f6258;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.35px;
 }
@@ -755,7 +755,7 @@ a {
 .metric-note {
     margin-top: 7px;
     color: #6d7065;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.4;
 }
 
@@ -800,7 +800,7 @@ a {
     width: 25px;
     height: 25px;
     flex-basis: 25px;
-    font-size: 8px;
+    font-size: 11px;
 }
 
 .member-copy {
@@ -819,17 +819,17 @@ a {
 
 .member-copy strong {
     color: #394139;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .member-copy small {
     color: #696c62;
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .member-list-item time {
     color: #66695f;
-    font-size: 9px;
+    font-size: 11px;
     white-space: nowrap;
 }
 
@@ -842,7 +842,7 @@ a {
     border: 1px solid #e6e3d9;
     background: #f2f2eb;
     color: #5e6258;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.5;
 }
 
@@ -858,7 +858,7 @@ a {
     place-items: center;
     background: #e2e8de;
     color: #315b45;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .admin-footer {
@@ -866,7 +866,7 @@ a {
     gap: 5px;
     margin-top: 12px;
     color: #6f7167;
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.15px;
 }
 
@@ -939,7 +939,7 @@ button:focus-visible {
 
     .admin-brand-name {
         margin: 0;
-        font-size: 11px;
+        font-size: 12px;
     }
 
     .admin-brand-caption,
@@ -970,7 +970,7 @@ button:focus-visible {
         justify-content: center;
         gap: 5px;
         padding: 0 4px;
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .admin-nav-count {
@@ -1017,12 +1017,12 @@ button:focus-visible {
     }
 
     .admin-eyebrow {
-        font-size: 8px;
+        font-size: 11px;
     }
 
     .admin-date-pill {
         padding: 5px;
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .dashboard-top-grid,
@@ -1081,4 +1081,75 @@ button:focus-visible {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* ================= LAYOUT, PAYMENTS & FEEDBACK ================= */
+.admin-layout {
+    min-height: 100dvh;
+}
+
+.metric-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s ease;
+}
+
+.metric-card-link:hover {
+    box-shadow: 0 4px 14px rgba(16, 43, 33, 0.1);
+}
+
+.metric-card-attention {
+    border-color: #e9b765;
+    background: #fff7ea;
+}
+
+.feedback-panel {
+    margin-top: 20px;
+}
+
+.feedback-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.feedback-list-item {
+    padding: 14px 16px;
+    border: 1px solid #e1e0d8;
+    border-radius: 12px;
+    background: #fbfaf6;
+}
+
+.feedback-list-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    align-items: baseline;
+    font-size: 13px;
+}
+
+.feedback-list-meta a {
+    color: #1f513f;
+}
+
+.feedback-list-meta time {
+    margin-left: auto;
+    color: #5f625a;
+    font-size: 12px;
+}
+
+.feedback-rating {
+    color: #a26a1c;
+    letter-spacing: 1px;
+}
+
+.feedback-list-item p {
+    margin: 8px 0 0;
+    color: #30382f;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-line;
 }

@@ -13,10 +13,11 @@ class OrdersTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_client_can_add_artwork_and_place_a_paid_order_with_card_or_gcash(): void
+    public function test_client_order_waits_for_admin_approval_before_downloads_unlock(): void
     {
         $artwork = $this->createArtwork(['price' => 28.56]);
         $user = User::factory()->create();
+        $admin = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($user)
             ->post(route('cart.add', $artwork->slug))
@@ -27,26 +28,42 @@ class OrdersTest extends TestCase
             'contact_email' => 'receipt@example.com',
             'payment_method' => 'gcash',
             'gcash_name' => 'Test Collector',
-            'gcash_number' => '09171234567',
-        ])->assertSessionMissing('cart');
+            'gcash_number' => '0917 123 4567',
+            'gcash_reference' => 'abc123456',
+        ])->assertSessionHasNoErrors()->assertSessionMissing('cart');
 
         $order = Order::query()->with('items')->sole();
+        $item = $order->items->sole();
 
         $this->assertSame('ART-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT), $order->order_number);
-        $this->assertSame('completed', $order->status);
+        $this->assertSame(Order::STATUS_PENDING, $order->status);
         $this->assertSame('GCash', $order->payment_method);
+        $this->assertSame('ABC123456', $order->payment_reference);
         $this->assertSame('receipt@example.com', $order->customer_email);
         $this->assertEquals(28.56, (float) $order->total);
-        $this->assertSame('Original artwork', $order->items->sole()->title);
-        $this->assertEquals(28.56, (float) $order->items->sole()->unit_price);
-
-        $item = $order->items->sole();
+        $this->assertSame('Original artwork', $item->title);
+        $this->assertSame(Artwork::AVAILABILITY_RESERVED, $artwork->fresh()->availability);
 
         $this->get(route('order.success', $order))
             ->assertOk()
-            ->assertSee('Your next masterpiece is yours.')
-            ->assertSee('Payment received. Your digital artwork is ready to download.')
-            ->assertSee('GCash')
+            ->assertSee('Payment submitted. Awaiting approval.')
+            ->assertSee('₱28.56')
+            ->assertDontSee(route('orders.items.download', [$order, $item]), false);
+
+        $this->get(route('orders.items.download', [$order, $item]))->assertForbidden();
+
+        $this->actingAs($admin)
+            ->patch(route('admin.orders.status', $order), ['status' => Order::STATUS_COMPLETED])
+            ->assertRedirect(route('admin.orders.show', $order));
+
+        $this->assertSame(Order::STATUS_COMPLETED, $order->fresh()->status);
+        $this->assertSame($admin->id, $order->fresh()->payment_reviewed_by);
+        $this->assertSame(Artwork::AVAILABILITY_SOLD, $artwork->fresh()->availability);
+
+        $this->actingAs($user)
+            ->get(route('order.success', $order))
+            ->assertOk()
+            ->assertSee('Payment approved. Your original artwork files are ready to download.')
             ->assertSee(route('orders.items.download', [$order, $item]), false)
             ->assertSee(route('orders.receipt', $order), false);
 
@@ -58,6 +75,7 @@ class OrdersTest extends TestCase
         $receiptResponse->assertOk()
             ->assertDownload('receipt-'.strtolower($order->order_number).'.txt');
         $this->assertStringContainsString($order->order_number, $receiptResponse->streamedContent());
+        $this->assertStringContainsString('₱28.56', $receiptResponse->streamedContent());
     }
 
     public function test_checkout_uses_artwork_price_from_database_instead_of_session_data(): void
@@ -67,7 +85,10 @@ class OrdersTest extends TestCase
 
         $this->actingAs($user)
             ->withSession(['cart' => [$artwork->id => 100]])
-            ->post(route('checkout.store'), ['contact_email' => $user->email])
+            ->post(route('checkout.store'), [
+                'contact_email' => $user->email,
+                ...$this->cardPayment(),
+            ])
             ->assertRedirect();
 
         $order = Order::query()->with('items')->sole();
@@ -75,6 +96,7 @@ class OrdersTest extends TestCase
         $this->assertEquals(23.45, (float) $order->total);
         $this->assertEquals(23.45, (float) $order->items->sole()->unit_price);
         $this->assertSame(1, $order->items->sole()->quantity);
+        $this->assertSame('Card ending 4242', $order->payment_reference);
     }
 
     public function test_checkout_rejects_invalid_email_and_empty_cart(): void
@@ -135,7 +157,21 @@ class OrdersTest extends TestCase
             ->get(route('orders'))
             ->assertOk()
             ->assertSee($order->order_number)
-            ->assertSee('No charge has been made.');
+            ->assertSee('Awaiting approval');
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function cardPayment(): array
+    {
+        return [
+            'payment_method' => 'card',
+            'cardholder_name' => 'Test Collector',
+            'card_number' => '4242 4242 4242 4242',
+            'card_expiry' => '12 / 30',
+            'card_cvc' => '123',
+        ];
     }
 
     private function createArtwork(array $attributes = []): Artwork

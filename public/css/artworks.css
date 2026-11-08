@@ -33,7 +33,7 @@
     background: transparent;
     outline: none;
     width: 100%;
-    font-size: 13px;
+    font-size: 14px;
     color: #171717;
     font-family: inherit;
 }
@@ -103,7 +103,7 @@
     gap: 6px;
     background: #D8E3D5;
     color: #1E2B20;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     padding: 3px 10px;
     border-radius: 9999px;
@@ -130,7 +130,7 @@
 }
 
 .sort-label {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     color: #27272A;
     margin: 0;
@@ -147,7 +147,7 @@
     border: none;
     background: transparent;
     outline: none;
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     color: #27272A;
     cursor: pointer;
@@ -251,7 +251,7 @@
 }
 
 .artwork-artist {
-    font-size: 11px;
+    font-size: 12px;
     color: #71717A;
     margin: 2px 0 0 0;
 }
@@ -269,7 +269,7 @@
 }
 
 .artwork-rating-text {
-    font-size: 11px;
+    font-size: 12px;
     color: #52525B;
     font-weight: 500;
 }
@@ -287,7 +287,7 @@
     border: 1px solid #171717;
     border-radius: 6px;
     padding: 6px 14px;
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 700;
     color: #171717;
     cursor: pointer;
@@ -304,7 +304,7 @@
     border: 1px solid #102B21;
     border-radius: 6px;
     padding: 6px 18px;
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 700;
     color: #FFFFFF;
     cursor: pointer;
@@ -383,4 +383,16 @@
         align-items: flex-start;
         gap: 12px;
     }
+}
+
+/* ================= ARTWORK FRAMES ================= */
+/* Show the whole artwork inside a fixed frame: never cropped or stretched. */
+.artwork-thumb-container {
+    border: 1px solid #cfccc2;
+    box-shadow: 0 1px 2px rgba(16, 43, 33, 0.06);
+}
+
+.artwork-image {
+    object-fit: contain;
+    background: #f4f3ee;
 }

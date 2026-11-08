@@ -12,8 +12,8 @@ body {
     align-items: center;
     gap: 8px;
     margin: -4px 0 18px;
-    color: #818981;
-    font-size: 11px;
+    color: #707770;
+    font-size: 12px;
 }
 
 .artwork-breadcrumbs a {
@@ -38,7 +38,7 @@ body {
 .artwork-purchase-card,
 .artwork-about-card {
     margin: 0;
-    border: 1px solid rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 16px;
     background: #fff;
 }
@@ -69,8 +69,8 @@ body {
 
 .artwork-preview-card figcaption {
     padding: 10px 0 0;
-    color: #828982;
-    font-size: 9px;
+    color: #707670;
+    font-size: 11px;
     letter-spacing: 0.65px;
     text-align: center;
 }
@@ -83,7 +83,7 @@ body {
 
 .artwork-category-label {
     color: #246849;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.75px;
 }
@@ -103,7 +103,7 @@ body {
     align-items: center;
     gap: 9px;
     color: #353d37;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-decoration: none;
 }
@@ -120,7 +120,7 @@ body {
     border-radius: 50%;
     background: #e6f0e9;
     color: #246849;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
 }
 
@@ -129,13 +129,13 @@ body {
     align-items: center;
     gap: 8px;
     margin-top: 16px;
-    color: #737d75;
-    font-size: 10px;
+    color: #6d776f;
+    font-size: 11px;
 }
 
 .artwork-rating-stars {
     color: #a77737;
-    font-size: 13px;
+    font-size: 14px;
     letter-spacing: 1px;
 }
 
@@ -149,8 +149,8 @@ body {
 
 .artwork-short-description {
     margin: 0 0 16px;
-    color: #748078;
-    font-size: 11.5px;
+    color: #6c7770;
+    font-size: 12px;
     line-height: 1.65;
 }
 
@@ -163,17 +163,17 @@ body {
     border-radius: 9px;
     background: #eaf3ed;
     color: #286246;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .artwork-delivery-note strong {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .artwork-delivery-note span {
-    color: #718078;
-    font-size: 9px;
+    color: #6a7871;
+    font-size: 11px;
 }
 
 .artwork-purchase-actions {
@@ -191,7 +191,7 @@ body {
     gap: 8px;
     padding: 9px 12px;
     border-radius: 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
     transition: background-color 150ms ease, transform 150ms ease;
@@ -260,8 +260,8 @@ body {
 .artwork-about-card p {
     max-width: 660px;
     margin: 0;
-    color: #748078;
-    font-size: 10.5px;
+    color: #6c7770;
+    font-size: 11px;
     line-height: 1.65;
 }
 
@@ -276,11 +276,11 @@ body {
     display: grid;
     grid-template-columns: 58px 1fr;
     gap: 8px;
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .artwork-metadata dt {
-    color: #858d87;
+    color: #707671;
     font-weight: 500;
 }
 
@@ -311,7 +311,7 @@ body {
 
 .related-view-all {
     color: #28664c;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
 }
@@ -331,7 +331,7 @@ body {
     min-width: 0;
     flex-direction: column;
     padding: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 12px;
     background: #fff;
     color: inherit;
@@ -341,7 +341,7 @@ body {
 
 .related-artwork-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .related-artwork-image-wrap {
@@ -368,7 +368,7 @@ body {
     overflow: hidden;
     margin-top: 8px;
     color: #202b25;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -376,8 +376,8 @@ body {
 
 .related-artwork-artist {
     margin-top: 3px;
-    color: #7b847d;
-    font-size: 9px;
+    color: #6f7770;
+    font-size: 11px;
 }
 
 @media (max-width: 760px) {
@@ -415,4 +415,80 @@ body {
     .related-artwork-image-wrap img {
         transition: none;
     }
+}
+
+/* ================= ARTWORK FRAMES, LOCKED PREVIEW & SALE STATES ================= */
+.artwork-preview-image-wrap {
+    position: relative;
+    border: 1px solid #cfccc2;
+}
+
+.artwork-preview-image-wrap.is-locked .artwork-preview-image {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.artwork-lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(12, 21, 16, 0.42);
+    color: #fff;
+    text-align: center;
+    pointer-events: none;
+}
+
+.artwork-lock-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    background: rgba(12, 21, 16, 0.72);
+}
+
+.artwork-lock-text {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(12, 21, 16, 0.72);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.related-artwork-image-wrap {
+    border: 1px solid #cfccc2;
+}
+
+.related-artwork-image-wrap img {
+    object-fit: contain;
+    background: #f4f3ee;
+}
+
+.artwork-status-notice {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border: 1px solid #f2d4a7;
+    border-radius: 10px;
+    background: #fff7ea;
+    color: #6b4a14;
+    font-size: 13px;
+}
+
+.artwork-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+a.artwork-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }

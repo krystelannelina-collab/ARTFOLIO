@@ -25,7 +25,7 @@
     border-radius: 2px;
     background: #315b45;
     color: #fff;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
@@ -38,7 +38,7 @@
 }
 
 .artwork-primary-button span {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 1;
 }
@@ -95,7 +95,7 @@
 
 .artwork-overview span {
     color: #62655b;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .artwork-overview strong {
@@ -152,11 +152,11 @@
     background: transparent;
     color: #41483f;
     font: inherit;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .artwork-search input::placeholder {
-    color: #85877c;
+    color: #74756c;
     opacity: 1;
 }
 
@@ -175,7 +175,7 @@
     border: 1px solid #c9c9bf;
     background: transparent;
     color: #4f554c;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
@@ -212,7 +212,7 @@
     padding: 0 12px;
     border-bottom: 1px solid #c8c8bd;
     color: #55594f;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.35px;
 }
@@ -222,7 +222,7 @@
     padding: 8px 12px;
     border-bottom: 1px solid #e1e0d8;
     color: #596056;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .artwork-table tbody tr:last-child td {
@@ -255,14 +255,14 @@
     max-width: 230px;
     overflow: hidden;
     color: #353c34;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-overflow: ellipsis;
 }
 
 .artwork-title-cell small {
     color: #73766c;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .artwork-category-chip {
@@ -270,7 +270,7 @@
     padding: 4px 7px;
     background: #f0f1e9;
     color: #596e55;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .artwork-price {
@@ -288,7 +288,7 @@
     border: 1px solid #cbd6c8;
     background: #eef4ea;
     color: #315b45;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -316,7 +316,7 @@
     border: 0;
     background: transparent;
     color: #315b45;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
@@ -349,7 +349,7 @@
 
 .artwork-table-footer > span {
     color: #696c62;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .artwork-table-footer nav[role="navigation"] {
@@ -380,7 +380,7 @@
     border: 1px solid #d5d4cb;
     background: #fcfbf7;
     color: #50574d;
-    font-size: 11px;
+    font-size: 12px;
     text-decoration: none;
 }
 
@@ -391,7 +391,7 @@
 }
 
 .artwork-table-footer nav[role="navigation"] span[aria-disabled="true"] span {
-    color: #a0a094;
+    color: #75756c;
 }
 
 .artwork-empty-state {
@@ -406,12 +406,12 @@
 
 .artwork-empty-state strong {
     color: #353c34;
-    font-size: 17px;
+    font-size: 18px;
 }
 
 .artwork-empty-state > span {
     color: #73766c;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .artwork-empty-state .artwork-primary-button {
@@ -434,7 +434,7 @@
     align-content: start;
     gap: 8px;
     color: #41483f;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -454,7 +454,7 @@
     background: #fff;
     color: #353c34;
     font: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 400;
 }
 
@@ -486,7 +486,7 @@
     align-items: center;
     gap: 12px;
     color: #696c62;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400;
 }
 
@@ -503,13 +503,13 @@
 
 .artwork-field-hint {
     color: #696c62;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
 }
 
 .field-error {
     color: #9a3e2c;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
 }
 
@@ -568,7 +568,7 @@
 .artwork-modal-header p {
     margin: 4px 0 0;
     color: #696c62;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .artwork-modal-close {
@@ -617,7 +617,7 @@
 .artwork-modal-errors {
     margin: 14px 25px 0;
     padding: 10px 12px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .artwork-modal-errors ul {
@@ -660,7 +660,7 @@
 .artwork-preview-header p {
     margin: 3px 0 0;
     color: #696c62;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .artwork-preview-content {
@@ -702,7 +702,7 @@
 .artwork-preview-artist {
     margin: 5px 0 0;
     color: #696c62;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .artwork-preview-price {
@@ -718,7 +718,7 @@
 
 .artwork-preview-price span {
     color: #696c62;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .artwork-preview-price strong {
@@ -739,7 +739,7 @@
 .artwork-preview-description p {
     margin: 8px 0 0;
     color: #62655b;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.7;
     white-space: pre-line;
 }
@@ -760,7 +760,7 @@
 .artwork-preview-actions .artwork-primary-button,
 .artwork-preview-actions .artwork-secondary-button {
     min-height: 40px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .visually-hidden {
@@ -816,7 +816,7 @@
     .artworks-page-heading .artwork-secondary-button {
         min-height: 36px;
         padding: 0 9px;
-        font-size: 11px;
+        font-size: 12px;
         white-space: nowrap;
     }
 
@@ -834,7 +834,7 @@
     }
 
     .artwork-overview span {
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .artwork-overview strong {
@@ -848,7 +848,7 @@
 
     .artwork-search input,
     .artwork-filter select {
-        font-size: 11px;
+        font-size: 12px;
     }
 
     .artwork-table-footer {
@@ -875,11 +875,11 @@
     }
 
     .artwork-modal-header h2 {
-        font-size: 19px;
+        font-size: 20px;
     }
 
     .artwork-modal-header p {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .artwork-modal-form {
@@ -920,7 +920,7 @@
     }
 
     .artwork-preview-content h2 {
-        font-size: 21px;
+        font-size: 22px;
     }
 
     .artwork-preview-actions {
@@ -932,7 +932,7 @@
     .artwork-preview-actions .artwork-secondary-button {
         flex: 1;
         padding: 0 8px;
-        font-size: 11px;
+        font-size: 12px;
     }
 
     .artwork-form-fields {
@@ -950,4 +950,17 @@
         flex: 1;
         padding: 0 8px;
     }
+}
+
+/* ================= SALE STATES ================= */
+.status-sold {
+    margin-left: 4px;
+    background: #e9e4f6;
+    color: #4b3a8a;
+}
+
+.status-reserved {
+    margin-left: 4px;
+    background: #fff1d6;
+    color: #6b4a14;
 }

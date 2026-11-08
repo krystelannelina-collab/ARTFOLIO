@@ -29,6 +29,11 @@ class CartController extends Controller
         abort_unless($artwork->status === 'published', 404);
         $this->ensureCategoryIsVisible($artwork);
 
+        if (! $artwork->isAvailableForPurchase()) {
+            return redirect()->route('artworks.show', ['slug' => $artwork->slug])
+                ->with('status', "{$artwork->title} has already been purchased and is no longer available.");
+        }
+
         $cart = $request->session()->get('cart', []);
         $cart[$artwork->id] = 1;
         $request->session()->put('cart', $cart);
@@ -42,6 +47,11 @@ class CartController extends Controller
         $artwork = Artwork::query()->where('slug', $slug)->firstOrFail();
         abort_unless($artwork->status === 'published', 404);
         $this->ensureCategoryIsVisible($artwork);
+
+        if (! $artwork->isAvailableForPurchase()) {
+            return redirect()->route('artworks.show', ['slug' => $artwork->slug])
+                ->with('status', "{$artwork->title} has already been purchased and is no longer available.");
+        }
 
         $request->session()->put('cart', [$artwork->id => 1]);
 
@@ -61,7 +71,6 @@ class CartController extends Controller
     public function saveForLater(Request $request, Artwork $artwork): RedirectResponse
     {
         FavoriteController::ensureUserFavoritesInitialized($request);
-        $request->session()->put('favorites_initialized', true);
 
         $request->user()?->favoriteArtworks()->syncWithoutDetaching([$artwork->id]);
 
@@ -85,8 +94,8 @@ class CartController extends Controller
 
         return Artwork::query()
             ->whereIn('id', array_map('intval', array_keys($cart)))
-            ->where('status', 'published')
-            ->whereNotIn('category', Category::query()->where('is_visible', false)->select('name'))
+            ->visibleToClients()
+            ->availableForPurchase()
             ->orderBy('title')
             ->get()
             ->map(fn (Artwork $artwork): array => [

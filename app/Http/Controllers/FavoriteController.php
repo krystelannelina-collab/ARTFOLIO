@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artwork;
-use App\Models\Category;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -25,48 +25,39 @@ class FavoriteController extends Controller
         'geometric-abstract',
     ];
 
+    /**
+     * Seed the starter favorites exactly once per account. The timestamp is
+     * stored on the user, so removing every favorite never brings them back.
+     */
     public static function ensureUserFavoritesInitialized(Request $request): void
     {
         $user = $request->user();
-        if ($user === null) {
+        if ($user === null || $user->favorites_seeded_at !== null) {
             return;
         }
 
-        if ($request->session()->get('favorites_initialized', false)) {
-            return;
-        }
+        if (! $user->favoriteArtworks()->exists()) {
+            $defaultArtworkIds = Artwork::query()
+                ->whereIn('slug', self::DEFAULT_FAVORITE_SLUGS)
+                ->visibleToClients()
+                ->availableForPurchase()
+                ->orderBy('id')
+                ->pluck('id')
+                ->all();
 
-        if ($user->favoriteArtworks()->exists()) {
-            $request->session()->put('favorites_initialized', true);
-
-            return;
-        }
-
-        $defaultArtworkIds = Artwork::query()
-            ->whereIn('slug', self::DEFAULT_FAVORITE_SLUGS)
-            ->where('status', 'published')
-            ->orderBy('id')
-            ->pluck('id')
-            ->all();
-
-        if (! empty($defaultArtworkIds)) {
             $user->favoriteArtworks()->syncWithoutDetaching($defaultArtworkIds);
-            $request->session()->put('favorites_initialized', true);
         }
+
+        $user->forceFill(['favorites_seeded_at' => now()])->save();
     }
 
     public function index(Request $request): View
     {
         self::ensureUserFavoritesInitialized($request);
 
-        $hiddenCategories = Category::query()
-            ->where('is_visible', false)
-            ->pluck('name');
-
         $favoriteModels = $request->user()
             ->favoriteArtworks()
-            ->where('status', 'published')
-            ->whereNotIn('category', $hiddenCategories)
+            ->visibleToClients()
             ->get();
 
         $favorites = $favoriteModels
@@ -79,6 +70,7 @@ class FavoriteController extends Controller
                 'rating' => '5.0',
                 'price' => (float) $artwork->price,
                 'image' => asset($artwork->image_path),
+                'is_available' => $artwork->isAvailableForPurchase(),
             ])
             ->all();
 
@@ -97,69 +89,50 @@ class FavoriteController extends Controller
     public function toggle(Request $request, string $slug): JsonResponse|RedirectResponse
     {
         self::ensureUserFavoritesInitialized($request);
-        $request->session()->put('favorites_initialized', true);
-
-        $hiddenCategories = Category::query()
-            ->where('is_visible', false)
-            ->pluck('name');
-
-        $artwork = Artwork::query()
-            ->where('slug', $slug)
-            ->where('status', 'published')
-            ->whereNotIn('category', $hiddenCategories)
-            ->firstOrFail();
 
         $user = $request->user();
+        $artwork = Artwork::query()->where('slug', $slug)->firstOrFail();
         $alreadySaved = $user->favoriteArtworks()->where('artworks.id', $artwork->id)->exists();
 
         if ($alreadySaved) {
             $user->favoriteArtworks()->detach($artwork->id);
-            $saved = false;
+            $favorited = false;
         } else {
+            abort_unless(Artwork::query()->whereKey($artwork->id)->visibleToClients()->exists(), 404);
             $user->favoriteArtworks()->syncWithoutDetaching([$artwork->id]);
-            $saved = true;
+            $favorited = true;
         }
 
-        $count = $user->favoriteArtworks()
-            ->where('status', 'published')
-            ->whereNotIn('category', $hiddenCategories)
-            ->count();
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'saved' => $saved,
-                'count' => $count,
-            ]);
-        }
-
-        return back()->with('status', $saved ? 'Artwork saved to your favorites.' : 'Artwork removed from your favorites.');
+        return $this->favoriteResponse(
+            $request,
+            $user,
+            $favorited,
+            $favorited ? 'Artwork saved to your favorites.' : 'Artwork removed from your favorites.',
+        );
     }
 
     public function destroy(Request $request, string $slug): JsonResponse|RedirectResponse
     {
         self::ensureUserFavoritesInitialized($request);
-        $request->session()->put('favorites_initialized', true);
 
         $artwork = Artwork::query()->where('slug', $slug)->firstOrFail();
         $user = $request->user();
         $user->favoriteArtworks()->detach($artwork->id);
 
-        $hiddenCategories = Category::query()
-            ->where('is_visible', false)
-            ->pluck('name');
+        return $this->favoriteResponse($request, $user, false, 'Artwork removed from your favorites.');
+    }
 
-        $count = $user->favoriteArtworks()
-            ->where('status', 'published')
-            ->whereNotIn('category', $hiddenCategories)
-            ->count();
-
+    private function favoriteResponse(Request $request, User $user, bool $favorited, string $message): JsonResponse|RedirectResponse
+    {
         if ($request->expectsJson()) {
             return response()->json([
-                'removed' => true,
-                'count' => $count,
+                'favorited' => $favorited,
+                'saved' => $favorited,
+                'removed' => ! $favorited,
+                'count' => $user->favoriteArtworks()->visibleToClients()->count(),
             ]);
         }
 
-        return back()->with('status', 'Artwork removed from your favorites.');
+        return back()->with('status', $message);
     }
 }

@@ -68,7 +68,7 @@
                                     <strong>{{ $artwork->title }}</strong>
                                     <span>{{ $artwork->artist_name }}</span>
                                     <div class="gallery-card-bottom">
-                                        <b>${{ number_format((float) $artwork->price, 2) }}</b>
+                                        <b>@peso((float) $artwork->price)</b>
                                         <a href="{{ route('artworks.show', ['slug' => $artwork->slug]) }}">View</a>
                                     </div>
                                 </div>
@@ -105,7 +105,7 @@
                                         </td>
                                         <td>{{ $artwork->artist_name }}</td>
                                         <td><span class="category-chip">{{ $artwork->category }}</span></td>
-                                        <td class="price-cell">${{ number_format((float) $artwork->price, 2) }}</td>
+                                        <td class="price-cell">@peso((float) $artwork->price)</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -117,6 +117,11 @@
             </article>
 
             <div class="dashboard-side-stack">
+                <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="admin-panel metric-card metric-card-link {{ $stats['pendingPayments'] > 0 ? 'metric-card-attention' : '' }}">
+                    <span class="metric-label">PAYMENTS TO REVIEW</span>
+                    <strong class="metric-value">{{ number_format($stats['pendingPayments']) }}</strong>
+                    <span class="metric-note">{{ $stats['pendingPayments'] > 0 ? 'Orders awaiting your approval →' : 'No payments waiting' }}</span>
+                </a>
                 <article class="admin-panel metric-card">
                     <span class="metric-label">FEATURED ARTISTS</span>
                     <strong class="metric-value">{{ number_format($stats['artists']) }}</strong>
@@ -167,6 +172,34 @@
                     <div class="support-empty">New client accounts will appear here.</div>
                 @endif
             </article>
+        </section>
+
+        <section class="admin-panel feedback-panel" aria-labelledby="feedback-panel-title">
+            <div class="admin-panel-heading">
+                <div>
+                    <h2 id="feedback-panel-title">Customer feedback</h2>
+                    <p>The latest messages sent from the About page.</p>
+                </div>
+            </div>
+            @if ($recentFeedback->isNotEmpty())
+                <ul class="feedback-list">
+                    @foreach ($recentFeedback as $feedback)
+                        <li class="feedback-list-item">
+                            <div class="feedback-list-meta">
+                                <strong>{{ $feedback->name }}</strong>
+                                <a href="mailto:{{ $feedback->email }}">{{ $feedback->email }}</a>
+                                @if ($feedback->rating)
+                                    <span class="feedback-rating" aria-label="Rated {{ $feedback->rating }} out of 5">{{ str_repeat('★', $feedback->rating) }}{{ str_repeat('☆', 5 - $feedback->rating) }}</span>
+                                @endif
+                                <time datetime="{{ $feedback->created_at->toIso8601String() }}">{{ $feedback->created_at->format('M j, Y') }}</time>
+                            </div>
+                            <p>{{ $feedback->message }}</p>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <div class="support-empty">Feedback from customers will appear here.</div>
+            @endif
         </section>
 
         <aside class="admin-coming-soon" aria-label="Order reporting">

@@ -57,9 +57,7 @@
 
             @if ($errors->any())
                 <div class="alert alert-danger auth-alert" role="alert">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
+                    Please fix the {{ \Illuminate\Support\Str::plural('field', $errors->count()) }} marked below.
                 </div>
             @endif
 
@@ -79,6 +77,20 @@
                     autocomplete="name"
                     value="{{ old('name') }}"
                     required>
+                @error('name')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    class="form-input"
+                    autocomplete="username"
+                    value="{{ old('username') }}"
+                    minlength="3"
+                    maxlength="30"
+                    pattern="[A-Za-z0-9_\-]+"
+                    title="3 to 30 letters, numbers, dashes, or underscores"
+                    required>
+                @error('username')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                 <input
                     type="email"
                     name="email"
@@ -87,6 +99,7 @@
                     autocomplete="email"
                     value="{{ old('email') }}"
                     required>
+                @error('email')<small class="field-error" role="alert">{{ $message }}</small>@enderror
 
                 <div class="password-wrap">
                     <input
@@ -109,6 +122,24 @@
                         </svg>
                     </button>
                 </div>
+                @error('password')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+
+                <input
+                    type="password"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    placeholder="Confirm password"
+                    class="form-input"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required>
+                <small class="field-error" id="passwordMatchError" role="alert" hidden>Passwords do not match.</small>
+
+                <label class="terms-check">
+                    <input type="checkbox" name="terms" value="1" @checked(old('terms')) required>
+                    <span>I agree to the ARTFOLIO Terms and Conditions and Privacy Policy.</span>
+                </label>
+                @error('terms')<small class="field-error" role="alert">{{ $message }}</small>@enderror
 
                 <button type="submit" class="create-button" id="submitButton">Create Account</button>
             </form>
@@ -140,6 +171,18 @@
         eyeIcon.style.display = isPassword ? 'block' : 'none';
         eyeOffIcon.style.display = isPassword ? 'none' : 'block';
     });
+
+    const passwordConfirmation = document.getElementById('password_confirmation');
+    const passwordMatchError = document.getElementById('passwordMatchError');
+
+    function checkPasswordsMatch() {
+        const isMismatch = passwordConfirmation.value !== '' && passwordConfirmation.value !== password.value;
+        passwordConfirmation.setCustomValidity(isMismatch ? 'Passwords do not match.' : '');
+        passwordMatchError.hidden = ! isMismatch;
+    }
+
+    password.addEventListener('input', checkPasswordsMatch);
+    passwordConfirmation.addEventListener('input', checkPasswordsMatch);
 </script>
 </body>
 </html>

@@ -55,7 +55,7 @@ class AdminCustomersTest extends TestCase
             ->assertOk()
             ->assertSee('Alex Reyes')
             ->assertDontSee('Jamie Cruz')
-            ->assertSee('$70.00')
+            ->assertSee('₱70.00')
             ->assertViewHas('stats', [
                 'totalCustomers' => 2,
                 'customersWithOrders' => 2,

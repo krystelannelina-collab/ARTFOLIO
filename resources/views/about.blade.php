@@ -146,6 +146,92 @@
             </div>
         </section>
 
+        @php
+            $contact = config('artfolio.contact');
+        @endphp
+        <section class="about-contact" aria-labelledby="about-contact-title">
+            <div class="about-contact-info">
+                <span class="about-eyebrow">GET IN TOUCH</span>
+                <h2 id="about-contact-title">Contact ARTFOLIO.</h2>
+                <p>Questions about an order, a payment, or an artist? Reach the team here.</p>
+                <dl class="about-contact-list">
+                    <div>
+                        <dt>Email</dt>
+                        <dd>
+                            @if (! empty($contact['email']))
+                                <a href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>
+                            @else
+                                <span class="about-contact-placeholder">Contact email coming soon</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Phone</dt>
+                        <dd>
+                            @if (! empty($contact['phone']))
+                                <a href="tel:{{ preg_replace('/[^\d+]/', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
+                            @else
+                                <span class="about-contact-placeholder">Contact number coming soon</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Facebook</dt>
+                        <dd>
+                            @if (! empty($contact['facebook_url']))
+                                <a href="{{ $contact['facebook_url'] }}" target="_blank" rel="noopener noreferrer">Visit our official Facebook page</a>
+                            @else
+                                <span class="about-contact-placeholder">Official page coming soon</span>
+                            @endif
+                        </dd>
+                    </div>
+                    @if (! empty($contact['address']))
+                        <div>
+                            <dt>Address</dt>
+                            <dd>{{ $contact['address'] }}</dd>
+                        </div>
+                    @endif
+                </dl>
+            </div>
+
+            <form method="POST" action="{{ route('feedback.store') }}" class="about-feedback-form" id="feedback" aria-labelledby="about-feedback-title">
+                @csrf
+                <h3 id="about-feedback-title">Send us feedback</h3>
+                <p>Tell us what you love or what we can improve.</p>
+
+                @if (session('feedback_status'))
+                    <p class="about-feedback-success" role="status">{{ session('feedback_status') }}</p>
+                @endif
+
+                <label class="about-field">
+                    <span>Name</span>
+                    <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}" maxlength="255" required>
+                    @error('name')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                </label>
+                <label class="about-field">
+                    <span>Email</span>
+                    <input type="email" name="email" value="{{ old('email', auth()->user()->email) }}" maxlength="255" required>
+                    @error('email')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                </label>
+                <label class="about-field">
+                    <span>Rating <small>(optional)</small></span>
+                    <select name="rating">
+                        <option value="">No rating</option>
+                        @foreach ([5 => 'Excellent', 4 => 'Good', 3 => 'Okay', 2 => 'Poor', 1 => 'Very poor'] as $ratingValue => $ratingLabel)
+                            <option value="{{ $ratingValue }}" @selected((string) old('rating') === (string) $ratingValue)>{{ $ratingValue }} – {{ $ratingLabel }}</option>
+                        @endforeach
+                    </select>
+                    @error('rating')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                </label>
+                <label class="about-field">
+                    <span>Message</span>
+                    <textarea name="message" rows="4" minlength="10" maxlength="2000" required>{{ old('message') }}</textarea>
+                    @error('message')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                </label>
+                <button type="submit" class="about-button about-button-primary">Send feedback</button>
+            </form>
+        </section>
+
         <section class="about-cta" aria-labelledby="about-cta-title">
             <span class="about-cta-orbit about-cta-orbit-one" aria-hidden="true"></span>
             <span class="about-cta-orbit about-cta-orbit-two" aria-hidden="true"></span>

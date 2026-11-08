@@ -143,6 +143,9 @@
 
                     <div class="favorite-content">
                         <span class="favorite-tag">{{ $item['category'] }}</span>
+                        @unless ($item['is_available'])
+                            <span class="favorite-tag favorite-tag-sold">No longer available</span>
+                        @endunless
                         <h2 class="favorite-title"><a href="{{ route('artworks.show', ['slug' => $item['slug']]) }}">{{ $item['title'] }}</a></h2>
                         <p class="favorite-author">by {{ $item['author'] }}</p>
 
@@ -270,20 +273,34 @@
                 if (!card) return;
 
                 const removeUrl = this.getAttribute('data-remove-url');
-                if (removeUrl) {
-                    fetch(removeUrl, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json',
-                        },
-                    }).catch(() => {});
-                }
+                if (!removeUrl || this.disabled) return;
 
-                card.classList.add('is-removed');
-                setTimeout(() => {
-                    updateCounts();
-                }, 200);
+                this.disabled = true;
+                card.classList.add('is-removing');
+
+                fetch(removeUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Request failed');
+                        }
+
+                        card.classList.add('is-removed');
+                        updateCounts();
+                    })
+                    .catch(() => {
+                        this.disabled = false;
+                        alert('We could not remove this artwork from your favorites. Please try again.');
+                    })
+                    .finally(() => {
+                        card.classList.remove('is-removing');
+                    });
             });
         });
 

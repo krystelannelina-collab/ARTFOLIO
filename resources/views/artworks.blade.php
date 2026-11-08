@@ -127,7 +127,7 @@
 
                     <div class="artwork-title-row">
                         <h2 class="artwork-name"><a href="{{ route('artworks.show', ['slug' => $art['slug']]) }}">{{ $art['title'] }}</a></h2>
-                        <span class="artwork-price">${{ number_format($art['price'], 2) }}</span>
+                        <span class="artwork-price">@peso($art['price'])</span>
                     </div>
 
                     <p class="artwork-artist">by {{ $art['author'] }}</p>

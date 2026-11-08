@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Artwork;
 use App\Models\Category;
+use App\Models\Order;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,13 +16,9 @@ class ArtworkController extends Controller
     {
         FavoriteController::ensureUserFavoritesInitialized($request);
 
-        $hiddenCategories = Category::query()
-            ->where('is_visible', false)
-            ->pluck('name');
-
         $catalogArtworks = Artwork::query()
-            ->where('status', 'published')
-            ->whereNotIn('category', $hiddenCategories)
+            ->visibleToClients()
+            ->availableForPurchase()
             ->orderBy('id')
             ->get();
 
@@ -65,8 +63,11 @@ class ArtworkController extends Controller
         FavoriteController::ensureUserFavoritesInitialized($request);
 
         $catalogArtwork = Artwork::query()->where('slug', $slug)->firstOrFail();
+        $user = $request->user();
+        $isAdmin = $user?->role === 'admin';
+        $isPurchasedByViewer = $catalogArtwork->isPurchasedBy($user);
 
-        abort_unless($catalogArtwork->status === 'published' || Auth::user()?->role === 'admin', 404);
+        abort_unless($catalogArtwork->status === 'published' || $isAdmin || $isPurchasedByViewer, 404);
 
         $hiddenCategories = Category::query()
             ->where('is_visible', false)
@@ -76,10 +77,20 @@ class ArtworkController extends Controller
             fn (string $category): bool => strcasecmp($category, $catalogArtwork->category) === 0,
         );
 
-        abort_unless(! $isHiddenCategory || Auth::user()?->role === 'admin', 404);
+        abort_unless(! $isHiddenCategory || $isAdmin || $isPurchasedByViewer, 404);
 
-        $isFavorited = Auth::check()
-            && Auth::user()->favoriteArtworks()->where('artworks.id', $catalogArtwork->id)->exists();
+        $isFavorited = $user !== null
+            && $user->favoriteArtworks()->where('artworks.id', $catalogArtwork->id)->exists();
+
+        $purchasedOrderItem = $isPurchasedByViewer
+            ? $catalogArtwork->orderItems()
+                ->with('order')
+                ->whereHas('order', fn (Builder $order): Builder => $order
+                    ->where('user_id', $user->id)
+                    ->where('status', Order::STATUS_COMPLETED))
+                ->latest()
+                ->first()
+            : null;
 
         $artwork = [
             'id' => $catalogArtwork->id,
@@ -92,13 +103,29 @@ class ArtworkController extends Controller
             'image' => asset($catalogArtwork->image_path),
             'description' => $catalogArtwork->description,
             'is_favorited' => $isFavorited,
+            'availability' => $catalogArtwork->availability,
+            'is_available' => $catalogArtwork->isAvailableForPurchase(),
+            'is_purchased_by_viewer' => $isPurchasedByViewer,
+            'download_url' => $purchasedOrderItem
+                ? route('orders.items.download', [$purchasedOrderItem->order, $purchasedOrderItem])
+                : null,
+            'specifications' => array_filter([
+                'Image size' => $catalogArtwork->image_width && $catalogArtwork->image_height
+                    ? number_format($catalogArtwork->image_width).' × '.number_format($catalogArtwork->image_height).' px'
+                    : null,
+                'Aspect ratio' => $catalogArtwork->aspectRatio(),
+                'File format' => $catalogArtwork->file_format ? strtoupper($catalogArtwork->file_format) : null,
+                'File size' => $catalogArtwork->readableFileSize(),
+                'Canvas size' => $catalogArtwork->canvas_size,
+            ]),
         ];
 
         $relatedQuery = Artwork::query()
             ->where('status', 'published')
+            ->availableForPurchase()
             ->where('slug', '!=', $catalogArtwork->slug);
 
-        if (Auth::user()?->role !== 'admin' && $hiddenCategories->isNotEmpty()) {
+        if (! $isAdmin && $hiddenCategories->isNotEmpty()) {
             $relatedQuery->whereNotIn('category', $hiddenCategories);
         }
 

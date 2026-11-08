@@ -29,7 +29,7 @@
     </label>
 
     <label class="artwork-field">
-        <span>Price (USD) <b aria-hidden="true">*</b></span>
+        <span>Price (₱ PHP) <b aria-hidden="true">*</b></span>
         <input type="number" name="price" value="{{ $useFormOldInput ? old('price', $artwork->price) : $artwork->price }}" min="0" max="99999999.99" step="0.01" required>
         @if ($useFormOldInput && $errors->has('price'))<small class="field-error">{{ $errors->first('price') }}</small>@endif
     </label>
@@ -42,6 +42,13 @@
             @endforeach
         </select>
         @if ($useFormOldInput && $errors->has('status'))<small class="field-error">{{ $errors->first('status') }}</small>@endif
+    </label>
+
+    <label class="artwork-field">
+        <span>Canvas or print size</span>
+        <input type="text" name="canvas_size" value="{{ $useFormOldInput ? old('canvas_size', $artwork->canvas_size) : $artwork->canvas_size }}" maxlength="100" placeholder="e.g. 24 × 36 in">
+        <small class="artwork-field-hint">Optional. The physical or intended print size.</small>
+        @if ($useFormOldInput && $errors->has('canvas_size'))<small class="field-error">{{ $errors->first('canvas_size') }}</small>@endif
     </label>
 
     <label class="artwork-field artwork-description-field">
@@ -63,7 +70,10 @@
             </span>
         @endif
         <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" {{ $isEditing ? '' : 'required' }}>
-        <small class="artwork-field-hint">{{ $isEditing ? 'Optional. Choose a new image to replace the current one. JPG, PNG, or WebP, up to 5 MB.' : 'JPG, PNG, or WebP. Maximum file size: 5 MB.' }}</small>
+        <small class="artwork-field-hint">{{ $isEditing ? 'Optional. Choose a new image to replace the current one. JPG, PNG, or WebP, up to 30 MB. Upload the full-resolution original.' : 'Upload the full-resolution original (JPG, PNG, or WebP, up to 30 MB). Width, height, aspect ratio, and format are read from the file. Buyers download this original; the catalog shows a smaller preview.' }}</small>
+        @if ($isEditing && $artwork->exists && $artwork->image_width)
+            <small class="artwork-field-hint">Current file: {{ $artwork->image_width }} × {{ $artwork->image_height }} px · {{ $artwork->aspectRatio() }} · {{ strtoupper((string) $artwork->file_format) }}{{ $artwork->readableFileSize() ? ' · '.$artwork->readableFileSize() : '' }}</small>
+        @endif
         @if ($useFormOldInput && $errors->has('image'))<small class="field-error">{{ $errors->first('image') }}</small>@endif
     </label>
 </div>

@@ -61,10 +61,27 @@
 
         <section class="artwork-detail-grid" aria-labelledby="artwork-title">
             <figure class="artwork-preview-card">
-                <div class="artwork-preview-image-wrap">
-                    <img src="{{ $artwork['image'] }}" alt="{{ $artwork['title'] }}" class="artwork-preview-image">
+                <div class="artwork-preview-image-wrap {{ $artwork['is_purchased_by_viewer'] ? '' : 'is-locked' }}">
+                    <img src="{{ $artwork['image'] }}" alt="{{ $artwork['title'] }}" class="artwork-preview-image" draggable="false">
+                    @unless ($artwork['is_purchased_by_viewer'])
+                        <div class="artwork-lock-overlay" aria-hidden="true">
+                            <span class="artwork-lock-icon">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+                                    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                                </svg>
+                            </span>
+                            <span class="artwork-lock-text">Full resolution unlocks after purchase</span>
+                        </div>
+                    @endunless
                 </div>
-                <figcaption>ARTWORK PREVIEW <span aria-hidden="true">·</span> DIGITAL DOWNLOAD</figcaption>
+                <figcaption>
+                    @if ($artwork['is_purchased_by_viewer'])
+                        YOU OWN THIS ARTWORK <span aria-hidden="true">·</span> ORIGINAL FILE AVAILABLE
+                    @else
+                        PREVIEW ONLY <span aria-hidden="true">·</span> ORIGINAL FILE AFTER PURCHASE
+                    @endif
+                </figcaption>
             </figure>
 
             <div class="artwork-purchase-card">
@@ -81,15 +98,33 @@
                     <span>{{ $artwork['rating'] }}</span>
                 </div>
 
-                <p class="artwork-detail-price">${{ number_format($artwork['price'], 2) }}</p>
+                <p class="artwork-detail-price">@peso($artwork['price'])</p>
                 <p class="artwork-short-description">{{ $artwork['description'] }}</p>
 
+                @if (session('status'))
+                    <p class="artwork-status-notice" role="status">{{ session('status') }}</p>
+                @endif
+
                 <div class="artwork-delivery-note">
-                    <strong>Digital artwork · No shipping</strong>
-                    <span>Download your file after purchase.</span>
+                    @if ($artwork['is_purchased_by_viewer'])
+                        <strong>You own this one-of-one artwork</strong>
+                        <span>Download the original full-resolution file anytime.</span>
+                    @elseif ($artwork['availability'] === 'sold')
+                        <strong>Sold · One of one</strong>
+                        <span>This original has been collected and is no longer for sale.</span>
+                    @elseif ($artwork['availability'] === 'reserved')
+                        <strong>Reserved · Payment under review</strong>
+                        <span>Another collector's payment for this original is being reviewed.</span>
+                    @else
+                        <strong>One of one · Digital original</strong>
+                        <span>Only one collector can buy this artwork. The full-resolution file unlocks once your payment is approved.</span>
+                    @endif
                 </div>
 
                 <div class="artwork-purchase-actions">
+                    @if ($artwork['is_purchased_by_viewer'] && $artwork['download_url'])
+                        <a href="{{ $artwork['download_url'] }}" class="artwork-action artwork-action-primary w-100">Download original</a>
+                    @elseif ($artwork['is_available'])
                     <form method="POST" action="{{ route('cart.add', ['slug' => $artwork['slug']]) }}">
                         @csrf
                         <button type="submit" class="artwork-action artwork-action-primary w-100">Add to cart</button>
@@ -103,6 +138,11 @@
                             </svg>
                         </button>
                     </form>
+                    @else
+                        <button type="button" class="artwork-action artwork-action-primary w-100" disabled>
+                            {{ $artwork['availability'] === 'sold' ? 'Sold' : 'Reserved' }}
+                        </button>
+                    @endif
                     <form method="POST" action="{{ route('favorites.toggle', ['slug' => $artwork['slug']]) }}" class="artwork-favorite-form" data-favorite-form>
                         @csrf
                         <button type="submit"
@@ -127,6 +167,10 @@
                 <div><dt>Artist</dt><dd>{{ $artwork['author'] }}</dd></div>
                 <div><dt>Category</dt><dd>{{ $artwork['category'] }}</dd></div>
                 <div><dt>Delivery</dt><dd>Digital download</dd></div>
+                <div><dt>Edition</dt><dd>One of one</dd></div>
+                @foreach ($artwork['specifications'] as $specLabel => $specValue)
+                    <div><dt>{{ $specLabel }}</dt><dd>{{ $specValue }}</dd></div>
+                @endforeach
             </dl>
         </section>
 

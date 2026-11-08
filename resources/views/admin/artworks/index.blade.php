@@ -32,6 +32,10 @@
             <div class="artwork-notice" role="status">{{ session('status') }}</div>
         @endif
 
+        @error('artwork')
+            <div class="artwork-validation-summary" role="alert">{{ $message }}</div>
+        @enderror
+
         <section class="artwork-overview" aria-label="Artwork catalog totals">
             <div><span>Total artworks</span><strong>{{ number_format($stats['total']) }}</strong></div>
             <div><span>Published</span><strong>{{ number_format($stats['published']) }}</strong></div>
@@ -105,14 +109,19 @@
                                             <img src="{{ asset($artwork->image_path) }}" alt="" loading="lazy">
                                             <span>
                                                 <strong>{{ $artwork->title }}</strong>
-                                                <small>Digital artwork</small>
+                                                <small>{{ collect([$artwork->image_width && $artwork->image_height ? $artwork->image_width.' × '.$artwork->image_height.' px' : null, $artwork->file_format ? strtoupper($artwork->file_format) : null])->filter()->implode(' · ') ?: 'Digital artwork' }}</small>
                                             </span>
                                         </div>
                                     </td>
                                     <td>{{ $artwork->artist_name }}</td>
                                     <td><span class="artwork-category-chip">{{ $artwork->category }}</span></td>
-                                    <td class="artwork-price">${{ number_format((float) $artwork->price, 2) }}</td>
-                                    <td><span class="artwork-status status-{{ $artwork->status }}">{{ ucfirst($artwork->status) }}</span></td>
+                                    <td class="artwork-price">@peso((float) $artwork->price)</td>
+                                    <td>
+                                        <span class="artwork-status status-{{ $artwork->status }}">{{ ucfirst($artwork->status) }}</span>
+                                        @if (! $artwork->isAvailableForPurchase())
+                                            <span class="artwork-status status-{{ $artwork->availability }}">{{ ucfirst($artwork->availability) }}</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <div class="artwork-row-actions">
                                             <button type="button" class="artwork-edit-trigger" data-open-edit-modal data-artwork-id="{{ $artwork->id }}">Edit</button>
@@ -125,10 +134,11 @@
                                                 data-title="{{ $artwork->title }}"
                                                 data-artist="{{ $artwork->artist_name }}"
                                                 data-category="{{ $artwork->category }}"
-                                                data-price="${{ number_format((float) $artwork->price, 2) }}"
+                                                data-price="@peso((float) $artwork->price)"
                                                 data-price-value="{{ number_format((float) $artwork->price, 2, '.', '') }}"
                                                 data-status="{{ $artwork->status }}"
                                                 data-description="{{ $artwork->description }}"
+                                                data-canvas-size="{{ $artwork->canvas_size }}"
                                                 data-image="{{ asset($artwork->image_path) }}"
                                                 data-edit-url="{{ route('admin.artworks.update', $artwork) }}"
                                                 data-client-url="{{ route('artworks.show', ['slug' => $artwork->slug]) }}"
@@ -312,6 +322,7 @@
         artworkEditForm.querySelector('[name="price"]').value = artworkTrigger.dataset.priceValue;
         artworkEditForm.querySelector('[name="status"]').value = artworkTrigger.dataset.status;
         artworkEditForm.querySelector('[name="description"]').value = artworkTrigger.dataset.description;
+        artworkEditForm.querySelector('[name="canvas_size"]').value = artworkTrigger.dataset.canvasSize ?? '';
         artworkEditForm.querySelector('[name="image"]').value = '';
 
         const currentImage = artworkEditForm.querySelector('[data-current-image]');

@@ -14,7 +14,7 @@
     border: 1px solid #e4d7c6;
     background: #f7f3eb;
     color: #777166;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.5;
 }
 
@@ -38,7 +38,7 @@
 
 .artists-overview article > span {
     color: #66695f;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -51,8 +51,8 @@
 }
 
 .artists-overview small {
-    color: #89897e;
-    font-size: 9px;
+    color: #74746b;
+    font-size: 11px;
 }
 
 .artists-table-panel {
@@ -103,11 +103,11 @@
     background: transparent;
     color: #41483f;
     font: inherit;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .artists-search input::placeholder {
-    color: #85877c;
+    color: #74756c;
     opacity: 1;
 }
 
@@ -132,7 +132,7 @@
     border: 1px solid #c9c9bf;
     background: transparent;
     color: #4f554c;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
@@ -169,7 +169,7 @@
     padding: 0 12px;
     border-bottom: 1px solid #d5d4cb;
     color: #62655b;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.35px;
 }
@@ -179,7 +179,7 @@
     padding: 8px 12px;
     border-bottom: 1px solid #e1e0d8;
     color: #575d53;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .artists-table tbody tr:last-child td {
@@ -203,14 +203,14 @@
     border-radius: 50%;
     background: #e9f0e7;
     color: #315b45;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
 }
 
 .artist-name-cell strong {
     overflow: hidden;
     color: #353c34;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-overflow: ellipsis;
 }
@@ -221,8 +221,8 @@
 }
 
 .artist-date {
-    color: #77796f !important;
-    font-size: 10px !important;
+    color: #73756c !important;
+    font-size: 11px !important;
 }
 
 .artist-status {
@@ -233,7 +233,7 @@
     border: 1px solid #cbd6c8;
     background: #eef4ea;
     color: #315b45;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -253,7 +253,7 @@
     border: 1px solid #aeb3a8;
     background: #fcfbf7;
     color: #315b45;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     text-decoration: none;
 }
@@ -274,8 +274,8 @@
 }
 
 .artists-table-footer > span {
-    color: #77796f;
-    font-size: 10px;
+    color: #73756c;
+    font-size: 11px;
 }
 
 .artists-table-footer nav[role="navigation"] {
@@ -306,7 +306,7 @@
     border: 1px solid #d5d4cb;
     background: #fcfbf7;
     color: #50574d;
-    font-size: 10px;
+    font-size: 11px;
     text-decoration: none;
 }
 
@@ -317,7 +317,7 @@
 }
 
 .artists-table-footer nav[role="navigation"] span[aria-disabled="true"] span {
-    color: #a0a094;
+    color: #75756c;
 }
 
 .artists-empty-state {
@@ -337,7 +337,7 @@
 
 .artists-empty-state > span {
     color: #73766c;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .artists-empty-state .artists-filter-reset {
@@ -392,7 +392,7 @@
     .artists-data-note {
         max-width: none;
         padding: 6px 8px;
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .artists-overview {
@@ -406,15 +406,15 @@
     }
 
     .artists-overview article > span {
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .artists-overview strong {
-        font-size: 19px;
+        font-size: 20px;
     }
 
     .artists-overview small {
-        font-size: 8px;
+        font-size: 11px;
     }
 
     .artists-filter-bar {
@@ -432,14 +432,14 @@
     }
 
     .artists-sort select {
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .artists-filter-submit,
     .artists-filter-reset {
         min-height: 40px;
         padding: 0 9px;
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .artists-table-footer {

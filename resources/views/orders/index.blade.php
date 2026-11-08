@@ -74,26 +74,26 @@
                             </div>
                             <span class="client-order-status status-{{ $order->status }}">
                                 @if ($order->status === 'completed')
-                                    Paid
+                                    Payment approved
                                 @elseif ($order->status === 'pending')
-                                    Pending payment
+                                    Awaiting approval
                                 @else
-                                    {{ ucfirst($order->status) }}
+                                    {{ $order->statusLabel() }}
                                 @endif
                             </span>
                         </header>
                         <div class="client-order-summary">
                             <span>{{ $order->items->count() }} {{ \Illuminate\Support\Str::plural('artwork', $order->items->count()) }}</span>
                             <span>{{ $order->created_at->format('M j, Y') }}</span>
-                            <strong>${{ number_format((float) $order->total, 2) }}</strong>
+                            <strong>@peso((float) $order->total)</strong>
                         </div>
                         <p>
                             @if ($order->status === 'completed')
-                                Paid via {{ $order->payment_method === 'not_configured' ? 'Card' : $order->payment_method }}. Digital downloads are ready.
+                                Payment approved via {{ $order->payment_method === 'not_configured' ? 'Card' : $order->payment_method }}. Original files are ready to download.
                             @elseif ($order->status === 'pending')
-                                Payment is pending. No charge has been made.
+                                Payment submitted and awaiting admin approval. Downloads unlock once it is approved.
                             @else
-                                Payment status: {{ ucfirst($order->status) }}.
+                                {{ $order->statusLabel() }}.{{ $order->rejection_reason ? ' Reason: '.$order->rejection_reason : '' }}
                             @endif
                         </p>
                         <a href="{{ route('orders.show', $order) }}" class="client-order-link">View order &amp; downloads <span aria-hidden="true">→</span></a>

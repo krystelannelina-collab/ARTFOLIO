@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
     Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
     Route::get('/about', AboutController::class)->name('about');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:5,1')->name('feedback.store');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favorites/{slug}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::delete('/favorites/{slug}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');

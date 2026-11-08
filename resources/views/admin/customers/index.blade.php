@@ -42,7 +42,7 @@
             </article>
             <article>
                 <span>Paid sales</span>
-                <strong>${{ number_format($stats['paidSales'], 2) }}</strong>
+                <strong>@peso($stats['paidSales'])</strong>
                 <small>Completed customer orders</small>
             </article>
         </section>
@@ -107,7 +107,7 @@
                                     </td>
                                     <td class="customer-email">{{ $customer->email }}</td>
                                     <td class="customer-orders-count">{{ number_format((int) $customer->orders_count) }}</td>
-                                    <td class="customer-paid-total">${{ number_format((float) $customer->paid_total, 2) }}</td>
+                                    <td class="customer-paid-total">@peso((float) $customer->paid_total)</td>
                                     <td class="customer-date">{{ $customer->created_at->format('M j, Y') }}</td>
                                     <td>
                                         <span class="customer-status {{ $customer->orders_count > 0 ? 'has-orders' : 'no-orders' }}">

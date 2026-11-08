@@ -115,7 +115,7 @@
                             </div>
 
                             <div class="cart-item-right">
-                                <div class="cart-item-price">${{ number_format($item['price'], 2) }}</div>
+                                <div class="cart-item-price">@peso($item['price'])</div>
                                 <form method="POST" action="{{ route('cart.remove', $item['id']) }}">
                                     @csrf
                                     @method('DELETE')
@@ -158,14 +158,14 @@
 
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span class="summary-row-val" id="summary-subtotal">${{ number_format($subtotal, 2) }}</span>
+                    <span class="summary-row-val" id="summary-subtotal">@peso($subtotal)</span>
                 </div>
 
                 <div class="summary-divider"></div>
 
                 <div class="summary-total-row">
                     <span class="summary-total-label">Total</span>
-                    <span class="summary-total-val" id="summary-total">${{ number_format($subtotal, 2) }}</span>
+                    <span class="summary-total-val" id="summary-total">@peso($subtotal)</span>
                 </div>
 
                 <a href="{{ route('checkout') }}" class="btn-checkout {{ count($cartItems) === 0 ? 'disabled' : '' }}" id="btn-checkout" @if (count($cartItems) === 0) aria-disabled="true" @endif>
@@ -229,7 +229,7 @@
                 summaryItemsCount.textContent = `${count} artwork${count === 1 ? '' : 's'} in your cart`;
             }
 
-            const formattedTotal = `$${total.toFixed(2)}`;
+            const formattedTotal = `₱${total.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             if (summarySubtotal) summarySubtotal.textContent = formattedTotal;
             if (summaryTotal) summaryTotal.textContent = formattedTotal;
 

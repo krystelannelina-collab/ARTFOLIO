@@ -30,18 +30,37 @@ class AuthController extends Controller
 
     public function register(Request $request): RedirectResponse
     {
+        $request->merge([
+            'username' => mb_strtolower(trim((string) $request->input('username'))),
+            'email' => trim((string) $request->input('email')),
+        ]);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'min:3', 'max:30', 'alpha_dash:ascii', Rule::unique('users', 'username')],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'terms' => ['accepted'],
         ], [
+            'name.required' => 'Enter your full name.',
+            'username.required' => 'Choose a username.',
+            'username.min' => 'Usernames must be at least 3 characters.',
+            'username.max' => 'Usernames can be at most 30 characters.',
+            'username.alpha_dash' => 'Usernames can only use letters, numbers, dashes, and underscores.',
+            'username.unique' => 'That username is already taken.',
+            'email.required' => 'Enter your email address.',
+            'email.email' => 'Enter a valid email address.',
             'email.unique' => 'An account with this email address already exists.',
+            'password.required' => 'Create a password.',
             'password.min' => 'Password must be at least 8 characters.',
+            'password.confirmed' => 'The passwords do not match.',
+            'terms.accepted' => 'You must agree to the Terms and Conditions to create an account.',
         ]);
 
         User::query()->create([
             'name' => trim($validated['name']),
-            'email' => trim($validated['email']),
+            'username' => $validated['username'],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'client',
         ]);

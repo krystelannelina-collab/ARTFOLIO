@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use LogicException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OrderController extends Controller
@@ -32,20 +33,33 @@ class OrderController extends Controller
     public function show(Order $order): View
     {
         return view('admin.orders.show', [
-            'order' => $order->load('items'),
+            'order' => $order->load(['items', 'reviewer']),
         ]);
     }
 
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => ['required', Rule::in(['pending', 'completed', 'refunded', 'failed'])],
+            'status' => ['required', Rule::in(array_keys(Order::ALLOWED_TRANSITIONS))],
+            'rejection_reason' => ['nullable', 'required_if:status,'.Order::STATUS_FAILED, 'string', 'max:500'],
+        ], [
+            'rejection_reason.required_if' => 'Tell the customer why the payment was rejected.',
         ]);
 
-        $order->update(['status' => $validated['status']]);
+        if (! $order->canTransitionTo($validated['status'])) {
+            return redirect()->route('admin.orders.show', $order)
+                ->withErrors(['status' => "An order that is \"{$order->statusLabel()}\" cannot be changed to \"".Order::STATUS_LABELS[$validated['status']].'".']);
+        }
+
+        try {
+            $order->transitionTo($validated['status'], $request->user(), $validated['rejection_reason'] ?? null);
+        } catch (LogicException) {
+            return redirect()->route('admin.orders.show', $order)
+                ->withErrors(['status' => 'This order was updated by someone else. Refresh and try again.']);
+        }
 
         return redirect()->route('admin.orders.show', $order)
-            ->with('status', "Order #{$order->order_number} status updated to ".ucfirst($validated['status']).'.');
+            ->with('status', "Order #{$order->order_number} is now: {$order->statusLabel()}.");
     }
 
     public function export(Request $request): StreamedResponse
@@ -74,7 +88,7 @@ class OrderController extends Controller
                     $this->spreadsheetSafe($order->customer_name),
                     $this->spreadsheetSafe($order->customer_email),
                     $order->created_at->format('Y-m-d H:i:s'),
-                    $this->spreadsheetSafe($order->status),
+                    $this->spreadsheetSafe($order->statusLabel()),
                     $this->spreadsheetSafe($order->payment_method === 'not_configured' ? 'Not configured' : $order->payment_method),
                     number_format((float) $order->total, 2, '.', ''),
                     $this->spreadsheetSafe($order->items->map(

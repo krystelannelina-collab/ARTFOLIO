@@ -40,6 +40,7 @@ class AdminDashboardTest extends TestCase
                 'artists' => 4,
                 'clients' => 2,
                 'categories' => 5,
+                'pendingPayments' => 0,
             ])
             ->assertViewHas('categoryChart', function (array $chart): bool {
                 return $chart['labels']->all() === ['Abstract', 'Digital', 'Pixel', 'Poster', 'Typography']

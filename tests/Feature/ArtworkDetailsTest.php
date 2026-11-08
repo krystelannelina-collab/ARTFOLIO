@@ -24,7 +24,7 @@ class ArtworkDetailsTest extends TestCase
             ->assertSee('Stranger Things Poster')
             ->assertSee('Gian Gomez')
             ->assertSee('Poster')
-            ->assertSee('$35.76')
+            ->assertSee('₱35.76')
             ->assertSee('About this artwork')
             ->assertSee('More to explore')
             ->assertSee(route('artworks.show', ['slug' => 'fluid-geometric']), false);
@@ -184,7 +184,7 @@ class ArtworkDetailsTest extends TestCase
         $this->get('/artworks')
             ->assertOk()
             ->assertSee('Database Updated Geometric')
-            ->assertSee('$44.00');
+            ->assertSee('₱44.00');
 
         $this->get('/favorites')
             ->assertOk()

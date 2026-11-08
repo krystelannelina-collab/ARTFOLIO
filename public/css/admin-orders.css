@@ -26,7 +26,7 @@
     color: #355a46;
     background: #fff;
     font: inherit;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
@@ -46,7 +46,7 @@
     border-radius: 6px;
     color: #705b31;
     background: #f8f3e7;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.6;
 }
 
@@ -69,7 +69,7 @@
 
 .orders-overview article > span {
     color: #71766d;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -80,8 +80,8 @@
 }
 
 .orders-overview article > small {
-    color: #868a81;
-    font-size: 11px;
+    color: #72756e;
+    font-size: 12px;
 }
 
 .orders-table-panel {
@@ -124,7 +124,7 @@
     color: #3a4039;
     background: #fff;
     font: inherit;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .orders-search input {
@@ -158,9 +158,9 @@
 .orders-table th {
     padding: 12px 14px;
     border-bottom: 1px solid #e8e9e4;
-    color: #81867d;
+    color: #72766e;
     background: #fafbf9;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.45px;
     white-space: nowrap;
@@ -170,7 +170,7 @@
     padding: 13px 14px;
     border-bottom: 1px solid #eff0ec;
     color: #575e55;
-    font-size: 12px;
+    font-size: 13px;
     vertical-align: middle;
 }
 
@@ -213,7 +213,7 @@
     max-width: 170px;
     overflow: hidden;
     color: #3e453d;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -221,8 +221,8 @@
 
 .order-artwork-cell small,
 .order-customer-cell small {
-    color: #858980;
-    font-size: 10px;
+    color: #72766e;
+    font-size: 11px;
 }
 
 .order-date {
@@ -236,7 +236,7 @@
     border-radius: 12px;
     color: #806436;
     background: #faf4e7;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -262,7 +262,7 @@
 .order-view-link {
     min-height: 30px;
     padding: 0 9px;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .orders-table-footer {
@@ -272,8 +272,8 @@
     gap: 14px;
     padding: 13px 16px;
     border-top: 1px solid #e8e9e4;
-    color: #777d73;
-    font-size: 11px;
+    color: #71776d;
+    font-size: 12px;
 }
 
 .orders-table-footer nav,
@@ -295,7 +295,7 @@
     border-radius: 5px;
     color: #455347;
     background: #fff;
-    font-size: 11px;
+    font-size: 12px;
     text-decoration: none;
 }
 
@@ -306,7 +306,7 @@
 }
 
 .orders-table-footer nav span[aria-disabled="true"] span {
-    color: #a7aaa3;
+    color: #737570;
 }
 
 .orders-empty-state {
@@ -314,7 +314,7 @@
     justify-items: center;
     gap: 8px;
     padding: 48px 20px;
-    color: #777d73;
+    color: #71776d;
     text-align: center;
 }
 
@@ -324,13 +324,13 @@
 }
 
 .orders-empty-state > span {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .orders-footnote {
     margin: 12px 0 0;
-    color: #787d73;
-    font-size: 11px;
+    color: #71766c;
+    font-size: 12px;
 }
 
 .order-details-grid {
@@ -364,8 +364,8 @@
 
 .orders-panel-heading p {
     margin: 5px 0 0;
-    color: #858980;
-    font-size: 11px;
+    color: #72766e;
+    font-size: 12px;
 }
 
 .order-detail-items {
@@ -396,13 +396,13 @@
 .order-detail-item strong,
 .order-detail-item b {
     color: #3d453d;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .order-detail-item span,
 .order-detail-item small {
-    color: #81867d;
-    font-size: 11px;
+    color: #72766e;
+    font-size: 12px;
 }
 
 .order-detail-total {
@@ -410,7 +410,7 @@
     justify-content: space-between;
     padding-top: 14px;
     color: #3d453d;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .order-customer-panel dl {
@@ -425,15 +425,15 @@
 }
 
 .order-customer-panel dt {
-    color: #858980;
-    font-size: 11px;
+    color: #72766e;
+    font-size: 12px;
 }
 
 .order-customer-panel dd {
     margin: 0;
     overflow-wrap: anywhere;
     color: #3d453d;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -444,7 +444,7 @@
     border-radius: 6px;
     color: #264a37;
     background: #eef5eb;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -457,8 +457,8 @@
 }
 
 .order-status-label {
-    color: #858980;
-    font-size: 11px;
+    color: #72766e;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -476,7 +476,7 @@
     color: #3a4039;
     background: #fff;
     font: inherit;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .visually-hidden {
@@ -507,7 +507,7 @@
     .orders-export-button {
         min-height: 32px;
         padding: 0 9px;
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .orders-filter-bar {
@@ -528,4 +528,88 @@
     .orders-table {
         min-width: 820px;
     }
+}
+
+/* ================= PAYMENT REVIEW ================= */
+.orders-error-flash {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border: 1px solid #f1c3bd;
+    border-radius: 12px;
+    background: #fdf0ee;
+    color: #9b2c1f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.orders-payment-notice.status-pending {
+    border-color: #f2d4a7;
+    background: #fff7ea;
+    color: #6b4a14;
+}
+
+.orders-payment-notice.status-completed {
+    border-color: #cfe3d5;
+    background: #eef6f0;
+    color: #1f513f;
+}
+
+.orders-payment-notice.status-failed {
+    border-color: #f1c3bd;
+    background: #fdf0ee;
+    color: #9b2c1f;
+}
+
+.order-review-actions {
+    display: grid;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e1e0d8;
+}
+
+.order-approve-button,
+.order-reject-button {
+    width: 100%;
+    min-height: 40px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.order-approve-button {
+    background: #1f513f;
+    color: #fff;
+}
+
+.order-approve-button:hover {
+    background: #173f31;
+}
+
+.order-reject-form {
+    display: grid;
+    gap: 8px;
+}
+
+.order-reject-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c9c9bf;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.order-reject-button {
+    border: 1px solid #d9958c;
+    background: #fff;
+    color: #9b2c1f;
+}
+
+.order-reject-button:hover {
+    background: #fdf0ee;
 }

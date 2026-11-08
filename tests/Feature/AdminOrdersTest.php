@@ -19,7 +19,7 @@ class AdminOrdersTest extends TestCase
             ->get(route('admin.orders.index'))
             ->assertOk()
             ->assertSee('Orders')
-            ->assertSee('Payment processing is not connected.')
+            ->assertSee('until you confirm the payment.')
             ->assertSee('No orders yet')
             ->assertViewHas('stats', [
                 'revenue' => 0.0,
@@ -83,7 +83,9 @@ class AdminOrdersTest extends TestCase
             ->get(route('admin.orders.show', $order))
             ->assertOk()
             ->assertSee($order->order_number)
-            ->assertSee('No payment has been processed and downloads are not available.');
+            ->assertSee('Check that this payment arrived before approving it.')
+            ->assertSee('Approve payment')
+            ->assertSee('Reject payment');
 
         $response = $this->get(route('admin.orders.export'));
 

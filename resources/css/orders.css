@@ -9,8 +9,8 @@
 
 .orders-eyebrow,
 .client-order-label {
-    color: #77786e;
-    font-size: 10px;
+    color: #75766c;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.6px;
 }
@@ -26,7 +26,7 @@
 .client-order-card > p {
     margin: 0;
     color: #74766d;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .orders-notice {
@@ -35,7 +35,7 @@
     border: 1px solid #cbd9ce;
     background: #eff5ef;
     color: #315b45;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .client-orders-list {
@@ -66,7 +66,7 @@
 .client-order-card > header strong,
 .client-order-summary strong {
     color: #353c34;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .client-order-status {
@@ -74,7 +74,7 @@
     border: 1px solid #d7c7a6;
     background: #f7f0e1;
     color: #806338;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -88,7 +88,7 @@
     justify-content: flex-start;
     margin: 14px 0 8px;
     color: #696c62;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .client-order-summary strong {
@@ -100,7 +100,7 @@
     display: inline-flex;
     margin-top: 12px;
     color: #315b45;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-decoration: none;
 }
@@ -113,13 +113,13 @@
 .client-orders-empty h2 {
     margin: 0 0 6px;
     color: #353c34;
-    font-size: 17px;
+    font-size: 18px;
 }
 
 .client-orders-empty p {
     margin: 0;
     color: #74766d;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 @media (max-width: 580px) {
@@ -133,6 +133,18 @@
 
     .client-order-summary {
         gap: 8px;
-        font-size: 10px;
+        font-size: 11px;
     }
+}
+
+/* ================= PAYMENT STATES ================= */
+.client-order-status.status-pending {
+    background: #fff1d6;
+    color: #6b4a14;
+}
+
+.client-order-status.status-failed,
+.client-order-status.status-refunded {
+    background: #fdecea;
+    color: #9b2c1f;
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View as ViewInstance;
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blade::directive('peso', fn (string $amount): string => "<?php echo e(\\App\\Providers\\AppServiceProvider::formatPeso({$amount})); ?>");
+
         View::composer('partials.sidebar', function (ViewInstance $view): void {
             $view->with('storeCategories', Category::query()
                 ->where('is_visible', true)
@@ -41,5 +44,14 @@ class AppServiceProvider extends ServiceProvider
                 ])
                 ->all());
         });
+    }
+
+    /**
+     * Format an amount as Philippine pesos, such as "₱1,250.00". Prices are
+     * stored in pesos, so the value is never converted.
+     */
+    public static function formatPeso(float|int|string|null $amount): string
+    {
+        return '₱'.number_format((float) $amount, 2);
     }
 }

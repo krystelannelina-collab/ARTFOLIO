@@ -18,6 +18,10 @@ use RuntimeException;
 
 class ArtworkController extends Controller
 {
+    private const MAX_UPLOAD_KILOBYTES = 30720;
+
+    private const PREVIEW_MAX_EDGE = 1600;
+
     public function index(Request $request): View
     {
         $filters = $request->validate([
@@ -85,7 +89,11 @@ class ArtworkController extends Controller
         $data = $this->validateArtwork($request, imageIsRequired: true);
         $image = $data['image'];
         unset($data['image']);
-        $data['image_path'] = $this->storeImage($image);
+        try {
+            $data = [...$data, ...$this->storeImage($image)];
+        } catch (RuntimeException $exception) {
+            return back()->withInput()->withErrors(['image' => $exception->getMessage().' Check that the storage folder is writable and try again.']);
+        }
         $data['slug'] = $this->uniqueSlug($data['title']);
 
         $artwork = Artwork::query()->create($data);
@@ -105,11 +113,17 @@ class ArtworkController extends Controller
         $data = $this->validateArtwork($request, imageIsRequired: false);
         $previousTitle = $artwork->title;
         $previousImagePath = $artwork->image_path;
+        $previousOriginalPath = $artwork->original_path;
+        $hasNewImage = isset($data['image']);
 
-        if (isset($data['image'])) {
-            $data['image_path'] = $this->storeImage($data['image']);
-            unset($data['image']);
+        if ($hasNewImage) {
+            try {
+                $data = [...$data, ...$this->storeImage($data['image'])];
+            } catch (RuntimeException $exception) {
+                return back()->withInput()->withErrors(['image' => $exception->getMessage().' Check that the storage folder is writable and try again.']);
+            }
         }
+        unset($data['image']);
 
         if ($data['title'] !== $previousTitle) {
             $data['slug'] = $this->uniqueSlug($data['title'], $artwork);
@@ -118,8 +132,9 @@ class ArtworkController extends Controller
         $artwork->update($data);
         $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
 
-        if (isset($data['image_path'])) {
+        if ($hasNewImage) {
             $this->removeStoredImage($previousImagePath);
+            $this->removeOriginalFile($previousOriginalPath);
         }
 
         return redirect()->route('admin.artworks.index')
@@ -128,9 +143,16 @@ class ArtworkController extends Controller
 
     public function destroy(Artwork $artwork): RedirectResponse
     {
+        if ($artwork->orderItems()->exists()) {
+            return redirect()->route('admin.artworks.index')
+                ->withErrors(['artwork' => "\"{$artwork->title}\" is part of a customer order, so it cannot be deleted. Set its status to Archived to hide it instead."]);
+        }
+
         $imagePath = $artwork->image_path;
+        $originalPath = $artwork->original_path;
         $artwork->delete();
         $this->removeStoredImage($imagePath);
+        $this->removeOriginalFile($originalPath);
 
         return redirect()->route('admin.artworks.index')
             ->with('status', 'Artwork removed from the catalog.');
@@ -145,21 +167,105 @@ class ArtworkController extends Controller
             'price' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'description' => ['required', 'string', 'max:5000'],
             'status' => ['required', Rule::in(['published', 'draft', 'archived'])],
-            'image' => $imageIsRequired
-                ? ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120']
-                : ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'canvas_size' => ['nullable', 'string', 'max:100'],
+            'image' => [
+                $imageIsRequired ? 'required' : 'nullable',
+                'file',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:'.self::MAX_UPLOAD_KILOBYTES,
+            ],
+        ], [
+            'image.required' => 'Choose an artwork image to upload.',
+            'image.uploaded' => 'The image could not be uploaded. It may be larger than the server allows ('.ini_get('upload_max_filesize').').',
+            'image.image' => 'The file must be an image.',
+            'image.mimes' => 'Upload a JPG, JPEG, PNG, or WEBP image.',
+            'image.max' => 'The image must be '.(self::MAX_UPLOAD_KILOBYTES / 1024).' MB or smaller.',
         ]);
     }
 
-    private function storeImage(UploadedFile $image): string
+    /**
+     * Keep the untouched original on the private disk for buyers, and put a
+     * web-sized preview on the public disk for the catalog.
+     *
+     * @return array{image_path: string, original_path: string, image_width: ?int, image_height: ?int, file_format: string, file_size: int}
+     */
+    private function storeImage(UploadedFile $image): array
     {
-        $path = $image->store('artworks', 'public');
+        $extension = strtolower($image->getClientOriginalExtension() ?: $image->extension());
+        $fileName = Str::uuid().'.'.$extension;
 
-        if ($path === false) {
+        $originalPath = $image->storeAs('artworks/originals', $fileName, 'local');
+        if ($originalPath === false) {
             throw new RuntimeException('The artwork image could not be saved.');
         }
 
-        return "storage/{$path}";
+        $dimensions = @getimagesize($image->getRealPath()) ?: [null, null];
+        $previewPath = "artworks/{$fileName}";
+
+        if (! $this->writePreview($image->getRealPath(), $previewPath, $extension)
+            && ! Storage::disk('public')->putFileAs('artworks', $image, $fileName)) {
+            Storage::disk('local')->delete($originalPath);
+
+            throw new RuntimeException('The artwork preview could not be saved.');
+        }
+
+        return [
+            'image_path' => "storage/{$previewPath}",
+            'original_path' => $originalPath,
+            'image_width' => $dimensions[0],
+            'image_height' => $dimensions[1],
+            'file_format' => $extension === 'jpeg' ? 'jpg' : $extension,
+            'file_size' => $image->getSize(),
+        ];
+    }
+
+    /**
+     * Write a downscaled copy for the public catalog. Returns false when the GD
+     * extension is missing or the image is already small, so the caller can
+     * fall back to copying the file as-is.
+     */
+    private function writePreview(string $sourcePath, string $previewPath, string $extension): bool
+    {
+        if (! extension_loaded('gd')) {
+            return false;
+        }
+
+        $size = @getimagesize($sourcePath);
+        if ($size === false || max($size[0], $size[1]) <= self::PREVIEW_MAX_EDGE) {
+            return false;
+        }
+
+        $source = @imagecreatefromstring((string) file_get_contents($sourcePath));
+        if ($source === false) {
+            return false;
+        }
+
+        $scale = self::PREVIEW_MAX_EDGE / max($size[0], $size[1]);
+        $preview = imagescale($source, (int) round($size[0] * $scale), (int) round($size[1] * $scale));
+        if ($preview === false) {
+            return false;
+        }
+
+        imagealphablending($preview, false);
+        imagesavealpha($preview, true);
+
+        ob_start();
+        $written = match ($extension) {
+            'png' => imagepng($preview, null, 6),
+            'webp' => imagewebp($preview, null, 82),
+            default => imagejpeg($preview, null, 82),
+        };
+        $contents = (string) ob_get_clean();
+
+        return $written && Storage::disk('public')->put($previewPath, $contents);
+    }
+
+    private function removeOriginalFile(?string $path): void
+    {
+        if ($path !== null && str_starts_with($path, 'artworks/originals/')) {
+            Storage::disk('local')->delete($path);
+        }
     }
 
     private function uniqueSlug(string $title, ?Artwork $artwork = null): string

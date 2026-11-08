@@ -100,8 +100,8 @@
                 <div class="digital-notice-banner">
                     <h3 class="notice-title">Digital art. Ready when you are.</h3>
                     <p class="notice-text">
-                        Your files will be available in My Orders after payment.<br>
-                        An order confirmation and receipt will be sent to your email.
+                        Each artwork is one of one. Placing your order reserves it for you.<br>
+                        The original full-resolution files unlock in My Orders once your payment is approved.
                     </p>
                 </div>
 
@@ -149,6 +149,7 @@
                                 placeholder="Name as shown on card"
                                 value="{{ old('cardholder_name', Auth::user()->name ?? '') }}"
                             >
+                            @error('cardholder_name')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                         </div>
 
                         <div class="form-group">
@@ -163,6 +164,7 @@
                                 autocomplete="cc-number"
                                 value="{{ old('card_number') }}"
                             >
+                            @error('card_number')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                         </div>
 
                         <div class="form-row">
@@ -177,6 +179,7 @@
                                     autocomplete="cc-exp"
                                     value="{{ old('card_expiry') }}"
                                 >
+                            @error('card_expiry')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                             </div>
                             <div class="form-group">
                                 <label for="card-cvc" class="form-label">Security code</label>
@@ -190,6 +193,7 @@
                                     autocomplete="cc-csc"
                                     value="{{ old('card_cvc') }}"
                                 >
+                            @error('card_cvc')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                             </div>
                         </div>
                     </div>
@@ -206,6 +210,7 @@
                                 placeholder="Full name on GCash account"
                                 value="{{ old('gcash_name', Auth::user()->name ?? '') }}"
                             >
+                            @error('gcash_name')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                         </div>
 
                         <div class="form-group">
@@ -219,8 +224,30 @@
                                 inputmode="tel"
                                 value="{{ old('gcash_number') }}"
                             >
+                            @error('gcash_number')<small class="field-error" role="alert">{{ $message }}</small>@enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gcash-reference" class="form-label">GCash reference number</label>
+                            <input
+                                type="text"
+                                id="gcash-reference"
+                                name="gcash_reference"
+                                class="form-control-custom"
+                                placeholder="From your GCash payment receipt"
+                                maxlength="30"
+                                autocomplete="off"
+                                value="{{ old('gcash_reference') }}"
+                            >
+                            <small class="form-hint">Send the order total by GCash first, then enter the reference number so we can confirm it.</small>
+                            @error('gcash_reference')<small class="field-error" role="alert">{{ $message }}</small>@enderror
                         </div>
                     </div>
+
+                    <p class="payment-approval-note">
+                        Your card details are only used to identify this payment. We keep just the last four digits.
+                        Every order starts as <strong>Awaiting approval</strong> until an ARTFOLIO admin confirms the payment.
+                    </p>
                 </section>
 
                 <!-- Back to cart button -->
@@ -250,7 +277,7 @@
                             </div>
                             <div class="checkout-item-info">
                                 <div class="checkout-item-name">{{ $item['title'] }}</div>
-                                <div class="checkout-item-meta">Qty {{ $item['quantity'] }} · ${{ number_format($item['price'], 2) }}</div>
+                                <div class="checkout-item-meta">Qty {{ $item['quantity'] }} · @peso($item['price'])</div>
                             </div>
                         </div>
                     @endforeach
@@ -260,18 +287,18 @@
 
                 <div class="checkout-subtotal-row">
                     <span>Subtotal</span>
-                    <span class="checkout-subtotal-val">${{ number_format($total, 2) }}</span>
+                    <span class="checkout-subtotal-val">@peso($total)</span>
                 </div>
 
                 <div class="order-divider"></div>
 
                 <div class="checkout-total-row">
                     <span class="checkout-total-label">Total</span>
-                    <span class="checkout-total-val">${{ number_format($total, 2) }}</span>
+                    <span class="checkout-total-val">@peso($total)</span>
                 </div>
 
                 <p class="order-download-note">
-                    Your artwork will be ready to download from My Orders once payment is confirmed.
+                    Your artwork will be ready to download from My Orders once an admin approves your payment.
                 </p>
 
                 <button type="submit" class="btn-place-order" id="btn-place-order">
