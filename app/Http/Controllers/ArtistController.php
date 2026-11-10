@@ -47,24 +47,16 @@ class ArtistController extends Controller
             $key = mb_strtolower($profile->name);
             $artistArtworks = $artworksByArtist->get($key, collect());
 
-            if ($publishedArtworks->isNotEmpty() && $artistArtworks->isEmpty()) {
-                continue;
-            }
-
             $categories = $artistArtworks
                 ->pluck('category')
                 ->unique()
                 ->values()
                 ->all();
 
-            if (empty($categories)) {
-                $categories = ['Abstract'];
-            }
-
             $artists[] = [
                 'id' => $profile->id,
                 'name' => $profile->name,
-                'category_label' => implode(' · ', $categories),
+                'category_label' => empty($categories) ? 'No published artworks yet' : implode(' · ', $categories),
                 'categories' => $categories,
                 'bio' => $profile->bio,
                 'image' => asset($profile->image_path),

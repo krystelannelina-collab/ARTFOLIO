@@ -17,7 +17,7 @@ class AccountMenuTest extends TestCase
         $this->seed(ArtworkSeeder::class);
         $client = User::factory()->create(['name' => 'Jane Doe']);
 
-        foreach (['/home', '/about', '/artists', '/favorites', '/cart', '/orders'] as $page) {
+        foreach (['/home', '/artworks', '/about', '/artists', '/favorites', '/cart', '/orders'] as $page) {
             $this->actingAs($client)
                 ->get($page)
                 ->assertOk()

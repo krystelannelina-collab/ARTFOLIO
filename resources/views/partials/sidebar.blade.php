@@ -38,7 +38,7 @@
         <a href="{{ url('/home') }}" class="nav-item-link {{ $currentActive === 'home' ? 'active' : '' }}">
             <span class="nav-left">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V9.5Z"/>
+                    <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/>
                 </svg>
                 <span>Home Page</span>
             </span>
@@ -75,27 +75,37 @@
                        class="submenu-link {{ $isCatActive ? 'active' : '' }}"
                        data-category-filter="{{ $cat['label'] }}">
                         @if ($cat['type'] === 'abstract')
-                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V17c0 .55-.45 1-1 1s-1-.45-1-1v-.07C8.06 16.48 6.5 14.44 6.5 12c0-3.03 2.47-5.5 5.5-5.5s5.5 2.47 5.5 5.5c0 2.44-1.56 4.48-3.5 4.93z" fill="currentColor"/>
+                            {{-- Shapes: circle, triangle and square. --}}
+                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                                <circle cx="6.5" cy="17" r="3.5"/>
+                                <path d="M17 2.5L21 9H13L17 2.5Z"/>
+                                <rect x="13" y="13" width="8" height="8"/>
                             </svg>
                         @elseif ($cat['type'] === 'typography')
+                            {{-- Bold letter A. --}}
                             <svg class="submenu-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 3L5 20H8.5L10 16H14L15.5 20H19L12 3ZM10.8 13.5L12 9.5L13.2 13.5H10.8Z"/>
+                                <path d="M9.6 3H14.4L21 21H16.6L15.3 17H8.7L7.4 21H3L9.6 3ZM9.9 13.4H14.1L12 7L9.9 13.4Z"/>
                             </svg>
                         @elseif ($cat['type'] === 'pixel')
+                            {{-- Framed pixel blocks. --}}
                             <svg class="submenu-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14ZM14 14H20V20H14V14Z"/>
+                                <path fill-rule="evenodd" d="M2 2H22V22H2V2ZM4.5 4.5V19.5H19.5V4.5H4.5Z"/>
+                                <rect x="6.5" y="6.5" width="5" height="5"/>
+                                <rect x="13" y="6.5" width="4.5" height="5"/>
+                                <rect x="6.5" y="13" width="5" height="4.5"/>
+                                <rect x="13" y="13" width="2" height="2"/>
+                                <rect x="15.5" y="15.5" width="2" height="2"/>
                             </svg>
                         @elseif ($cat['type'] === 'poster')
-                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
+                            {{-- Portrait face. --}}
+                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 11.75C8.31 11.75 7.75 12.31 7.75 13C7.75 13.69 8.31 14.25 9 14.25C9.69 14.25 10.25 13.69 10.25 13C10.25 12.31 9.69 11.75 9 11.75ZM15 11.75C14.31 11.75 13.75 12.31 13.75 13C13.75 13.69 14.31 14.25 15 14.25C15.69 14.25 16.25 13.69 16.25 13C16.25 12.31 15.69 11.75 15 11.75ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 11.71 4.02 11.42 4.05 11.14C6.41 10.09 8.28 8.16 9.26 5.77C11.07 8.33 14.05 10 17.42 10C18.2 10 18.95 9.91 19.67 9.74C19.88 10.45 20 11.21 20 12C20 16.41 16.41 20 12 20Z"/>
                             </svg>
                         @elseif ($cat['type'] === 'digital')
-                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-                                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            {{-- Desktop screen. --}}
+                            <svg class="submenu-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2H20C21.1 2 22 2.9 22 4V16C22 17.1 21.1 18 20 18H13.5V20H17V22H7V20H10.5V18H4C2.9 18 2 17.1 2 16V4C2 2.9 2.9 2 4 2ZM4 4V16H20V4H4Z"/>
+                                <rect x="6" y="6" width="12" height="8" rx="1"/>
                             </svg>
                         @endif
                         <span>{{ $cat['label'] }}</span>
@@ -117,8 +127,11 @@
         <!-- 4. Favorites -->
         <a href="{{ url('/favorites') }}" class="nav-item-link {{ $currentActive === 'favorites' ? 'active' : '' }}">
             <span class="nav-left">
+                {{-- Bookmark with a heart badge. --}}
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17 3H7C5.9 3 5 3.9 5 5V21L12 18L19 21V5C19 3.9 18.1 3 17 3Z"/>
+                    <path d="M15 2H5C3.9 2 3 2.9 3 4V22L10 19L11.2 19.5C11.07 18.85 11 18.18 11 17.5C11 13.36 14.36 10 18.5 10C18.67 10 18.83 10 19 10.02V6C19 3.8 17.2 2 15 2Z"/>
+                    <circle cx="18.5" cy="17.5" r="5.5"/>
+                    <path d="M18.5 20.6L17.95 20.1C16.1 18.43 14.9 17.35 14.9 16.02C14.9 14.94 15.75 14.1 16.82 14.1C17.43 14.1 18.01 14.38 18.5 14.84C18.99 14.38 19.57 14.1 20.18 14.1C21.25 14.1 22.1 14.94 22.1 16.02C22.1 17.35 20.9 18.43 19.05 20.1L18.5 20.6Z" fill="#ffffff"/>
                 </svg>
                 <span>Favorites</span>
             </span>
@@ -138,7 +151,10 @@
         <a href="{{ url('/orders') }}" class="nav-item-link {{ $currentActive === 'orders' ? 'active' : '' }}">
             <span class="nav-left">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 16.5C21 16.88 20.79 17.21 20.47 17.38L12.57 21.82C12.41 21.91 12.23 21.96 12.05 21.96C11.87 21.96 11.69 21.91 11.53 21.82L3.63 17.38C3.31 17.21 3.1 16.88 3.1 16.5V7.5C3.1 7.12 3.31 6.79 3.63 6.62L11.53 2.18C11.85 2 12.25 2 12.57 2.18L20.47 6.62C20.79 6.79 21 7.12 21 7.5V16.5ZM12 4.15L5.74 7.65L12 11.16L18.26 7.65L12 4.15ZM5.1 9.25V15.75L11 19.06V12.56L5.1 9.25ZM13 19.06L18.9 15.75V9.25L13 12.56V19.06Z"/>
+                    {{-- Solid box: three faces split by thin gaps. --}}
+                    <path d="M12 1.8L20.9 6.7L12 11.6L3.1 6.7L12 1.8Z"/>
+                    <path d="M2.5 8.1L11.2 12.9V22.4L2.5 17.6V8.1Z"/>
+                    <path d="M21.5 8.1V17.6L12.8 22.4V12.9L21.5 8.1Z"/>
                 </svg>
                 <span>My orders</span>
             </span>
@@ -148,7 +164,7 @@
         <a href="{{ url('/about') }}" class="nav-item-link {{ $currentActive === 'about' ? 'active' : '' }}">
             <span class="nav-left">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM13 14H11V10H13V14ZM13 8H11V6H13V8Z"/>
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z"/>
                 </svg>
                 <span>About us</span>
             </span>

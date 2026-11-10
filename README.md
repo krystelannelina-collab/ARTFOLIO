@@ -195,11 +195,10 @@ tests/Feature/                 Automated feature tests
 
 | Member | GitHub account | Main contributions |
 |---|---|---|
-| _Name_ | _@username_ | _e.g. admin artworks module_ |
-| _Name_ | _@username_ | |
-| _Name_ | _@username_ | |
-| _Name_ | _@username_ | |
-| _Name_ | _@username_ | |
+| Cristine Joy Montes | [cristinmontes](https://github.com/cristinmontes) | Client UI Developer |
+| Gian Gomez | [giangomez](https://github.com/giangomez) | Project/Brand Designer |
+| Kalvin Dave Ramos | [Kalvindave](https://github.com/Kalvindave) | Admin UI Developer |
+| Krystel Anne Lina | [krystelannelina-collab](https://github.com/krystelannelina-collab) | UI/UX Integration Developer |
 
 ## Collaboration workflow
 

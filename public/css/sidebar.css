@@ -696,3 +696,55 @@ img {
     text-transform: uppercase;
     white-space: nowrap;
 }
+
+/* Keep the label its own size inside flex-column cards instead of stretching. */
+.edition-label {
+    align-self: flex-start;
+    justify-self: start;
+}
+
+/* ================= PHONE TOP BAR ================= */
+/* Search and the bell/avatar share one row, and menus open below the sticky header. */
+@media (max-width: 640px) {
+    .top-bar {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .top-bar .search-pill-container {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+    }
+
+    .top-right-actions,
+    .account-menu {
+        flex-shrink: 0;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 575px) {
+    .account-menu-panel,
+    .order-updates-panel {
+        top: 76px;
+        z-index: 120;
+        max-height: calc(100dvh - 92px);
+        overflow-y: auto;
+    }
+}
+
+/* On phones the opened menu drops down at full width and only as tall as its links,
+   instead of keeping the 245px x full-height desktop column. */
+@media (max-width: 991.98px) {
+    .sidebar,
+    .sidebar.is-mobile-open {
+        flex: none;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        height: auto;
+        min-height: 0;
+    }
+}

@@ -981,3 +981,14 @@ body {
 .about-hero-overlay {
     display: none;
 }
+
+/* The feedback form sits on a white card, so its submit button keeps the green style. */
+.about-feedback-form .about-button-primary {
+    background: #216b4f;
+    color: #fff;
+}
+
+.about-feedback-form .about-button-primary:hover {
+    background: #18563e;
+    color: #fff;
+}

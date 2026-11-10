@@ -332,3 +332,7 @@ body {
 .hero-banner-overlay {
     display: none;
 }
+
+.view-all-pill-btn {
+    white-space: nowrap;
+}

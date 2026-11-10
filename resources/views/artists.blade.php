@@ -120,7 +120,6 @@
                             <p class="artist-bio">{{ $artist['bio'] }}</p>
                         </div>
                         <div class="artist-info-bottom">
-                            <div class="artist-badge-text">SAMPLE PROFILE PHOTO</div>
                             <a href="{{ url('/artworks?search=' . urlencode($artist['name'])) }}"
                                class="btn-view-artist"
                                title="View artworks by {{ $artist['name'] }}">
@@ -145,7 +144,7 @@
 
         <!-- Footer -->
         <footer class="artists-footer">
-            <span id="artists-count-label">{{ count($artists) }} {{ \Illuminate\Support\Str::plural('artist', count($artists)) }}</span> · Sample portraits and profile descriptions for layout preview.
+            <span id="artists-count-label">{{ count($artists) }} {{ \Illuminate\Support\Str::plural('artist', count($artists)) }}</span> · Sample profile descriptions for layout preview.
         </footer>
 
     </main>
