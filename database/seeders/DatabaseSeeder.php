@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->seedAdminAccount();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::query()->firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'username' => 'testuser',
+                'password' => Hash::make('password'),
+                'role' => 'client',
+            ],
+        );
+
+        $this->call(ArtworkSeeder::class);
+    }
+
+    /**
+     * Create or update the first admin from the ARTFOLIO_ADMIN_* settings.
+     * Skipped when no password is configured, so no default password exists.
+     */
+    private function seedAdminAccount(): void
+    {
+        /** @var array{name: string, email: string, password: ?string} $admin */
+        $admin = config('artfolio.admin');
+
+        if (blank($admin['password'])) {
+            $this->command?->warn('Skipped the admin account: set ARTFOLIO_ADMIN_PASSWORD in .env and run "php artisan db:seed" again.');
+
+            return;
+        }
+
+        User::query()->updateOrCreate(
+            ['email' => mb_strtolower($admin['email'])],
+            [
+                'name' => $admin['name'],
+                'password' => Hash::make($admin['password']),
+                'role' => 'admin',
+            ],
+        );
     }
 }

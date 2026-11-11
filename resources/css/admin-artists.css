@@ -1,0 +1,454 @@
+.artists-page-heading {
+    min-height: 78px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.artists-page-heading h1 {
+    margin-top: 2px;
+}
+
+.artists-data-note {
+    max-width: 240px;
+    padding: 9px 11px;
+    border: 1px solid #e4d7c6;
+    background: #f7f3eb;
+    color: #777166;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.artists-overview {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.artists-overview article {
+    display: grid;
+    min-height: 88px;
+    align-content: center;
+    gap: 3px;
+    padding: 11px 14px;
+    border: 1px solid #b9b9af;
+    background: #fcfbf7;
+    box-shadow: 2px 2px 0 rgba(53, 65, 53, 0.06);
+}
+
+.artists-overview article > span {
+    color: #66695f;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.artists-overview strong {
+    color: #30382f;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.artists-overview small {
+    color: #74746b;
+    font-size: 11px;
+}
+
+.artists-table-panel {
+    padding: 0;
+}
+
+.artists-filter-bar {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) minmax(165px, 0.34fr) auto auto;
+    gap: 9px;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #b9b9af;
+}
+
+.artists-search,
+.artists-sort {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 40px;
+    align-items: center;
+    border: 1px solid #c9c9bf;
+    background: #fff;
+}
+
+.artists-search {
+    gap: 8px;
+    padding: 0 10px;
+}
+
+.artists-search svg {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+    stroke: #777a70;
+    stroke-linecap: round;
+    stroke-width: 1.7;
+}
+
+.artists-search input,
+.artists-sort select {
+    width: 100%;
+    min-width: 0;
+    height: 38px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #41483f;
+    font: inherit;
+    font-size: 12px;
+}
+
+.artists-search input::placeholder {
+    color: #74756c;
+    opacity: 1;
+}
+
+.artists-sort select {
+    padding: 0 28px 0 10px;
+    cursor: pointer;
+}
+
+.artists-search:focus-within,
+.artists-sort:focus-within {
+    border-color: #52775d;
+    box-shadow: 0 0 0 2px rgba(49, 91, 69, 0.12);
+}
+
+.artists-filter-submit,
+.artists-filter-reset {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    border: 1px solid #c9c9bf;
+    background: transparent;
+    color: #4f554c;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.artists-filter-submit {
+    border-color: #315b45;
+    background: #315b45;
+    color: #fff;
+}
+
+.artists-filter-submit:hover {
+    background: #244934;
+}
+
+.artists-filter-reset:hover {
+    background: #f0f0e9;
+    color: #315b45;
+}
+
+.artists-table-scroll {
+    overflow-x: auto;
+}
+
+.artists-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.artists-table th {
+    height: 38px;
+    padding: 0 12px;
+    border-bottom: 1px solid #d5d4cb;
+    color: #62655b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+}
+
+.artists-table td {
+    height: 58px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e1e0d8;
+    color: #575d53;
+    font-size: 12px;
+}
+
+.artists-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.artist-name-cell {
+    display: flex;
+    min-width: 175px;
+    align-items: center;
+    gap: 9px;
+}
+
+.artist-avatar {
+    display: grid;
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    place-items: center;
+    border: 1px solid #c8d4c8;
+    border-radius: 50%;
+    background: #e9f0e7;
+    color: #315b45;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.artist-name-cell strong {
+    overflow: hidden;
+    color: #353c34;
+    font-size: 12px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+}
+
+.artist-count {
+    color: #353c34 !important;
+    font-weight: 700;
+}
+
+.artist-date {
+    color: #73756c !important;
+    font-size: 11px !important;
+}
+
+.artist-status {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    padding: 3px 8px;
+    border: 1px solid #cbd6c8;
+    background: #eef4ea;
+    color: #315b45;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.artist-status.is-inactive {
+    border-color: #d7c7a6;
+    background: #f7f0e1;
+    color: #806338;
+}
+
+.artist-view-link {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 10px;
+    border: 1px solid #aeb3a8;
+    background: #fcfbf7;
+    color: #315b45;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.artist-view-link:hover {
+    border-color: #315b45;
+    background: #f0f4ee;
+}
+
+.artists-table-footer {
+    display: flex;
+    min-height: 55px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 8px 14px;
+    border-top: 1px solid #d5d4cb;
+}
+
+.artists-table-footer > span {
+    color: #73756c;
+    font-size: 11px;
+}
+
+.artists-table-footer nav[role="navigation"] {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.artists-table-footer nav[role="navigation"] > div:first-child {
+    display: none;
+}
+
+.artists-table-footer nav[role="navigation"] > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.artists-table-footer nav[role="navigation"] a,
+.artists-table-footer nav[role="navigation"] span[aria-current="page"] span,
+.artists-table-footer nav[role="navigation"] span[aria-disabled="true"] span {
+    display: inline-flex;
+    min-width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+    border: 1px solid #d5d4cb;
+    background: #fcfbf7;
+    color: #50574d;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+.artists-table-footer nav[role="navigation"] span[aria-current="page"] span {
+    border-color: #315b45;
+    background: #315b45;
+    color: #fff;
+}
+
+.artists-table-footer nav[role="navigation"] span[aria-disabled="true"] span {
+    color: #75756c;
+}
+
+.artists-empty-state {
+    display: grid;
+    min-height: 220px;
+    justify-items: center;
+    align-content: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+}
+
+.artists-empty-state strong {
+    color: #353c34;
+    font-size: 16px;
+}
+
+.artists-empty-state > span {
+    color: #73766c;
+    font-size: 13px;
+}
+
+.artists-empty-state .artists-filter-reset {
+    margin-top: 5px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+@media (max-width: 1000px) {
+    .artists-overview {
+        gap: 8px;
+    }
+
+    .artists-overview article {
+        padding: 10px;
+    }
+
+    .artists-table th,
+    .artists-table td {
+        padding-right: 9px;
+        padding-left: 9px;
+    }
+}
+
+@media (max-width: 760px) {
+    .artists-page-heading {
+        min-height: 76px;
+        align-items: center;
+    }
+
+    .artists-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 580px) {
+    .artists-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 14px;
+    }
+
+    .artists-data-note {
+        max-width: none;
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .artists-overview {
+        gap: 7px;
+    }
+
+    .artists-overview article {
+        min-height: 76px;
+        gap: 2px;
+        padding: 9px;
+    }
+
+    .artists-overview article > span {
+        font-size: 11px;
+    }
+
+    .artists-overview strong {
+        font-size: 20px;
+    }
+
+    .artists-overview small {
+        font-size: 11px;
+    }
+
+    .artists-filter-bar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 7px;
+        padding: 10px;
+    }
+
+    .artists-search {
+        grid-column: 1 / -1;
+    }
+
+    .artists-sort {
+        min-width: 0;
+    }
+
+    .artists-sort select {
+        font-size: 11px;
+    }
+
+    .artists-filter-submit,
+    .artists-filter-reset {
+        min-height: 40px;
+        padding: 0 9px;
+        font-size: 11px;
+    }
+
+    .artists-table-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .artists-table-footer nav[role="navigation"] {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

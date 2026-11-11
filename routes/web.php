@@ -1,91 +1,92 @@
 <?php
 
-use App\Models\User;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\ArtistController as AdminArtistController;
+use App\Http\Controllers\Admin\ArtworkController as AdminArtworkController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderUpdatesController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rule;
 
-Route::get('/', function () {
-    return view('client-login');
-})->name('welcome');
+Route::get('/', fn (Request $request): RedirectResponse => $request->user()
+    ? redirect()->route('dashboard')
+    : redirect()->route('login'))->name('welcome');
 
-Route::get('/login', function () {
-    return view('client-login');
-})->name('login');
+Route::permanentRedirect('/client-login', '/login');
+Route::permanentRedirect('/client-signup', '/register');
 
-Route::get('/home', function () {
-    return view('welcome');
-})->middleware('auth')->name('home');
+Route::get('/dashboard', fn (Request $request): RedirectResponse => $request->user()->role === 'admin'
+    ? redirect()->route('admin.dashboard')
+    : redirect()->route('home'))->middleware('auth')->name('dashboard');
 
-Route::get('/artworks', function () {
-    return view('artworks');
-})->middleware('auth')->name('artworks');
+require __DIR__.'/auth.php';
+
+Route::get('/home', HomeController::class)
+    ->middleware('auth')
+    ->name('home');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/artists', [AdminArtistController::class, 'index'])->name('artists.index');
+    Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::patch('/categories/{category}/visibility', [AdminCategoryController::class, 'toggleVisibility'])->name('categories.visibility');
+    Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::resource('artworks', AdminArtworkController::class)->except('show');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks');
+    Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+    Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
+    Route::get('/about', AboutController::class)->name('about');
+    Route::post('/order-updates/seen', [OrderUpdatesController::class, 'markSeen'])->name('order-updates.seen');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:5,1')->name('feedback.store');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favorites/{slug}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::delete('/favorites/{slug}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/{slug}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/checkout/{slug}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
+    Route::delete('/cart/items/{artwork}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/items/{artwork}/save-for-later', [CartController::class, 'saveForLater'])->name('cart.save-for-later');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/order-success/{order}', [OrderController::class, 'show'])->name('order.success');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/items/{item}/download', [OrderController::class, 'downloadItem'])->name('orders.items.download');
+    Route::get('/orders/{order}/receipt', [OrderController::class, 'downloadReceipt'])->name('orders.receipt');
+});
 
 Route::get('/abstract', function () {
-    return view('abstract');
+    return redirect()->route('artworks', ['category' => 'Abstract']);
 })->middleware('auth')->name('abstract');
 
 Route::get('/admin-signup', function () {
-    return view('admin-signup');
+    return redirect()->route('login')
+        ->with('status', 'Admin access must be granted by an existing system administrator.');
 });
-
-Route::get('/client-signup', function () {
-    return view('client-signup');
-});
-
-Route::get('/client-login', function () {
-    return view('client-login');
-});
-
-Route::post('/register', function (Request $request) {
-    $validated = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-        'password' => ['required', 'string', 'min:8'],
-        'role' => ['nullable', Rule::in(['client', 'admin'])],
-    ]);
-
-    User::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
-        'role' => $validated['role'] ?? 'client',
-    ]);
-
-    return redirect()->route('login')->with('success', 'Account created successfully. Please log in.');
-})->name('register');
-
-Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required', 'string'],
-    ]);
-
-    $user = User::where('email', $credentials['email'])->first();
-
-    if (! $user) {
-        return back()->withErrors([
-            'email' => 'No account found. Please create an account first.',
-        ])->onlyInput('email');
-    }
-
-    if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-        return back()->withErrors([
-            'password' => 'Incorrect password. Please try again.',
-        ])->onlyInput('email');
-    }
-
-    $request->session()->regenerate();
-
-    return redirect()->intended(route('home'));
-})->name('login');
-
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login');
-})->name('logout');
