@@ -25,8 +25,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request. Public sign-up always creates
-     * a client account; admin access is granted separately.
+     * Handle an incoming registration request.
      *
      * @throws ValidationException
      */

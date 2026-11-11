@@ -16,6 +16,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderUpdatesController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,10 +28,6 @@ Route::get('/', fn (Request $request): RedirectResponse => $request->user()
 Route::permanentRedirect('/client-login', '/login');
 Route::permanentRedirect('/client-signup', '/register');
 
-/*
- * Breeze sends users to "dashboard" after logging in or registering.
- * Admins continue to the admin dashboard; clients go to the storefront home.
- */
 Route::get('/dashboard', fn (Request $request): RedirectResponse => $request->user()->role === 'admin'
     ? redirect()->route('admin.dashboard')
     : redirect()->route('home'))->middleware('auth')->name('dashboard');
@@ -57,6 +54,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks');
     Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
     Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
