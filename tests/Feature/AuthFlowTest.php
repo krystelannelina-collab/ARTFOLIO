@@ -74,8 +74,38 @@ class AuthFlowTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->post('/login', ['email' => 'admin@artfolio.com', 'password' => 'a-strong-test-password'])
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('admin.dashboard'));
         $this->assertSame('admin', auth()->user()->role);
+    }
+
+    public function test_admin_lands_on_admin_dashboard_even_after_opening_a_client_page_as_a_guest(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'password' => 'password123']);
+
+        $this->get('/cart')->assertRedirect(route('login'));
+
+        $this->post('/login', ['email' => $admin->email, 'password' => 'password123'])
+            ->assertRedirect(route('admin.dashboard'));
+    }
+
+    public function test_admin_returns_to_the_admin_page_they_asked_for(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'password' => 'password123']);
+
+        $this->get(route('admin.orders.index'))->assertRedirect(route('login'));
+
+        $this->post('/login', ['email' => $admin->email, 'password' => 'password123'])
+            ->assertRedirect(route('admin.orders.index'));
+    }
+
+    public function test_client_still_returns_to_the_page_they_asked_for(): void
+    {
+        $client = User::factory()->create(['password' => 'password123']);
+
+        $this->get('/cart')->assertRedirect(route('login'));
+
+        $this->post('/login', ['email' => $client->email, 'password' => 'password123'])
+            ->assertRedirect(url('/cart'));
     }
 
     public function test_seeder_skips_admin_when_no_password_is_configured(): void

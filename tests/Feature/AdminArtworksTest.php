@@ -28,6 +28,25 @@ class AdminArtworksTest extends TestCase
             ->assertSee('id="artwork-modal"', false);
     }
 
+    public function test_sold_artworks_leave_the_catalog_list_and_are_counted_separately(): void
+    {
+        $this->seed(ArtworkSeeder::class);
+        $catalogSize = Artwork::query()->count();
+        Artwork::query()->where('slug', 'fluid-geometric')->update(['availability' => Artwork::AVAILABILITY_SOLD]);
+        Artwork::query()->where('slug', 'stranger-things-poster')->update(['availability' => Artwork::AVAILABILITY_RESERVED]);
+
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->get(route('admin.artworks.index', ['search' => 'Fluid']))
+            ->assertOk()
+            ->assertDontSee('aria-label="Preview Fluid Geometric"', false)
+            ->assertSee('href="'.route('admin.sold.index').'" class="artwork-overview-sold"', false)
+            ->assertViewHas('stats', fn (array $stats): bool => $stats['total'] === $catalogSize - 1 && $stats['sold'] === 1);
+
+        $this->get(route('admin.artworks.index', ['search' => 'Stranger']))
+            ->assertOk()
+            ->assertSee('aria-label="Preview Stranger Things Poster"', false);
+    }
+
     public function test_admin_can_preview_artwork_details_in_a_drawer(): void
     {
         $this->seed(ArtworkSeeder::class);

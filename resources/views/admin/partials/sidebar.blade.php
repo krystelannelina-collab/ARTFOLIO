@@ -43,6 +43,13 @@
             </svg>
             <span>Orders</span>
         </a>
+        <a href="{{ route('admin.sold.index') }}" class="admin-nav-link {{ $active === 'sold' ? 'is-active' : '' }}" @if ($active === 'sold') aria-current="page" @endif>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"></path>
+                <path d="m8 12 2 2 4-4"></path>
+            </svg>
+            <span>Sold items</span>
+        </a>
         <a href="{{ route('admin.customers.index') }}" class="admin-nav-link {{ $active === 'customers' ? 'is-active' : '' }}" @if ($active === 'customers') aria-current="page" @endif>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="9" cy="8" r="3"></circle>

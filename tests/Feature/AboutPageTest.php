@@ -21,13 +21,13 @@ class AboutPageTest extends TestCase
             ->assertSee('<title>ARTFOLIO - About Us</title>', false)
             ->assertSee('Find art that', false)
             ->assertSee('Creativity deserves to be', false)
-            ->assertSee('Fluid Geometric')
-            ->assertSee('Cristine Joy Montes')
-            ->assertSee('Follow what moves you.')
-            ->assertSee('Keep what you love')
+            ->assertSee('Contact ARTFOLIO.')
+            ->assertDontSee('Follow what moves you.')
+            ->assertDontSee('Bring a little more art into your day.')
+            ->assertDontSee('about-artwork-grid', false)
             ->assertSee('href="'.url('/about').'" class="nav-link active"', false)
             ->assertSee('href="'.url('/artworks').'" class="about-button about-button-primary"', false)
-            ->assertSee('href="'.url('/artists').'" class="about-button about-button-secondary"', false)
+            ->assertSee('href="'.url('/artists').'" class="about-text-link"', false)
             ->assertDontSee('artist-cristine-joy-montes.png')
             ->assertDontSee('Meet Cristine Joy Montes');
     }

@@ -173,10 +173,6 @@ class ArtworkDetailsTest extends TestCase
             ->assertOk()
             ->assertSee(route('artworks.show', ['slug' => 'fluid-geometric']), false);
 
-        $this->get('/about')
-            ->assertOk()
-            ->assertSee(route('artworks.show', ['slug' => 'minimalist-organic']), false);
-
         $this->get('/favorites')
             ->assertOk()
             ->assertSee(route('artworks.show', ['slug' => 'colorful-abstract']), false);

@@ -502,7 +502,8 @@ img {
 .site-nav-links .nav-link {
     padding: 8px 14px;
     border: 0;
-    border-radius: 999px;
+    position: relative;
+    border-radius: 0;
     background: none;
     color: #3f3f46;
     font-size: 14px;
@@ -514,13 +515,39 @@ img {
 .site-nav-links .nav-link:hover,
 .site-nav-links .nav-link:focus-visible,
 .site-nav-dropdown:hover > .nav-link {
-    background: rgba(0, 0, 0, 0.05);
+    background: none;
     color: var(--text-dark);
 }
 
+/* Underline marks the current page; it grows in from the center. */
+.site-nav-links .nav-link::before {
+    content: "";
+    position: absolute;
+    left: var(--bs-navbar-nav-link-padding-x, 14px);
+    right: var(--bs-navbar-nav-link-padding-x, 14px);
+    bottom: 2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--dark-btn-bg);
+    transform: scaleX(0);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.site-nav-links .nav-link:hover::before,
+.site-nav-links .nav-link:focus-visible::before,
+.site-nav-dropdown:hover > .nav-link::before {
+    opacity: 0.3;
+    transform: scaleX(1);
+}
+
 .site-nav-links .nav-link.active {
-    background: var(--active-pill);
-    color: var(--active-pill-text);
+    background: none;
+    color: var(--dark-btn-bg);
+}
+
+.site-nav-links .nav-link.active::before {
+    opacity: 1;
+    transform: scaleX(1);
 }
 
 /* Artworks category menu */
@@ -719,6 +746,14 @@ img {
         padding: 10px 14px;
     }
 
+    /* Stacked menu: keep the underline under the text, not across the full row. */
+    .site-nav-links .nav-link::before {
+        left: 14px;
+        right: auto;
+        width: 32px;
+        transform-origin: left;
+    }
+
     /* No hover on touch screens: list the categories right under "Artworks". */
     .site-nav-dropdown > .site-dropdown {
         display: block;
@@ -756,5 +791,83 @@ img {
     .account-menu-panel,
     .order-updates-panel {
         top: 64px;
+    }
+}
+
+/* ================= BANNER ARTWORK ================= */
+/* Cut-paper composition drawn by partials/hero-art, layered behind the banner copy. */
+.hero-art {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-art-canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(64%, 780px);
+    height: 100%;
+}
+
+/* Paper grain over the whole banner so the shapes read as printed, not flat vector. */
+.hero-art::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Soft fade from the copy side so the headline always stays readable. */
+.hero-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(90deg, #102b21 0%, rgba(16, 43, 33, 0.85) 32%, rgba(16, 43, 33, 0) 58%);
+}
+
+.hero-art-float {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hero-art-float 7s ease-in-out infinite alternate;
+}
+
+.hero-art-sway {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: hero-art-sway 6s ease-in-out infinite alternate;
+}
+
+@keyframes hero-art-float {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+}
+
+@keyframes hero-art-sway {
+    from { transform: rotate(-2deg); }
+    to { transform: rotate(2.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-art-float,
+    .hero-art-sway {
+        animation: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .hero-art-canvas {
+        width: 100%;
+        opacity: 0.45;
+    }
+
+    .hero-art::after {
+        background: linear-gradient(0deg, #102b21 0%, rgba(16, 43, 33, 0.8) 45%, rgba(16, 43, 33, 0.25) 100%);
     }
 }

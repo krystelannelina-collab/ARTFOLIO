@@ -30,7 +30,7 @@
 
     <main class="main-content about-content">
         <section class="about-hero" aria-labelledby="about-title">
-            <div class="about-hero-overlay"></div>
+            @include('partials.hero-art', ['variant' => 'about'])
             <div class="about-hero-copy">
                 <span class="about-eyebrow">ART LIVES HERE <span aria-hidden="true">·</span> MADE TO BE DISCOVERED</span>
                 <h1 id="about-title">Find art that<br>feels like <em>you.</em></h1>
@@ -42,7 +42,6 @@
                     </svg>
                 </a>
             </div>
-            <span class="about-hero-index" aria-hidden="true">01 / 04</span>
         </section>
 
         <section class="about-intro" aria-labelledby="why-artfolio-title">
@@ -58,61 +57,6 @@
                         <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </a>
-            </div>
-        </section>
-
-        <section class="about-gallery" aria-labelledby="about-gallery-title">
-            <div class="about-section-heading">
-                <div>
-                    <span class="about-eyebrow">A FEW PLACES TO BEGIN</span>
-                    <h2 id="about-gallery-title">Art with its own point of view.</h2>
-                </div>
-                <a href="{{ url('/artworks') }}" class="about-text-link">
-                    Browse all artworks
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>
-            </div>
-
-            <div class="about-artwork-grid">
-                @foreach ($featuredArtworks ?? [] as $index => $artwork)
-                    <a href="{{ $artwork['url'] }}" class="about-artwork-card {{ $index === 0 ? 'about-artwork-card-featured' : '' }}">
-                        <img src="{{ $artwork['image'] }}" alt="{{ $artwork['title'] }} by {{ $artwork['author'] }}" loading="lazy">
-                        <span class="about-artwork-caption">
-                            <span class="about-artwork-category">{{ $artwork['category'] }}</span>
-                            <span class="about-artwork-title">{{ $artwork['title'] }}</span>
-                            <span class="about-artwork-artist">{{ $artwork['author'] }}</span>
-                        </span>
-                        <span class="about-artwork-arrow" aria-hidden="true">↗</span>
-                    </a>
-                @endforeach
-            </div>
-        </section>
-
-        <section class="about-values" aria-labelledby="about-values-title">
-            <div class="about-section-heading about-values-heading">
-                <div>
-                    <span class="about-eyebrow">YOUR ART JOURNEY</span>
-                    <h2 id="about-values-title">Follow what moves you.</h2>
-                </div>
-            </div>
-            <div class="about-values-grid">
-                <article class="about-value-card">
-                    <span class="about-value-number">01</span>
-                    <h3>Find your style</h3>
-                    <p>Explore abstract, typography, pixel, poster, and digital art.</p>
-                </article>
-                <article class="about-value-card">
-                    <span class="about-value-number">02</span>
-                    <h3>Meet the makers</h3>
-                    <p>Discover the artists and perspectives behind every piece.</p>
-                </article>
-                <article class="about-value-card">
-                    <span class="about-value-number">03</span>
-                    <h3>Keep what you love</h3>
-                    <p>Save your favorites and revisit the art that speaks to you.</p>
-                </article>
             </div>
         </section>
 
@@ -209,25 +153,6 @@
                 <button type="submit" class="about-button about-button-primary">Send feedback</button>
             </form>
             @endauth
-        </section>
-
-        <section class="about-cta" aria-labelledby="about-cta-title">
-            <span class="about-cta-orbit about-cta-orbit-one" aria-hidden="true"></span>
-            <span class="about-cta-orbit about-cta-orbit-two" aria-hidden="true"></span>
-            <div class="about-cta-copy">
-                <span class="about-eyebrow">YOUR NEXT FAVORITE IS OUT THERE</span>
-                <h2 id="about-cta-title">Bring a little more art into your day.</h2>
-                <p>Take a look around. You might find something that feels like it was made for you.</p>
-                <div class="about-cta-actions">
-                    <a href="{{ url('/artworks') }}" class="about-button about-button-primary">
-                        Explore artworks
-                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </a>
-                    <a href="{{ url('/artists') }}" class="about-button about-button-secondary">Meet the artists</a>
-                </div>
-            </div>
         </section>
 
         <footer class="about-footer">

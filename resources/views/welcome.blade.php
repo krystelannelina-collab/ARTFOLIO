@@ -44,7 +44,7 @@
 
         <!-- Hero Card -->
         <section class="hero-banner">
-            <div class="hero-banner-overlay"></div>
+            @include('partials.hero-art', ['variant' => 'home'])
 
             <div class="hero-banner-content">
                 <span class="hero-badge-tag">A SPACE FOR ORIGINAL IDEAS</span>

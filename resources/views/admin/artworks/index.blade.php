@@ -38,9 +38,10 @@
         @enderror
 
         <section class="artwork-overview" aria-label="Artwork catalog totals">
-            <div><span>Total artworks</span><strong>{{ number_format($stats['total']) }}</strong></div>
+            <div><span>In catalog</span><strong>{{ number_format($stats['total']) }}</strong></div>
             <div><span>Published</span><strong>{{ number_format($stats['published']) }}</strong></div>
             <div><span>Drafts</span><strong>{{ number_format($stats['draft']) }}</strong></div>
+            <a href="{{ route('admin.sold.index') }}" class="artwork-overview-sold"><span>Sold <small>View sold items →</small></span><strong>{{ number_format($stats['sold']) }}</strong></a>
         </section>
 
         <section class="admin-panel artwork-table-panel" aria-label="Artwork catalog">
