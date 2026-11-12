@@ -30,7 +30,7 @@ class ArtworkController extends Controller
             'status' => ['nullable', Rule::in(['published', 'draft', 'archived'])],
             'sort' => ['nullable', Rule::in(['newest', 'oldest', 'title', 'price_low', 'price_high'])],
         ]);
-        $query = Artwork::query();
+        $query = $this->unsoldArtworks();
         $search = trim($filters['search'] ?? '');
 
         if ($search !== '') {
@@ -72,11 +72,23 @@ class ArtworkController extends Controller
             'hasFilters' => $search !== '' || ! empty($filters['category']) || ! empty($filters['status']),
             'sort' => $sort,
             'stats' => [
-                'total' => Artwork::query()->count(),
-                'published' => Artwork::query()->where('status', 'published')->count(),
-                'draft' => Artwork::query()->where('status', 'draft')->count(),
+                'total' => $this->unsoldArtworks()->count(),
+                'published' => $this->unsoldArtworks()->where('status', 'published')->count(),
+                'draft' => $this->unsoldArtworks()->where('status', 'draft')->count(),
+                'sold' => Artwork::query()->where('availability', Artwork::AVAILABILITY_SOLD)->count(),
             ],
         ]);
+    }
+
+    /**
+     * Artworks still in the catalog. Sold one-of-one pieces leave this list and
+     * are tracked on the Sold items page instead.
+     *
+     * @return Builder<Artwork>
+     */
+    private function unsoldArtworks(): Builder
+    {
+        return Artwork::query()->where('availability', '!=', Artwork::AVAILABILITY_SOLD);
     }
 
     public function create(): RedirectResponse
@@ -96,8 +108,8 @@ class ArtworkController extends Controller
         }
         $data['slug'] = $this->uniqueSlug($data['title']);
 
-        $artwork = Artwork::query()->create($data);
-        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
+        $this->ensureArtistProfileExists($data['artist_name'], $data['category'], $data['image_path']);
+        Artwork::query()->create($data);
 
         return redirect()->route('admin.artworks.index')
             ->with('status', 'Artwork added to the catalog.');
@@ -129,8 +141,8 @@ class ArtworkController extends Controller
             $data['slug'] = $this->uniqueSlug($data['title'], $artwork);
         }
 
+        $this->ensureArtistProfileExists($data['artist_name'], $data['category'], $data['image_path'] ?? $artwork->image_path);
         $artwork->update($data);
-        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
 
         if ($hasNewImage) {
             $this->removeStoredImage($previousImagePath);

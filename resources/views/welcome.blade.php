@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Dedicated CSS Stylesheets -->
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 </head>
 <body>
@@ -34,42 +34,17 @@
     }
 @endphp
 
-@include('partials.mobile-header')
 
 <div class="app-layout">
 
-    @include('partials.sidebar', ['active' => 'home'])
+    @include('partials.site-header', ['active' => 'home'])
 
     <!-- ================= MAIN CONTENT ================= -->
     <main class="main-content">
 
-        <!-- Top Bar -->
-        <header class="top-bar">
-            <!-- Search Pill -->
-            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input
-                    type="search"
-                    name="search"
-                    class="search-input"
-                    placeholder="Search artworks, artists, and inspiration"
-                    aria-label="Search artworks, artists, and inspiration"
-                    value="{{ request('search') }}"
-                >
-            </form>
-
-            <!-- Actions (Notification Bell & Profile Avatar) -->
-            <div class="top-right-actions">
-                @include('partials.account-menu')
-            </div>
-        </header>
-
         <!-- Hero Card -->
         <section class="hero-banner">
-            <div class="hero-banner-overlay"></div>
+            @include('partials.hero-art', ['variant' => 'home'])
 
             <div class="hero-banner-content">
                 <span class="hero-badge-tag">A SPACE FOR ORIGINAL IDEAS</span>

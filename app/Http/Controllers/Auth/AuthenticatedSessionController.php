@@ -28,7 +28,28 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->user()->role === 'admin') {
+            return $this->redirectAdmin($request);
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Send an admin to the admin area. A remembered client page (for example the
+     * cart a guest tried to open before logging in) is ignored, so admins never
+     * land on the storefront; a remembered admin page is still honoured.
+     */
+    private function redirectAdmin(Request $request): RedirectResponse
+    {
+        $intendedUrl = $request->session()->pull('url.intended');
+        $adminAreaUrl = route('admin.dashboard');
+
+        if (is_string($intendedUrl) && str_starts_with($intendedUrl, $adminAreaUrl)) {
+            return redirect()->to($intendedUrl);
+        }
+
+        return redirect()->to($adminAreaUrl);
     }
 
     /**

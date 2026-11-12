@@ -52,6 +52,7 @@
                     <strong>{{ $menuUser->name }}</strong>
                     <span>{{ $menuUser->email }}</span>
                 </div>
+                <a href="{{ route('profile.edit') }}" class="account-menu-link">Profile</a>
                 <a href="{{ route('orders') }}" class="account-menu-link">My orders</a>
                 <a href="{{ route('favorites') }}" class="account-menu-link">Favorites</a>
                 <a href="{{ route('cart') }}" class="account-menu-link">Cart</a>

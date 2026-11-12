@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['order_id', 'artwork_id', 'title', 'artist_name', 'image_path', 'unit_price', 'quantity'])]
+#[Fillable(['order_id', 'artwork_id', 'title', 'artist_name', 'image_path', 'unit_price', 'quantity', 'subtotal'])]
 class OrderItem extends Model
 {
     public function order(): BelongsTo

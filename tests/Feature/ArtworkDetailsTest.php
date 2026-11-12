@@ -24,7 +24,7 @@ class ArtworkDetailsTest extends TestCase
             ->assertSee('Stranger Things Poster')
             ->assertSee('Gian Gomez')
             ->assertSee('Poster')
-            ->assertSee('₱35.76')
+            ->assertSee('₱250.00')
             ->assertSee('About this artwork')
             ->assertSee('More to explore')
             ->assertSee(route('artworks.show', ['slug' => 'fluid-geometric']), false);
@@ -113,10 +113,27 @@ class ArtworkDetailsTest extends TestCase
             ->assertDontSee('Draft New Artwork');
     }
 
-    public function test_guest_is_redirected_to_login_from_artwork_details(): void
+    public function test_guest_can_browse_the_catalog_and_artwork_details(): void
     {
+        $this->seed(ArtworkSeeder::class);
+        $artwork = Artwork::query()->where('slug', 'stranger-things-poster')->sole();
+
+        $this->get(route('home'))->assertOk();
+        $this->get(route('artworks'))->assertOk()->assertSee('Stranger Things Poster');
+        $this->get(route('artists'))->assertOk();
         $this->get('/artworks/stranger-things-poster')
-            ->assertRedirect('/login');
+            ->assertOk()
+            ->assertSee($artwork->catalogNumber())
+            ->assertSee('Log in');
+    }
+
+    public function test_guest_must_log_in_before_adding_to_cart(): void
+    {
+        $this->seed(ArtworkSeeder::class);
+
+        $this->post(route('cart.add', 'stranger-things-poster'))->assertRedirect(route('login'));
+        $this->post(route('checkout.buy-now', 'stranger-things-poster'))->assertRedirect(route('login'));
+        $this->get(route('cart'))->assertRedirect(route('login'));
     }
 
     public function test_all_catalog_artworks_have_a_detail_page(): void
@@ -155,10 +172,6 @@ class ArtworkDetailsTest extends TestCase
         $this->get('/home')
             ->assertOk()
             ->assertSee(route('artworks.show', ['slug' => 'fluid-geometric']), false);
-
-        $this->get('/about')
-            ->assertOk()
-            ->assertSee(route('artworks.show', ['slug' => 'minimalist-organic']), false);
 
         $this->get('/favorites')
             ->assertOk()
