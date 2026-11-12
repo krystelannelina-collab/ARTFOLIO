@@ -14,13 +14,13 @@ class CartLayoutTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_cart_content_stays_beside_the_sidebar_and_artworks_menu_is_closed(): void
+    public function test_cart_content_sits_below_the_header_and_artworks_menu_is_not_active(): void
     {
         $response = $this->actingAs(User::factory()->create())->get('/cart');
 
         $response->assertOk();
 
-        $document = new DOMDocument();
+        $document = new DOMDocument;
         $previousLibxmlErrorSetting = libxml_use_internal_errors(true);
         $documentLoaded = $document->loadHTML($response->getContent());
         libxml_clear_errors();
@@ -28,28 +28,31 @@ class CartLayoutTest extends TestCase
         $this->assertTrue($documentLoaded);
 
         $xpath = new DOMXPath($document);
+        $layout = $xpath->query('//*[@class="app-layout"]')->item(0);
+        $header = $xpath->query('//*[contains(concat(" ", normalize-space(@class), " "), " site-header ")]')->item(0);
         $mainContent = $xpath->query('//*[contains(concat(" ", normalize-space(@class), " "), " main-content ")]')->item(0);
-        $artworksSubmenu = $xpath->query('//*[@id="artworks-submenu"]')->item(0);
-        $navigationCarets = $xpath->query('//*[contains(concat(" ", normalize-space(@class), " "), " nav-chevron ") or contains(concat(" ", normalize-space(@class), " "), " dropdown-chevron-down ")]');
+        $artworksToggle = $xpath->query('//a[contains(@class, "dropdown-toggle") and normalize-space(.)="Artworks"]')->item(0);
 
+        $this->assertNotNull($layout);
+        $this->assertNotNull($header);
         $this->assertNotNull($mainContent);
-        $this->assertSame('app-layout', $mainContent->parentNode->attributes->getNamedItem('class')->nodeValue);
-        $this->assertNotNull($artworksSubmenu);
-        $this->assertSame('artworks-submenu', $artworksSubmenu->getAttribute('class'));
-        $this->assertSame(0, $navigationCarets->length);
-        $response->assertSee('aria-expanded="false"', false);
+        $this->assertTrue($header->parentNode->isSameNode($layout));
+        $this->assertTrue($mainContent->parentNode->isSameNode($layout));
+        $this->assertSame(0, $xpath->query('//*[contains(concat(" ", normalize-space(@class), " "), " sidebar ")]')->length);
+        $this->assertNotNull($artworksToggle);
+        $this->assertStringNotContainsString('active', $artworksToggle->getAttribute('class'));
+        $this->assertSame(route('artworks'), $artworksToggle->getAttribute('href'));
     }
 
-    public function test_artworks_menu_is_open_when_browsing_artworks(): void
+    public function test_artworks_menu_is_highlighted_when_browsing_artworks(): void
     {
         $response = $this->actingAs(User::factory()->create())->get('/artworks');
 
         $response->assertOk();
-        $response->assertSee('class="artworks-submenu is-open"', false);
-        $response->assertSee('aria-expanded="true"', false);
+        $response->assertSee('class="nav-link dropdown-toggle active"', false);
     }
 
-    public function test_cart_checkout_and_orders_pages_have_consistent_top_bar_search_form(): void
+    public function test_cart_checkout_and_orders_pages_have_the_header_search_form(): void
     {
         $this->seed(ArtworkSeeder::class);
 
@@ -70,7 +73,7 @@ class CartLayoutTest extends TestCase
             $response = $this->actingAs($user)->get($pageUrl);
 
             $response->assertOk()
-                ->assertSee('<header class="top-bar">', false)
+                ->assertSee('class="search-pill-container site-search"', false)
                 ->assertSee('action="'.url('/artworks').'"', false)
                 ->assertSee('name="search"', false)
                 ->assertSee('CJ');

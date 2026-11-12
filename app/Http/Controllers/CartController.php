@@ -25,6 +25,7 @@ class CartController extends Controller
 
     public function add(Request $request, string $slug): RedirectResponse
     {
+        $this->validateQuantity($request);
         $artwork = Artwork::query()->where('slug', $slug)->firstOrFail();
         abort_unless($artwork->status === 'published', 404);
         $this->ensureCategoryIsVisible($artwork);
@@ -44,6 +45,7 @@ class CartController extends Controller
 
     public function buyNow(Request $request, string $slug): RedirectResponse
     {
+        $this->validateQuantity($request);
         $artwork = Artwork::query()->where('slug', $slug)->firstOrFail();
         abort_unless($artwork->status === 'published', 404);
         $this->ensureCategoryIsVisible($artwork);
@@ -110,6 +112,23 @@ class CartController extends Controller
                 'slug' => $artwork->slug,
             ])
             ->all();
+    }
+
+    /**
+     * Every artwork is a one-of-one original, so its stock is always 1. A
+     * submitted quantity must be the whole number 1; zero, fractions, and
+     * anything above the single available copy are rejected.
+     */
+    private function validateQuantity(Request $request): void
+    {
+        $request->validate([
+            'quantity' => ['sometimes', 'required', 'integer', 'min:1', 'max:1'],
+        ], [
+            'quantity.required' => 'Enter a quantity.',
+            'quantity.integer' => 'The quantity must be a whole number.',
+            'quantity.min' => 'The quantity must be at least 1.',
+            'quantity.max' => 'Each artwork is a one-of-one original, so only 1 copy is available.',
+        ]);
     }
 
     private function ensureCategoryIsVisible(Artwork $artwork): void

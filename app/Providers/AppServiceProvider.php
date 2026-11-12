@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        View::composer('partials.sidebar', function (ViewInstance $view): void {
+        View::composer('partials.site-header', function (ViewInstance $view): void {
             $view->with('storeCategories', Category::query()
                 ->where('is_visible', true)
                 ->orderBy('sort_order')
@@ -44,13 +44,6 @@ class AppServiceProvider extends ServiceProvider
                 ->map(fn (Category $category): array => [
                     'label' => $category->name,
                     'url' => url('/artworks?category='.urlencode($category->name)),
-                    'type' => match (strtolower($category->name)) {
-                        'typography' => 'typography',
-                        'pixel' => 'pixel',
-                        'poster' => 'poster',
-                        'digital' => 'digital',
-                        default => 'abstract',
-                    },
                 ])
                 ->all());
         });

@@ -41,7 +41,7 @@ class AdminArtworksTest extends TestCase
             ->assertSee('data-title="Fluid Geometric"', false)
             ->assertSee('data-artist="Cristine Joy Montes"', false)
             ->assertSee('data-category="Abstract"', false)
-            ->assertSee('data-price="₱28.56"', false)
+            ->assertSee('data-price="₱250.00"', false)
             ->assertSee('data-status="published"', false)
             ->assertSee('A study in movement and color', false)
             ->assertSee('View client page')

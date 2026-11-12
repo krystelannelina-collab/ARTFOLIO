@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn (Request $request): RedirectResponse => $request->user()
     ? redirect()->route('dashboard')
-    : redirect()->route('login'))->name('welcome');
+    : redirect()->route('home'))->name('welcome');
 
 Route::permanentRedirect('/client-login', '/login');
 Route::permanentRedirect('/client-signup', '/register');
@@ -34,9 +34,15 @@ Route::get('/dashboard', fn (Request $request): RedirectResponse => $request->us
 
 require __DIR__.'/auth.php';
 
-Route::get('/home', HomeController::class)
-    ->middleware('auth')
-    ->name('home');
+/*
+ * Public catalog: guests can browse the home page, artworks, and artists.
+ * Adding to the cart, checking out, and every other transaction requires login.
+ */
+Route::get('/home', HomeController::class)->name('home');
+Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks');
+Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
+Route::get('/about', AboutController::class)->name('about');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
@@ -58,10 +64,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks');
-    Route::get('/artworks/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
-    Route::get('/artists', [ArtistController::class, 'index'])->name('artists');
-    Route::get('/about', AboutController::class)->name('about');
     Route::post('/order-updates/seen', [OrderUpdatesController::class, 'markSeen'])->name('order-updates.seen');
     Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:5,1')->name('feedback.store');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
@@ -84,7 +86,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/abstract', function () {
     return redirect()->route('artworks', ['category' => 'Abstract']);
-})->middleware('auth')->name('abstract');
+})->name('abstract');
 
 Route::get('/admin-signup', function () {
     return redirect()->route('login')

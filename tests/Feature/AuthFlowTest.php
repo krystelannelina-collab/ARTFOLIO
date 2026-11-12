@@ -54,7 +54,7 @@ class AuthFlowTest extends TestCase
     {
         $this->get('/client-login')->assertRedirect('/login');
         $this->get('/client-signup')->assertRedirect('/register');
-        $this->get('/')->assertRedirect(route('login'));
+        $this->get('/')->assertRedirect(route('home'));
     }
 
     public function test_logged_in_users_are_sent_away_from_guest_pages(): void

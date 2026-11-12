@@ -25,15 +25,21 @@ class AboutPageTest extends TestCase
             ->assertSee('Cristine Joy Montes')
             ->assertSee('Follow what moves you.')
             ->assertSee('Keep what you love')
-            ->assertSee('href="'.url('/about').'" class="nav-item-link active"', false)
+            ->assertSee('href="'.url('/about').'" class="nav-link active"', false)
             ->assertSee('href="'.url('/artworks').'" class="about-button about-button-primary"', false)
             ->assertSee('href="'.url('/artists').'" class="about-button about-button-secondary"', false)
             ->assertDontSee('artist-cristine-joy-montes.png')
             ->assertDontSee('Meet Cristine Joy Montes');
     }
 
-    public function test_guest_is_redirected_to_login_when_visiting_about_page(): void
+    public function test_guest_can_read_about_page_but_must_log_in_to_send_feedback(): void
     {
-        $this->get('/about')->assertRedirect('/login');
+        $this->get('/about')
+            ->assertOk()
+            ->assertSee('Log in to send feedback')
+            ->assertDontSee('action="'.route('feedback.store').'"', false);
+
+        $this->post(route('feedback.store'), ['name' => 'Guest', 'email' => 'guest@example.com', 'message' => 'Hello there, nice site!'])
+            ->assertRedirect(route('login'));
     }
 }

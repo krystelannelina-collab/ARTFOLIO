@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/about.css') }}">
 </head>
 <body>
@@ -24,32 +24,11 @@
     }
 @endphp
 
-@include('partials.mobile-header')
 
 <div class="app-layout">
-    @include('partials.sidebar', ['active' => 'about'])
+    @include('partials.site-header', ['active' => 'about'])
 
     <main class="main-content about-content">
-        <header class="top-bar">
-            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input
-                    type="search"
-                    name="search"
-                    class="search-input"
-                    placeholder="Search artworks, artists, and inspiration"
-                    aria-label="Search artworks, artists, and inspiration"
-                >
-            </form>
-
-            <div class="top-right-actions">
-                @include('partials.account-menu')
-            </div>
-        </header>
-
         <section class="about-hero" aria-labelledby="about-title">
             <div class="about-hero-overlay"></div>
             <div class="about-hero-copy">
@@ -185,6 +164,14 @@
                 </dl>
             </div>
 
+            @guest
+                <div class="about-feedback-form" id="feedback" aria-labelledby="about-feedback-title">
+                    <h3 id="about-feedback-title">Send us feedback</h3>
+                    <p>Log in to tell us what you love or what we can improve.</p>
+                    <a href="{{ route('login') }}" class="about-button about-button-primary">Log in to send feedback</a>
+                </div>
+            @endguest
+            @auth
             <form method="POST" action="{{ route('feedback.store') }}" class="about-feedback-form" id="feedback" aria-labelledby="about-feedback-title">
                 @csrf
                 <h3 id="about-feedback-title">Send us feedback</h3>
@@ -221,6 +208,7 @@
                 </label>
                 <button type="submit" class="about-button about-button-primary">Send feedback</button>
             </form>
+            @endauth
         </section>
 
         <section class="about-cta" aria-labelledby="about-cta-title">

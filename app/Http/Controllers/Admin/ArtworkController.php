@@ -96,8 +96,8 @@ class ArtworkController extends Controller
         }
         $data['slug'] = $this->uniqueSlug($data['title']);
 
-        $artwork = Artwork::query()->create($data);
-        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
+        $this->ensureArtistProfileExists($data['artist_name'], $data['category'], $data['image_path']);
+        Artwork::query()->create($data);
 
         return redirect()->route('admin.artworks.index')
             ->with('status', 'Artwork added to the catalog.');
@@ -129,8 +129,8 @@ class ArtworkController extends Controller
             $data['slug'] = $this->uniqueSlug($data['title'], $artwork);
         }
 
+        $this->ensureArtistProfileExists($data['artist_name'], $data['category'], $data['image_path'] ?? $artwork->image_path);
         $artwork->update($data);
-        $this->ensureArtistProfileExists($artwork->artist_name, $artwork->category, $artwork->image_path);
 
         if ($hasNewImage) {
             $this->removeStoredImage($previousImagePath);

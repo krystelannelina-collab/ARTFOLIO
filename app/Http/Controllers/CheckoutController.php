@@ -96,10 +96,11 @@ class CheckoutController extends Controller
                     throw new RuntimeException(self::ARTWORK_UNAVAILABLE);
                 }
 
-                $total = array_sum(array_map(
-                    fn (array $item): float => $item['price'] * $item['quantity'],
+                $subtotalsInCentavos = array_map(
+                    fn (array $item): int => self::toCentavos($item['price']) * $item['quantity'],
                     $orderItems,
-                ));
+                );
+                $total = array_sum($subtotalsInCentavos) / 100;
 
                 $order = Order::query()->create([
                     'order_number' => 'pending-'.Str::uuid(),
@@ -116,7 +117,7 @@ class CheckoutController extends Controller
                 ]);
                 $order->update(['order_number' => 'ART-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT)]);
 
-                foreach ($orderItems as $item) {
+                foreach ($orderItems as $index => $item) {
                     OrderItem::query()->create([
                         'order_id' => $order->id,
                         'artwork_id' => $item['id'],
@@ -125,6 +126,7 @@ class CheckoutController extends Controller
                         'image_path' => $item['image_path'],
                         'unit_price' => $item['price'],
                         'quantity' => $item['quantity'],
+                        'subtotal' => $subtotalsInCentavos[$index] / 100,
                     ]);
                 }
 
@@ -147,5 +149,14 @@ class CheckoutController extends Controller
         $request->session()->forget('cart');
 
         return redirect()->route('order.success', $order);
+    }
+
+    /**
+     * Convert a peso amount to whole centavos so totals are added as integers
+     * and never pick up floating-point rounding errors.
+     */
+    private static function toCentavos(float|string $amount): int
+    {
+        return (int) round((float) $amount * 100);
     }
 }

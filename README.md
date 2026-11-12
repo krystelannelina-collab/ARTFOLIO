@@ -5,7 +5,7 @@ ARTFOLIO is an online gallery and store for original digital artwork, built with
 ## Features
 
 ### For collectors (clients)
-- Browse the artwork catalog by category, and view each artwork's details and file specifications.
+- Browse the home page, artwork catalog, artwork details, artists, and About page **without logging in**. Each artwork shows a unique catalog number such as `AW-0001`. Logging in is required to add to the cart, check out, save favorites, or view orders.
 - Browse artists and read the About page, which includes contact details and a feedback form.
 - Save artworks to Favorites.
 - Add artworks to a cart and check out with GCash or a card.
@@ -19,9 +19,30 @@ ARTFOLIO is an online gallery and store for original digital artwork, built with
 - View customers and artists.
 
 ### Business rules
-- Every artwork is **one of one**. Checking out reserves it, an approved payment marks it sold, and a rejected payment puts it back on sale.
+- Every artwork is **one of one**, so its stock is always 1. Checking out reserves it, an approved payment marks it sold, and a rejected payment puts it back on sale.
 - Downloads unlock only after an admin approves the payment, and only for the buyer.
-- Prices are in Philippine pesos (₱).
+- Prices are in Philippine pesos (₱), stored as `DECIMAL(10,2)`. Order totals are added up in whole centavos, so they are always exact to two decimal places.
+
+#### Quantity and stock rules
+| Rule | Where it is enforced |
+|---|---|
+| A quantity must be the whole number `1`. Zero, negative, fractional, and larger quantities are rejected with a field message. | `CartController::validateQuantity()` |
+| **Reserved:** at checkout, inside one database transaction, each artwork changes from `available` to `reserved` only if it is still available. If any artwork was taken in the meantime, nothing is saved and the buyer goes back to the cart. | `CheckoutController::store()` |
+| **Deducted (sold):** when an admin approves the payment, the artworks become `sold`. | `Order::transitionTo()` |
+| **Restored:** when an admin rejects the payment or marks a refund, the artworks become `available` again. | `Order::transitionTo()` |
+| Each order line stores the artwork title, artist, unit price, quantity, and subtotal, so later catalog edits never change a past order. | `order_items` table |
+
+#### Order status map
+A submitted order is **not** a verified payment. It stays *Awaiting approval* until an admin checks the payment.
+
+| Status (label) | Meaning | Allowed next status |
+|---|---|---|
+| `pending` (Awaiting approval) | Order placed, payment details submitted, artworks reserved | `completed`, `failed` |
+| `completed` (Payment approved) | Admin confirmed the payment; artworks sold; downloads unlocked | `refunded` |
+| `failed` (Payment rejected) | Admin rejected the payment with a reason; artworks back on sale | none |
+| `refunded` (Refunded) | Approved payment returned; artworks back on sale | none |
+
+Any other change is rejected. Status changes lock the order row, so clicking twice cannot apply the same change twice.
 
 ## CRUD module (Week 14): Artworks
 
@@ -65,11 +86,21 @@ Authentication uses **[Laravel Breeze](https://laravel.com/docs/starter-kits)** 
 
 ## Tech stack
 
-- Laravel 13 (PHP 8.3 or newer)
-- MySQL (through XAMPP)
-- Blade templates, Bootstrap 5, and custom CSS in `public/css`
-- Laravel Breeze for authentication
-- PHPUnit for automated tests
+Versions installed in the development environment (`php -v`, `composer show --direct`):
+
+| Component | Version | Purpose |
+|---|---|---|
+| PHP | 8.5.12 (requires 8.3+) | Server-side language |
+| Laravel framework (`laravel/framework`) | 13.38.0 | MVC framework: routes, controllers, Eloquent, migrations |
+| Laravel Breeze (`laravel/breeze`) | 2.4.2 | Registration, login, logout, password reset |
+| Laravel Tinker (`laravel/tinker`) | 3.0.2 | Interactive console for debugging |
+| MySQL (XAMPP) | Bundled with your XAMPP install | Application database |
+| Bootstrap | 5.3.3 (CDN) | Responsive layout, forms, and modals on client, auth, and admin pages |
+| Bootstrap Icons | 1.11.3 (CDN) | Icons on the login and registration pages |
+| Chart.js | 4.4.8 (CDN) | Charts on the admin dashboard |
+| Pest (`pestphp/pest`) | 4.7.8 | Automated feature tests (runs PHPUnit-style test classes) |
+| Laravel Pint (`laravel/pint`) | 1.32.1 | Code style formatter |
+| Faker (`fakerphp/faker`) | 1.24.1 | Fake data for test factories |
 
 ## Requirements
 

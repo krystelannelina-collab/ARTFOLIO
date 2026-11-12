@@ -40,6 +40,7 @@ class ArtworkController extends Controller
         $artworks = $catalogArtworks
             ->map(fn (Artwork $artwork): array => [
                 'id' => $artwork->id,
+                'catalog_number' => $artwork->catalogNumber(),
                 'slug' => $artwork->slug,
                 'title' => $artwork->title,
                 'price' => (float) $artwork->price,
@@ -93,6 +94,7 @@ class ArtworkController extends Controller
 
         $artwork = [
             'id' => $catalogArtwork->id,
+            'catalog_number' => $catalogArtwork->catalogNumber(),
             'slug' => $catalogArtwork->slug,
             'title' => $catalogArtwork->title,
             'author' => $catalogArtwork->artist_name,
