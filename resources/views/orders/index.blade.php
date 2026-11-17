@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/orders.css') }}">
 </head>
 <body>
@@ -20,31 +20,10 @@
         $userInitials .= strtoupper(substr($nameParts[1], 0, 1));
     }
 @endphp
-@include('partials.mobile-header')
 <div class="app-layout">
-    @include('partials.sidebar', ['active' => 'orders'])
+    @include('partials.site-header', ['active' => 'orders'])
 
     <main class="main-content orders-content">
-        <header class="top-bar">
-            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
-                <svg class="search-icon-left" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input
-                    type="search"
-                    name="search"
-                    class="search-input"
-                    placeholder="Search artworks, artists, and inspiration"
-                    aria-label="Search artworks, artists, and inspiration"
-                >
-            </form>
-
-            <div class="top-bar-actions">
-                @include('partials.account-menu')
-            </div>
-        </header>
-
         <header class="orders-heading">
             <span class="orders-eyebrow">YOUR ACCOUNT</span>
             <h1>My orders.</h1>

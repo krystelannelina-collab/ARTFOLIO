@@ -1,0 +1,49 @@
+/**
+ * ARTFOLIO - Admin Sold Items
+ * Builds on admin-customers.css (stat cards, filter bar, table); only the pieces
+ * specific to sold artworks live here.
+ */
+
+.sold-artwork-cell {
+    display: flex;
+    min-width: 240px;
+    align-items: center;
+    gap: 12px;
+}
+
+.sold-thumb {
+    width: 52px;
+    height: 40px;
+    flex: 0 0 52px;
+    border: 1px solid #d2d8ce;
+    border-radius: 6px;
+    background: #f4f3ee;
+    object-fit: contain;
+}
+
+/* Artist names can be long, so the top-artist card uses a smaller value size. */
+.sold-stat-text {
+    overflow: hidden;
+    font-size: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sold-order-link {
+    color: var(--customers-green, #315b45);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.sold-order-link:hover,
+.sold-order-link:focus-visible {
+    text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+    .sold-artwork-cell {
+        min-width: 0;
+    }
+}

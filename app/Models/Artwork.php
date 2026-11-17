@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -38,6 +39,49 @@ class Artwork extends Model
     protected $attributes = [
         'availability' => self::AVAILABILITY_AVAILABLE,
     ];
+
+    /**
+     * Keep the foreign keys in step with the category and artist names, so
+     * every save links the artwork to the matching category and artist rows.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Artwork $artwork): void {
+            if ($artwork->isDirty('category') || $artwork->category_id === null) {
+                $artwork->category_id = Category::query()
+                    ->where('name', $artwork->category)
+                    ->value('id');
+            }
+
+            if ($artwork->isDirty('artist_name') || $artwork->artist_id === null) {
+                $artwork->artist_id = Artist::query()
+                    ->whereRaw('LOWER(name) = ?', [mb_strtolower(trim((string) $artwork->artist_name))])
+                    ->value('id');
+            }
+        });
+    }
+
+    /**
+     * The category row this artwork belongs to. Named catalogCategory because
+     * "category" is the display-name column.
+     */
+    public function catalogCategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function artist(): BelongsTo
+    {
+        return $this->belongsTo(Artist::class);
+    }
+
+    /**
+     * Customer-facing catalog number, such as "AW-0007".
+     */
+    public function catalogNumber(): string
+    {
+        return 'AW-'.str_pad((string) $this->id, 4, '0', STR_PAD_LEFT);
+    }
 
     public function favoritedByUsers(): BelongsToMany
     {

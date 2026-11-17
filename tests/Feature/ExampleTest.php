@@ -1,7 +1,7 @@
 <?php
 
-it('redirects guests to the Breeze login screen', function () {
+it('sends guests from the root address to the public home page', function () {
     $response = $this->get('/');
 
-    $response->assertRedirect(route('login'));
+    $response->assertRedirect(route('home'));
 });

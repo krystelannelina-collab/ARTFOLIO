@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-artworks.css') }}">
 </head>
@@ -37,9 +38,10 @@
         @enderror
 
         <section class="artwork-overview" aria-label="Artwork catalog totals">
-            <div><span>Total artworks</span><strong>{{ number_format($stats['total']) }}</strong></div>
+            <div><span>In catalog</span><strong>{{ number_format($stats['total']) }}</strong></div>
             <div><span>Published</span><strong>{{ number_format($stats['published']) }}</strong></div>
             <div><span>Drafts</span><strong>{{ number_format($stats['draft']) }}</strong></div>
+            <a href="{{ route('admin.sold.index') }}" class="artwork-overview-sold"><span>Sold <small>View sold items →</small></span><strong>{{ number_format($stats['sold']) }}</strong></a>
         </section>
 
         <section class="admin-panel artwork-table-panel" aria-label="Artwork catalog">

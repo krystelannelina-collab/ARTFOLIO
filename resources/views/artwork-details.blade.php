@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/artwork-details.css') }}">
 </head>
 <body>
@@ -25,26 +25,11 @@
     }
 @endphp
 
-@include('partials.mobile-header')
 
 <div class="app-layout">
-    @include('partials.sidebar', ['active' => 'artworks'])
+    @include('partials.site-header', ['active' => 'artworks'])
 
     <main class="main-content artwork-detail-content">
-        <header class="top-bar">
-            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="search" name="search" class="search-input" placeholder="Search artworks, artists, and inspiration" aria-label="Search artworks, artists, and inspiration">
-            </form>
-
-            <div class="top-right-actions">
-                @include('partials.account-menu')
-            </div>
-        </header>
-
         <nav class="artwork-breadcrumbs" aria-label="Breadcrumb">
             <a href="{{ url('/artworks') }}">Artworks</a>
             <span aria-hidden="true">/</span>
@@ -87,7 +72,7 @@
                     <span>{{ $artwork['author'] }}</span>
                 </a>
 
-                <span class="edition-label">One of one · Original digital artwork</span>
+                <span class="edition-label">{{ $artwork['catalog_number'] }} · One of one · Original digital artwork</span>
 
                 <p class="artwork-detail-price">@peso($artwork['price'])</p>
                 <p class="artwork-short-description">{{ $artwork['description'] }}</p>
@@ -95,6 +80,10 @@
                 @if (session('status'))
                     <p class="artwork-status-notice" role="status">{{ session('status') }}</p>
                 @endif
+
+                @error('quantity')
+                    <p class="artwork-status-notice" role="alert">{{ $message }}</p>
+                @enderror
 
                 <div class="artwork-delivery-note">
                     @if ($artwork['is_purchased_by_viewer'])

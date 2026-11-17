@@ -336,3 +336,19 @@ body {
 .view-all-pill-btn {
     white-space: nowrap;
 }
+
+/* ================= BANNER ARTWORK ================= */
+.hero-banner {
+    min-height: 340px;
+    background: linear-gradient(120deg, #102b21 0%, #1a4434 100%);
+}
+
+.hero-banner-content {
+    max-width: 520px;
+}
+
+.hero-heading {
+    font-size: clamp(32px, 4.4vw, 46px);
+    letter-spacing: -1.6px;
+    line-height: 1.06;
+}

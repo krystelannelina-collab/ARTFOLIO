@@ -2,58 +2,59 @@
  * ARTFOLIO - Artworks Catalog Page Styles
  */
 
-/* ================= TOP BAR ================= */
-.search-pill-container {
+/* ================= CATALOG CONTROLS (search + sort) ================= */
+.catalog-controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #EDEDEB;
-    border-radius: 12px;
-    padding: 9px 18px;
-    width: 440px;
-    max-width: 100%;
-    position: relative;
 }
 
-.search-menu-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
+/* Matches the Sort By box: white field, light border, same height and radius. */
+.catalog-search {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: #3F3F46;
-    cursor: pointer;
-    flex-shrink: 0;
+    gap: 10px;
+    width: 320px;
+    height: 42px;
+    margin: 0;
+    padding: 0 14px;
+    border: 1px solid #D4D4D8;
+    border-radius: 8px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.search-input {
-    border: none;
-    background: transparent;
-    outline: none;
+.catalog-search:focus-within {
+    border-color: #102B21;
+    box-shadow: 0 0 0 3px rgba(16, 43, 33, 0.12);
+}
+
+.catalog-search-icon {
+    flex-shrink: 0;
+    color: #71717A;
+}
+
+.catalog-search-input {
     width: 100%;
-    font-size: 14px;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
     color: #171717;
     font-family: inherit;
+    font-size: 14px;
 }
 
-.search-input::placeholder {
+.catalog-search-input::placeholder {
     color: #71717A;
     font-weight: 400;
 }
 
-.search-submit-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #3F3F46;
+/* Style the browser's built-in clear (×) button to fit the field. */
+.catalog-search-input::-webkit-search-cancel-button {
     cursor: pointer;
-    flex-shrink: 0;
 }
 
 .user-avatar-btn {
@@ -123,7 +124,8 @@
     align-items: center;
     border: 1px solid #D4D4D8;
     border-radius: 8px;
-    padding: 6px 14px;
+    height: 42px;
+    padding: 0 14px;
     background: #FFFFFF;
     gap: 10px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -373,7 +375,13 @@
         grid-template-columns: 1fr;
     }
 
-    .search-pill-container {
+    .catalog-controls {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .catalog-search {
         width: 100%;
     }
 

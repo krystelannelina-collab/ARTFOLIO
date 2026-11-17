@@ -16,7 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Dedicated CSS Stylesheets -->
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/artworks.css') }}">
 </head>
 <body>
@@ -27,11 +27,11 @@
     $selectedCategory = trim((string) ($selectedCategory ?? request('category')));
 @endphp
 
-@include('partials.mobile-header')
 
 <div class="app-layout">
 
-    @include('partials.sidebar', [
+    @include('partials.site-header', [
+        'showSearch' => false,
         'active' => 'artworks',
         'activeCategory' => $selectedCategory,
         'catalogCategories' => $catalogCategories,
@@ -40,41 +40,7 @@
     <!-- ================= MAIN CONTENT ================= -->
     <main class="main-content">
 
-        <!-- Top Bar -->
-        <header class="top-bar">
-            <!-- Search Pill with Hamburger/Filter + Magnifying Glass -->
-            <form action="{{ url('/artworks') }}" method="GET" class="search-pill-container" role="search" id="artworks-search-form">
-                <button type="button" class="search-menu-btn" aria-label="Menu filter" id="search-filter-icon">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="4" y1="7" x2="20" y2="7"></line>
-                        <line x1="4" y1="12" x2="20" y2="12"></line>
-                        <line x1="4" y1="17" x2="20" y2="17"></line>
-                    </svg>
-                </button>
-                <input
-                    type="search"
-                    name="search"
-                    id="search-input"
-                    class="search-input"
-                    placeholder="Search Artworks..."
-                    aria-label="Search Artworks"
-                    value="{{ request('search') }}"
-                >
-                <button type="submit" class="search-submit-btn" aria-label="Search">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-            </form>
-
-            <!-- Actions (Notification Bell & Profile Avatar) -->
-            <div class="top-right-actions">
-                @include('partials.account-menu')
-            </div>
-        </header>
-
-        <!-- Section Header Row -->
+        <!-- Section Header Row: title on the left, search and sort on the right -->
         <div class="section-header-row">
             <h1 class="section-title">
                 Artworks <span class="artists-sub">from our Artists</span>
@@ -84,22 +50,42 @@
                 </span>
             </h1>
 
-            <!-- Sort By Box -->
-            <div class="sort-box">
-                <span class="sort-label">Sort By</span>
-                <div class="sort-divider"></div>
-                <select id="sort-select" class="sort-select" aria-label="Sort artworks">
-                    <option value="default">Default</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="name">Name (A-Z)</option>
-                    @foreach ($catalogCategories as $catalogCategory)
-                        <option value="filter-{{ $catalogCategory }}" @selected(strcasecmp($selectedCategory, $catalogCategory) === 0)>Category: {{ $catalogCategory }}</option>
-                    @endforeach
-                </select>
-                <svg class="sort-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 6L8 11L13 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            <div class="catalog-controls">
+                <!-- Live search (filters as you type; Enter reloads with ?search=) -->
+                <form action="{{ url('/artworks') }}" method="GET" class="catalog-search" role="search" id="artworks-search-form">
+                    <svg class="catalog-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input
+                        type="search"
+                        name="search"
+                        id="search-input"
+                        class="catalog-search-input"
+                        placeholder="Search title, artist, or category"
+                        aria-label="Search artworks by title, artist, or category"
+                        value="{{ request('search') }}"
+                        autocomplete="off"
+                    >
+                </form>
+
+                <!-- Sort By Box -->
+                <div class="sort-box">
+                    <span class="sort-label">Sort By</span>
+                    <div class="sort-divider"></div>
+                    <select id="sort-select" class="sort-select" aria-label="Sort artworks">
+                        <option value="default">Default</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name">Name (A-Z)</option>
+                        @foreach ($catalogCategories as $catalogCategory)
+                            <option value="filter-{{ $catalogCategory }}" @selected(strcasecmp($selectedCategory, $catalogCategory) === 0)>Category: {{ $catalogCategory }}</option>
+                        @endforeach
+                    </select>
+                    <svg class="sort-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 6L8 11L13 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -130,7 +116,7 @@
 
                     <p class="artwork-artist">by {{ $art['author'] }}</p>
 
-                    <span class="edition-label">One of one</span>
+                    <span class="edition-label">{{ $art['catalog_number'] }} · One of one</span>
 
                     <div class="artwork-actions-row">
                         <form method="POST" action="{{ route('cart.add', ['slug' => $art['slug']]) }}" class="artwork-cart-action-form">

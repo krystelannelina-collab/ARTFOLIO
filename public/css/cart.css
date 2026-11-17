@@ -248,7 +248,7 @@
     padding: 24px 28px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     position: sticky;
-    top: 24px;
+    top: 88px; /* clears the sticky site header */
 }
 
 .summary-title {

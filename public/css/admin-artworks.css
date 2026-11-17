@@ -77,12 +77,13 @@
 
 .artwork-overview {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     margin-bottom: 15px;
 }
 
-.artwork-overview > div {
+.artwork-overview > div,
+.artwork-overview > .artwork-overview-sold {
     display: flex;
     min-height: 76px;
     align-items: center;
@@ -963,4 +964,40 @@
     margin-left: 4px;
     background: #fff1d6;
     color: #6b4a14;
+}
+
+/* Sold pieces leave the catalog list; this card links to where they are tracked. */
+.artwork-overview > .artwork-overview-sold {
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.artwork-overview > .artwork-overview-sold:hover,
+.artwork-overview > .artwork-overview-sold:focus-visible {
+    border-color: #315b45;
+    background: #f3f6f1;
+}
+
+.artwork-overview-sold small {
+    display: block;
+    margin-top: 2px;
+    color: #315b45;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 760px) {
+    .artwork-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .artwork-overview > .artwork-overview-sold {
+        min-height: 67px;
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 4px;
+        padding: 9px;
+    }
 }
