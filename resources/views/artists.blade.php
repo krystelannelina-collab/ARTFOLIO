@@ -116,15 +116,17 @@
                             <p class="artist-bio">{{ $artist['bio'] }}</p>
                         </div>
                         <div class="artist-info-bottom">
-                            <a href="{{ url('/artworks?search=' . urlencode($artist['name'])) }}"
-                               class="btn-view-artist"
-                               title="View artworks by {{ $artist['name'] }}">
+                            <button type="button"
+                                    class="btn-view-artist"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#artist-modal-{{ $artist['id'] }}"
+                                    aria-label="View profile of {{ $artist['name'] }}">
                                 <span>View artist</span>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <line x1="7" y1="17" x2="17" y2="7"></line>
                                     <polyline points="7 7 17 7 17 17"></polyline>
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -145,6 +147,93 @@
 
     </main>
 </div>
+
+{{-- Artist profile modals: one per artist, opened by its "View artist" button. --}}
+@foreach ($artists as $artist)
+    <div class="modal fade artist-modal" id="artist-modal-{{ $artist['id'] }}" tabindex="-1" aria-labelledby="artist-modal-title-{{ $artist['id'] }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <button type="button" class="btn-close artist-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <div class="modal-body">
+                    <section class="artist-modal-profile">
+                        <div class="artist-modal-photo">
+                            <img src="{{ $artist['image'] }}" alt="{{ $artist['name'] }}" loading="lazy">
+                        </div>
+
+                        <div class="artist-modal-info">
+                            <h2 class="artist-modal-name" id="artist-modal-title-{{ $artist['id'] }}">{{ $artist['name'] }}</h2>
+                            <p class="artist-modal-headline">{{ $artist['headline'] }}</p>
+                            <p class="artist-modal-bio">{{ $artist['bio'] }}</p>
+
+                            @if (! empty($artist['categories']))
+                                <ul class="artist-modal-styles" aria-label="Art styles">
+                                    @foreach ($artist['categories'] as $style)
+                                        <li>{{ $style }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
+                            @if (! empty($artist['socials']))
+                                <div class="artist-modal-socials">
+                                    @foreach ($artist['socials'] as $social)
+                                        <a href="{{ $social['url'] }}"
+                                           class="artist-social-link"
+                                           @if ($social['network'] !== 'email') target="_blank" rel="noopener noreferrer" @endif
+                                           aria-label="{{ $artist['name'] }} on {{ $social['label'] }}"
+                                           title="{{ $social['label'] }}">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                @switch($social['network'])
+                                                    @case('facebook')
+                                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                                                        @break
+                                                    @case('github')
+                                                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                                        <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                                        @break
+                                                    @case('instagram')
+                                                        <rect x="2" y="2" width="20" height="20" rx="5"/>
+                                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                                                        @break
+                                                    @default
+                                                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                                @endswitch
+                                            </svg>
+                                            <span>{{ $social['label'] }}</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </section>
+
+                    <section class="artist-modal-featured" aria-labelledby="artist-featured-title-{{ $artist['id'] }}">
+                        <h3 class="artist-modal-featured-title" id="artist-featured-title-{{ $artist['id'] }}">Artist’s featured arts</h3>
+
+                        @if (empty($artist['featured_artworks']))
+                            <p class="artist-modal-empty">No published artworks yet. Check back soon.</p>
+                        @else
+                            <div class="artist-modal-artworks">
+                                @foreach ($artist['featured_artworks'] as $artwork)
+                                    <a href="{{ $artwork['url'] }}" class="artist-modal-artwork">
+                                        <span class="artist-modal-artwork-image">
+                                            <img src="{{ $artwork['image'] }}" alt="{{ $artwork['title'] }}" loading="lazy">
+                                        </span>
+                                        <span class="artist-modal-artwork-category">{{ $artwork['category'] }}</span>
+                                        <span class="artist-modal-artwork-title">{{ $artwork['title'] }}</span>
+                                        <span class="artist-modal-artwork-price">@peso($artwork['price'])</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 <!-- Interactive Filtering Script -->
 <script>

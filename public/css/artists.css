@@ -240,6 +240,7 @@
     align-items: center;
     gap: 4px;
     cursor: pointer;
+    font-family: inherit;
     text-decoration: none;
     transition: all 0.15s ease;
 }
@@ -294,5 +295,253 @@
     .filter-sort-row {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+/* ================= ARTIST PROFILE MODAL ================= */
+/* Opened by "View artist": photo and details on top, featured artworks below. */
+.artist-modal .modal-content {
+    position: relative;
+    border: 0;
+    border-radius: 20px;
+    background: #FFFFFF;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    box-shadow: 0 24px 60px rgba(16, 43, 33, 0.25);
+}
+
+.artist-modal .modal-body {
+    padding: 32px;
+}
+
+.artist-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    width: 14px;
+    height: 14px;
+    padding: 9px;
+    border-radius: 999px;
+    background-color: #F1F0EB;
+    background-size: 10px;
+    opacity: 1;
+}
+
+.artist-modal-close:hover {
+    background-color: #E4E2DA;
+}
+
+.artist-modal-profile {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+}
+
+.artist-modal-photo {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #F1F0EB;
+}
+
+.artist-modal-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.artist-modal-name {
+    margin: 0;
+    color: #171717;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+}
+
+.artist-modal-headline {
+    margin: 4px 0 12px;
+    color: #1F513F;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.artist-modal-bio {
+    margin: 0 0 14px;
+    color: #52525B;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.artist-modal-styles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+}
+
+.artist-modal-styles li {
+    padding: 4px 10px;
+    border: 1px solid #CFE0D4;
+    border-radius: 999px;
+    background: #EEF6F0;
+    color: #1F513F;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.artist-modal-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.artist-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 999px;
+    color: #27272A;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.artist-social-link:hover,
+.artist-social-link:focus-visible {
+    border-color: #1F513F;
+    background: #EEF6F0;
+    color: #1F513F;
+}
+
+.artist-modal-featured {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.artist-modal-featured-title {
+    margin: 0 0 16px;
+    color: #171717;
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.artist-modal-artworks {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.artist-modal-artwork {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 8px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.artist-modal-artwork:hover,
+.artist-modal-artwork:focus-visible {
+    box-shadow: 0 8px 20px rgba(16, 43, 33, 0.12);
+    transform: translateY(-2px);
+}
+
+.artist-modal-artwork-image {
+    display: block;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 6px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #F1F0EB;
+}
+
+.artist-modal-artwork-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.artist-modal-artwork-category {
+    padding: 0 4px;
+    color: #2F6A4F;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.artist-modal-artwork-title {
+    padding: 0 4px;
+    color: #171717;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.artist-modal-artwork-price {
+    padding: 0 4px;
+    color: #52525B;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.artist-modal-empty {
+    margin: 0;
+    color: #71717A;
+    font-size: 13px;
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .artist-modal-artwork {
+        transition: none;
+    }
+
+    .artist-modal-artwork:hover {
+        transform: none;
+    }
+}
+
+/* Phones: photo above the details, artworks in two columns. */
+@media (max-width: 640px) {
+    .artist-modal .modal-body {
+        padding: 22px 18px;
+    }
+
+    .artist-modal-profile {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .artist-modal-photo {
+        width: 160px;
+        margin: 0 auto;
+    }
+
+    .artist-modal-name {
+        font-size: 22px;
+    }
+
+    .artist-modal-styles,
+    .artist-modal-socials {
+        justify-content: center;
+    }
+
+    .artist-modal-artworks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
     }
 }
