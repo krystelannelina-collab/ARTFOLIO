@@ -116,8 +116,8 @@
                             @foreach ($orders as $order)
                                 @php($firstItem = $order->items->first())
                                 <tr>
-                                    <td class="order-number">#{{ $order->order_number }}</td>
-                                    <td>
+                                    <td data-label="Order ID" class="order-number">#{{ $order->order_number }}</td>
+                                    <td data-label="Artwork" class="order-artwork-td">
                                         @if ($firstItem)
                                             <span class="order-artwork-cell">
                                                 <img src="{{ asset($firstItem->image_path) }}" alt="" loading="lazy">
@@ -130,16 +130,16 @@
                                             <span class="order-artwork-cell">Artwork removed</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td data-label="Customer">
                                         <span class="order-customer-cell">
                                             <strong>{{ $order->customer_name }}</strong>
                                             <small>{{ $order->customer_email }}</small>
                                         </span>
                                     </td>
-                                    <td class="order-date">{{ $order->created_at->format('M j, Y') }}</td>
-                                    <td><span class="order-payment status-{{ $order->status }}">{{ $order->statusLabel() }}</span></td>
-                                    <td class="order-total">@peso((float) $order->total)</td>
-                                    <td>
+                                    <td data-label="Date" class="order-date">{{ $order->created_at->format('M j, Y') }}</td>
+                                    <td data-label="Payment"><span class="order-payment status-{{ $order->status }}">{{ $order->statusLabel() }}</span></td>
+                                    <td data-label="Total" class="order-total">@peso((float) $order->total)</td>
+                                    <td class="order-action-td">
                                         <a href="{{ route('admin.orders.show', $order) }}" class="order-view-link">View order <span aria-hidden="true">↗</span></a>
                                     </td>
                                 </tr>

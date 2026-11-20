@@ -106,7 +106,7 @@
                         <tbody>
                             @foreach ($artworks as $artwork)
                                 <tr>
-                                    <td>
+                                    <td data-label="Artwork" class="artwork-title-td">
                                         <div class="artwork-title-cell">
                                             <img src="{{ asset($artwork->image_path) }}" alt="" loading="lazy">
                                             <span>
@@ -115,16 +115,16 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td>{{ $artwork->artist_name }}</td>
-                                    <td><span class="artwork-category-chip">{{ $artwork->category }}</span></td>
-                                    <td class="artwork-price">@peso((float) $artwork->price)</td>
-                                    <td>
+                                    <td data-label="Artist">{{ $artwork->artist_name }}</td>
+                                    <td data-label="Category"><span class="artwork-category-chip">{{ $artwork->category }}</span></td>
+                                    <td data-label="Price" class="artwork-price">@peso((float) $artwork->price)</td>
+                                    <td data-label="Status">
                                         <span class="artwork-status status-{{ $artwork->status }}">{{ ucfirst($artwork->status) }}</span>
                                         @if (! $artwork->isAvailableForPurchase())
                                             <span class="artwork-status status-{{ $artwork->availability }}">{{ ucfirst($artwork->availability) }}</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="artwork-actions-td">
                                         <div class="artwork-row-actions">
                                             <button type="button" class="artwork-edit-trigger" data-open-edit-modal data-artwork-id="{{ $artwork->id }}">Edit</button>
                                             <button

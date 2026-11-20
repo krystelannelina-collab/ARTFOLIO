@@ -146,6 +146,7 @@
 }
 
 .orders-table-scroll {
+    position: relative; /* clips absolutely positioned labels inside the table */
     overflow-x: auto;
 }
 
@@ -525,8 +526,60 @@
         flex-direction: column;
     }
 
-    .orders-table {
-        min-width: 820px;
+    /* Phones: each order becomes a card so payment status and the action stay visible. */
+    .orders-table thead {
+        display: none;
+    }
+
+    .orders-table,
+    .orders-table tbody,
+    .orders-table tr,
+    .orders-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .orders-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
+        padding: 16px;
+        border-bottom: 1px solid #eff0ec;
+    }
+
+    .orders-table tbody tr:last-child {
+        border-bottom: 0;
+    }
+
+    .orders-table td {
+        padding: 0;
+        border: 0;
+    }
+
+    .orders-table td[data-label]::before {
+        display: block;
+        margin-bottom: 3px;
+        color: #72766e;
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.45px;
+        text-transform: uppercase;
+    }
+
+    .orders-table .order-artwork-td,
+    .orders-table .order-action-td {
+        grid-column: 1 / -1;
+    }
+
+    .orders-table .order-artwork-cell,
+    .orders-table .order-customer-cell {
+        min-width: 0;
+    }
+
+    .orders-table .order-view-link {
+        justify-content: center;
+        width: 100%;
     }
 }
 

@@ -154,6 +154,7 @@
 }
 
 .artists-table-scroll {
+    position: relative; /* clips absolutely positioned labels inside the table */
     overflow-x: auto;
 }
 
