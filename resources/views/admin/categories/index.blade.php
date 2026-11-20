@@ -105,21 +105,21 @@
                         <tbody>
                             @foreach ($categories as $category)
                                 <tr class="{{ $category->is_visible ? '' : 'category-row-hidden' }}">
-                                    <td class="category-order">{{ str_pad((string) ($categories->firstItem() + $loop->index), 2, '0', STR_PAD_LEFT) }}</td>
-                                    <td>
+                                    <td data-label="Order" class="category-order">{{ str_pad((string) ($categories->firstItem() + $loop->index), 2, '0', STR_PAD_LEFT) }}</td>
+                                    <td data-label="Category" class="category-name-td">
                                         <span class="category-name-cell">
                                             <strong>{{ $category->name }}</strong>
                                             <small>{{ $category->description ?: 'No category description yet.' }}</small>
                                         </span>
                                     </td>
-                                    <td class="category-count">{{ number_format((int) $category->artwork_count) }}</td>
-                                    <td>{{ number_format((int) $category->published_count) }}</td>
-                                    <td>
+                                    <td data-label="Artworks" class="category-count">{{ number_format((int) $category->artwork_count) }}</td>
+                                    <td data-label="Published">{{ number_format((int) $category->published_count) }}</td>
+                                    <td data-label="Visibility">
                                         <span class="category-visibility {{ $category->is_visible ? 'is-visible' : 'is-hidden' }}">
                                             {{ $category->is_visible ? 'Visible' : 'Hidden' }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="category-actions-td">
                                         <div class="category-row-actions">
                                             <button
                                                 type="button"

@@ -357,6 +357,7 @@ img {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     white-space: nowrap;
+    max-width: 100%;
 }
 
 /* Keep the label its own size inside flex-column cards instead of stretching. */
@@ -791,6 +792,28 @@ img {
     .account-menu-panel,
     .order-updates-panel {
         top: 64px;
+    }
+
+    /* Tighter spacing keeps the logo and icons on one row down to 360px-wide phones. */
+    .site-header-inner {
+        padding: 0 14px;
+        column-gap: 12px;
+    }
+
+    .site-header-right,
+    .site-header-right .account-menu {
+        gap: 2px;
+    }
+
+    .site-brand {
+        gap: 8px;
+    }
+}
+
+/* Smallest phones: drop the wordmark so the icons never wrap under the logo. */
+@media (max-width: 340px) {
+    .site-brand-text {
+        display: none;
     }
 }
 

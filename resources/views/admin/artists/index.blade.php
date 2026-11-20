@@ -90,22 +90,22 @@
                         <tbody>
                             @foreach ($artists as $artist)
                                 <tr>
-                                    <td>
+                                    <td data-label="Artist" class="artist-name-td">
                                         <span class="artist-name-cell">
                                             <span class="artist-avatar" aria-hidden="true">{{ strtoupper(substr(trim($artist->artist_name), 0, 1)) }}</span>
                                             <strong>{{ $artist->artist_name }}</strong>
                                         </span>
                                     </td>
-                                    <td class="artist-count">{{ number_format($artist->artwork_count) }}</td>
-                                    <td>{{ number_format($artist->published_count) }}</td>
-                                    <td>{{ number_format($artist->draft_count) }}</td>
-                                    <td class="artist-date">{{ \Illuminate\Support\Carbon::parse($artist->latest_artwork_at)->format('M j, Y') }}</td>
-                                    <td>
+                                    <td data-label="Total artworks" class="artist-count">{{ number_format($artist->artwork_count) }}</td>
+                                    <td data-label="Published">{{ number_format($artist->published_count) }}</td>
+                                    <td data-label="Drafts">{{ number_format($artist->draft_count) }}</td>
+                                    <td data-label="Latest contribution" class="artist-date">{{ \Illuminate\Support\Carbon::parse($artist->latest_artwork_at)->format('M j, Y') }}</td>
+                                    <td data-label="Status">
                                         <span class="artist-status {{ $artist->published_count > 0 ? 'is-active' : 'is-inactive' }}">
                                             {{ $artist->published_count > 0 ? 'Active' : 'No published work' }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="artist-action-td">
                                         <a
                                             href="{{ route('admin.artworks.index', ['search' => $artist->artist_name]) }}"
                                             class="artist-view-link"

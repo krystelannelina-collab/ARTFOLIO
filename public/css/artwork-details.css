@@ -407,6 +407,13 @@ body {
     .related-artworks-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    /* The long "catalog · one of one · original" label wraps instead of widening the card. */
+    .artwork-purchase-card .edition-label {
+        white-space: normal;
+        border-radius: 10px;
+        line-height: 1.4;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
