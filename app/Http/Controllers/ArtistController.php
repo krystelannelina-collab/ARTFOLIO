@@ -6,6 +6,7 @@ use App\Models\Artist;
 use App\Models\Artwork;
 use App\Models\Category;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 
 class ArtistController extends Controller
 {
@@ -56,10 +57,13 @@ class ArtistController extends Controller
             $artists[] = [
                 'id' => $profile->id,
                 'name' => $profile->name,
+                'headline' => $profile->headline,
                 'category_label' => empty($categories) ? 'No published artworks yet' : implode(' · ', $categories),
                 'categories' => $categories,
                 'bio' => $profile->bio,
                 'image' => asset($profile->image_path),
+                'socials' => $this->socialLinks($profile),
+                'featured_artworks' => $this->featuredArtworks($artistArtworks),
             ];
             $seenArtists[$key] = true;
         }
@@ -81,10 +85,13 @@ class ArtistController extends Controller
             $artists[] = [
                 'id' => $nextId++,
                 'name' => $firstArtwork->artist_name,
+                'headline' => 'Professional artist',
                 'category_label' => implode(' · ', $categories),
                 'categories' => $categories,
                 'bio' => 'Explore original '.strtolower(implode(' and ', $categories)).' works in the ARTFOLIO collection.',
                 'image' => asset($firstArtwork->image_path),
+                'socials' => [],
+                'featured_artworks' => $this->featuredArtworks($artistArtworks),
             ];
         }
 
@@ -92,5 +99,43 @@ class ArtistController extends Controller
             'artists' => $artists,
             'categories' => $visibleCategories->all(),
         ]);
+    }
+
+    /**
+     * The social links an artist has filled in, in display order.
+     *
+     * @return list<array{network: string, label: string, url: string}>
+     */
+    private function socialLinks(Artist $artist): array
+    {
+        $links = [
+            ['network' => 'facebook', 'label' => 'Facebook', 'url' => $artist->facebook_url],
+            ['network' => 'github', 'label' => 'GitHub', 'url' => $artist->github_url],
+            ['network' => 'instagram', 'label' => 'Instagram', 'url' => $artist->instagram_url],
+            ['network' => 'email', 'label' => 'Gmail', 'url' => filled($artist->email) ? 'mailto:'.$artist->email : null],
+        ];
+
+        return array_values(array_filter($links, fn (array $link): bool => filled($link['url'])));
+    }
+
+    /**
+     * Up to six of the artist's published artworks for the profile modal.
+     *
+     * @param  Collection<int, Artwork>  $artworks
+     * @return list<array{title: string, category: string, price: float, image: string, url: string}>
+     */
+    private function featuredArtworks(Collection $artworks): array
+    {
+        return $artworks
+            ->take(6)
+            ->map(fn (Artwork $artwork): array => [
+                'title' => $artwork->title,
+                'category' => $artwork->category,
+                'price' => (float) $artwork->price,
+                'image' => asset($artwork->image_path),
+                'url' => route('artworks.show', ['slug' => $artwork->slug]),
+            ])
+            ->values()
+            ->all();
     }
 }
