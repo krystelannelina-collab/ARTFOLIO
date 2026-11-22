@@ -121,6 +121,91 @@ body {
     text-transform: uppercase;
 }
 
+/* Client / Admin portal picker on the login page. */
+.portal-picker {
+    margin: 0 0 20px;
+    padding: 0;
+    border: 0;
+}
+
+.portal-picker legend {
+    float: none;
+    width: auto;
+    margin-bottom: 8px;
+}
+
+.portal-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.portal-option {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+}
+
+.portal-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.portal-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    padding: 14px 10px;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    background: #fff;
+    text-align: center;
+    transition: border-color .15s, background-color .15s, box-shadow .15s;
+}
+
+.portal-card .bi {
+    font-size: 22px;
+    color: #9CA3AF;
+}
+
+.portal-title {
+    color: #111827;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.portal-hint {
+    color: #6B7280;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.portal-option:hover .portal-card {
+    border-color: #9CA3AF;
+}
+
+.portal-option input:checked + .portal-card {
+    border-color: #1f513f;
+    background: #EEF5F1;
+    box-shadow: 0 0 0 3px rgba(31, 81, 63, .12);
+}
+
+.portal-option input:checked + .portal-card .bi {
+    color: #1f513f;
+}
+
+.portal-option input[value="admin"]:checked + .portal-card .bi {
+    color: #F25100;
+}
+
+.portal-option input:focus-visible + .portal-card {
+    outline: 2px solid #1f513f;
+    outline-offset: 2px;
+}
+
 .divider {
     width: 100%;
     display: flex;

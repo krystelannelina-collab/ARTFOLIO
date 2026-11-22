@@ -30,6 +30,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'login_as' => ['nullable', 'string', 'in:client,admin'],
         ];
     }
 
@@ -50,7 +51,39 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $this->ensureAccountMatchesChosenPortal();
+
         RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * Reject a login whose account role does not match the portal picked on the
+     * login page (Client or Admin). When no portal was sent, any role may log in.
+     *
+     * @throws ValidationException
+     */
+    private function ensureAccountMatchesChosenPortal(): void
+    {
+        $chosenPortal = $this->input('login_as');
+
+        if ($chosenPortal === null) {
+            return;
+        }
+
+        $isAdminAccount = Auth::user()?->role === 'admin';
+
+        if ($isAdminAccount === ($chosenPortal === 'admin')) {
+            return;
+        }
+
+        Auth::guard('web')->logout();
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => $isAdminAccount
+                ? 'This is an admin account. Choose "Admin" to log in.'
+                : 'This account does not have admin access. Choose "Client" to log in.',
+        ]);
     }
 
     /**
