@@ -115,4 +115,52 @@ class AuthFlowTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['role' => 'admin']);
     }
+
+    public function test_login_page_offers_client_and_admin_choices(): void
+    {
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee('name="login_as" value="client"', false)
+            ->assertSee('name="login_as" value="admin"', false);
+    }
+
+    public function test_client_logs_in_through_the_client_choice(): void
+    {
+        $client = User::factory()->create(['password' => 'password123']);
+
+        $this->post('/login', ['email' => $client->email, 'password' => 'password123', 'login_as' => 'client'])
+            ->assertRedirect(route('dashboard', absolute: false));
+        $this->assertAuthenticatedAs($client);
+    }
+
+    public function test_admin_logs_in_through_the_admin_choice(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'password' => 'password123']);
+
+        $this->post('/login', ['email' => $admin->email, 'password' => 'password123', 'login_as' => 'admin'])
+            ->assertRedirect(route('admin.dashboard'));
+        $this->assertAuthenticatedAs($admin);
+    }
+
+    public function test_client_account_cannot_log_in_through_the_admin_choice(): void
+    {
+        $client = User::factory()->create(['password' => 'password123']);
+
+        $this->from('/login')
+            ->post('/login', ['email' => $client->email, 'password' => 'password123', 'login_as' => 'admin'])
+            ->assertRedirect('/login')
+            ->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_admin_account_is_told_to_use_the_admin_choice(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'password' => 'password123']);
+
+        $this->from('/login')
+            ->post('/login', ['email' => $admin->email, 'password' => 'password123', 'login_as' => 'client'])
+            ->assertRedirect('/login')
+            ->assertSessionHasErrors(['email' => 'This is an admin account. Choose "Admin" to log in.']);
+        $this->assertGuest();
+    }
 }

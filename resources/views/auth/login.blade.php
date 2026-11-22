@@ -3,20 +3,42 @@
 @section('title', 'Log In')
 
 @section('content')
+    @php($selectedPortal = old('login_as', 'client') === 'admin' ? 'admin' : 'client')
+
     <header class="form-header">
         <h1>Log In Account</h1>
-        <p>Join as a creative talent</p>
+        <p id="portalSubtitle">
+            {{ $selectedPortal === 'admin' ? 'Sign in to manage the ARTFOLIO store' : 'Join as a creative talent' }}
+        </p>
     </header>
 
-    <div class="admin-box" role="note">
-        <div class="admin-heading">
-            <i class="bi bi-shield-fill" style="color:#F25100"></i>
-            Admin access
+    <fieldset class="portal-picker">
+        <legend class="role-heading">Log in as</legend>
+
+        <div class="portal-options">
+            <label class="portal-option">
+                <input type="radio" name="login_as" value="client" form="loginForm"
+                       data-subtitle="Join as a creative talent"
+                       @checked($selectedPortal === 'client')>
+                <span class="portal-card">
+                    <i class="bi bi-person-fill" aria-hidden="true"></i>
+                    <span class="portal-title">Client</span>
+                    <span class="portal-hint">Browse and buy artworks</span>
+                </span>
+            </label>
+
+            <label class="portal-option">
+                <input type="radio" name="login_as" value="admin" form="loginForm"
+                       data-subtitle="Sign in to manage the ARTFOLIO store"
+                       @checked($selectedPortal === 'admin')>
+                <span class="portal-card">
+                    <i class="bi bi-shield-fill" aria-hidden="true"></i>
+                    <span class="portal-title">Admin</span>
+                    <span class="portal-hint">Manage the store dashboard</span>
+                </span>
+            </label>
         </div>
-        <p class="mb-0 mt-2 text-secondary" style="font-size:12px">
-            Administrators sign in here with their account and are taken to the admin dashboard.
-        </p>
-    </div>
+    </fieldset>
 
     @if ($errors->any())
         <div class="alert alert-danger auth-alert" role="alert">
@@ -72,8 +94,19 @@
         </button>
     </form>
 
-    <p class="signup-text">
+    <p class="signup-text" id="signupPrompt" @if ($selectedPortal === 'admin') hidden @endif>
         Don’t have an account?
         <a href="{{ route('register') }}">Sign Up</a>
     </p>
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('input[name="login_as"]').forEach((option) => {
+        option.addEventListener('change', () => {
+            document.getElementById('portalSubtitle').textContent = option.dataset.subtitle;
+            document.getElementById('signupPrompt').hidden = option.value === 'admin';
+        });
+    });
+</script>
+@endpush
